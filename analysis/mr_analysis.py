@@ -8,7 +8,7 @@ sys.path.append('../')
 from analysis.mr_user_distribution import MRUserDistribution
 def userDistribution():
     mrUserDistribution = MRUserDistribution(args='-r hadoop'.split())
-    print mrUserDistribution.runJob(inputFileList=['hdfs:///user/kykamath/geo/checkin_data.txt'])
-    
+    for l in mrUserDistribution.runJob(inputFileList=['hdfs:///user/kykamath/geo/checkin_data.txt']):
+        print l
 if __name__ == '__main__':
     userDistribution()
