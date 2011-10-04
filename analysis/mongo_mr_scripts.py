@@ -49,5 +49,5 @@ if __name__ == '__main__':
 #    kwargs = {'fileName':'locationDistribution'}
 #    plotDistribution(locationDistributionIterator(), **kwargs)
 
-#    generateLocationDistribution()
-    generateUserCheckinDistribution()
+    generateLocationDistribution()
+#    generateUserCheckinDistribution()
