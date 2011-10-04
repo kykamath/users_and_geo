@@ -6,7 +6,8 @@ Created on Oct 3, 2011
 import sys
 sys.path.append('../')
 import dateutil.parser
-from settings import checkinsFile, venuesFile, userDistributionFile
+from settings import checkinsFile, venuesFile, userDistributionFile,\
+    locationDistributionFile
 from mongo_settings import checkinsCollection, venuesCollection, usersCollection
 from library.geo import getLidFromLocation
 from library.file_io import FileIO
@@ -35,7 +36,15 @@ def addUserCheckinDistributionToDB():
             usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
         except Exception as e: print i, 'Exception while processing:', data; i+=1
 
+def addLocationCheckinDistributionToDB():
+    i = 0
+    for data in FileIO.iterateJsonFromFile(locationDistributionFile):
+        try:
+            usersCollection.insert({'_id': data['location'], 'tc': data['count'] })
+        except Exception as e: print i, 'Exception while processing:', data; i+=1
+
 if __name__ == '__main__':
 #    addCheckinsToDB()
 #    addVenuesToDB()
-    addUserCheckinDistributionToDB()
+#    addUserCheckinDistributionToDB()
+    addLocationCheckinDistributionToDB()
