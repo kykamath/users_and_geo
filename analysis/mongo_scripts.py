@@ -32,6 +32,4 @@ def addVenuesToDB():
 
 if __name__ == '__main__':
 #    addCheckinsToDB()
-#    addVenuesToDB()
-    data = ['309314', 'starbucks - \\', 'legacy &amp; dallas n. tollway', '33.0769', '-96.8207', '', '5760 legacy drive', 'plano', 'tx', '75024', 'coffee shop', 'coffee\\', 'wifi\\', 'barrista', '', 'hentschy', 'carl h.', '29', '404', '1358']
-    print {'_id': int(data[0]), 'n': data[1], 'l': [float(data[2]), float(data[3])], 'lid': getLidFromLocation([float(data[2]), float(data[3])]), 'm':' '.join(data[4:-2]), 'tp': int(data[-2]),  'tc': int(data[-1])}
+    addVenuesToDB()
