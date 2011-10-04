@@ -11,12 +11,21 @@ from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
 from analysis.mr_user_distribution import MRUserDistribution
 from analysis.mr_user_to_location_map import MRUserToLocationMap
 from analysis.mr_location_distribution import MRLocationDistribution
+import matplotlib.pyplot as plt
+from collections import defaultdict
 
 
 
 def runMRJob(mrJobClass, outputFileName, args='-r hadoop'.split()):
     mrJob = mrJobClass(args='-r hadoop'.split())
     for l in mrJob.runJob(inputFileList=[checkinsHdfsPath]): FileIO.writeToFileAsJson(l[1], outputFileName)
+    
+def plotDistribution(inputFileName):
+    dist = defaultdict(int)
+    for data in FileIO.iterateJsonFromFile(inputFileName): dist[data['count']]+=1
+    dataX, dataY = sorted(dist), [dist[x] for x in sorted(dist)]
+    plt.loglog(dataX, dataY)
+    plt.savefig('%s.pdf'%inputFileName.split('/')[-1]), plt.savefig('%s.eps'%inputFileName.split('/')[-1])
 
 #def userDistribution():
 #    mrUserDistribution = MRUserDistribution(args='-r hadoop'.split())
@@ -30,4 +39,8 @@ def runMRJob(mrJobClass, outputFileName, args='-r hadoop'.split()):
 
 if __name__ == '__main__':
 #    runMRJob(MRUserDistribution, userDistributionFile)
-    runMRJob(MRLocationDistribution, locationDistributionFile)
+#    runMRJob(MRLocationDistribution, locationDistributionFile)
+
+    #Plots
+#    plotDistribution(userDistributionFile)
+    plotDistribution(locationDistributionFile)
