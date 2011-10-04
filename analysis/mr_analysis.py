@@ -29,9 +29,9 @@ def plotDistribution(inputFileName):
 
 if __name__ == '__main__':
 #    MR Jobs
-#    runMRJob(MRUserDistribution, userDistributionFile)
+    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 
 #    Plots
-    plotDistribution(userDistributionFile)
+#    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
