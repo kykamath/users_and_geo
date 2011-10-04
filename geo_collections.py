@@ -19,4 +19,4 @@ geoDb = Connection('sid.cs.tamu.edu').geo
 }
 '''
 checkinsCollection = geoDb.checkins
-checkinsCollection.create_index([('uid', ASCENDING), ('l', GEO2D), ('t', ASCENDING), ('lid', ASCENDING)])
+checkinsCollection.create_index([ ('l', GEO2D), ('uid', ASCENDING), ('t', ASCENDING), ('lid', ASCENDING)])

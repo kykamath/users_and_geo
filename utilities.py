@@ -15,7 +15,7 @@ def iterateCheckins():
         if len(data)!=7: data.append(None) 
         yield {'_id':id, 'u': int(data[0]), 'tw': int(data[1]), 'l': [float(data[2]), float(data[3])], 't': dateutil.parser.parse(data[4]), 'x': data[5], 'lid': data[6]}
         id+=1
-        if id==10: break
+#        if id==10: break
     
 def addCheckinsToDB():
     for checkin in iterateCheckins(): checkinsCollection.insert(checkin)
