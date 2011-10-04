@@ -27,20 +27,11 @@ def plotDistribution(inputFileName):
     plt.loglog(dataX, dataY)
     plt.savefig('%s.pdf'%inputFileName.split('/')[-1]), plt.savefig('%s.eps'%inputFileName.split('/')[-1])
 
-#def userDistribution():
-#    mrUserDistribution = MRUserDistribution(args='-r hadoop'.split())
-#    for l in mrUserDistribution.runJob(inputFileList=['hdfs:///user/kykamath/geo/checkin_data.txt']):
-#        print l
-        
-#def userToLocationMap():
-#    mrUserToLocationMap = MRUserToLocationMap(args='-r hadoop'.split())
-#    for l in mrUserToLocationMap.runJob(inputFileList=['hdfs:///user/kykamath/geo/checkin_data.txt']):
-#        print l
-
 if __name__ == '__main__':
+#    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 
-    #Plots
+#    Plots
 #    plotDistribution(userDistributionFile)
     plotDistribution(locationDistributionFile)
