@@ -4,7 +4,7 @@ Created on Oct 3, 2011
 @author: kykamath
 '''
 import dateutil.parser
-from collections import checkinsCollection
+from geo_collections import checkinsCollection
 
 checkins_file = '/mnt/chevron/kykamath/data/geo/checkin_data.txt'
 
