@@ -33,5 +33,5 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 
 #    Plots
-#    plotDistribution(userDistributionFile)
-    plotDistribution(locationDistributionFile)
+    plotDistribution(userDistributionFile)
+#    plotDistribution(locationDistributionFile)
