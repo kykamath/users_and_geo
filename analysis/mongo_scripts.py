@@ -24,6 +24,7 @@ def addVenuesToDB():
 #    i = 0
     for data in open(venuesFile):
         data = data.strip().split('\t')
+        print data
         venuesCollection.insert({'_id': int(data[0]), 'n': data[1], 'l': [float(data[2]), float(data[3])], 'lid': getLidFromLocation([float(data[2]), float(data[3])]), 'm':' '.join(data[4:-2]), 'tp': int(data[-2]),  'tc': int(data[-1])})
 #        i+=1
 #        if i==1000: break;
