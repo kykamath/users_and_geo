@@ -21,15 +21,17 @@ def addCheckinsToDB():
 #        if i==1000: break;
 
 def addVenuesToDB():
-#    i = 0
+    i = 0
     for data in open(venuesFile):
         data = data.strip().split('\t')
         try:
             venuesCollection.insert({'_id': int(data[0]), 'n': data[1], 'l': [float(data[2]), float(data[3])], 'lid': getLidFromLocation([float(data[2]), float(data[3])]), 'm':' '.join(data[4:-2]), 'tp': int(data[-2]),  'tc': int(data[-1])})
-        except Exception as e: print 'Exception while processing:', data
+        except Exception as e: print i, 'Exception while processing:', data; i+=1
 #        i+=1
 #        if i==1000: break;
 
 if __name__ == '__main__':
 #    addCheckinsToDB()
-    addVenuesToDB()
+#    addVenuesToDB()
+    data = ['309314', 'starbucks - \\', 'legacy &amp; dallas n. tollway', '33.0769', '-96.8207', '', '5760 legacy drive', 'plano', 'tx', '75024', 'coffee shop', 'coffee\\', 'wifi\\', 'barrista', '', 'hentschy', 'carl h.', '29', '404', '1358']
+    print {'_id': int(data[0]), 'n': data[1], 'l': [float(data[2]), float(data[3])], 'lid': getLidFromLocation([float(data[2]), float(data[3])]), 'm':' '.join(data[4:-2]), 'tp': int(data[-2]),  'tc': int(data[-1])}
