@@ -40,7 +40,7 @@ if __name__ == '__main__':
 #    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 
-    print len(list(locationIterator()))
+    print len(list(userIterator()))
 
 #    Plots
 #    plotDistribution(userDistributionFile)
