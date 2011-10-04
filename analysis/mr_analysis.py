@@ -27,10 +27,20 @@ def plotDistribution(inputFileName):
     plt.loglog(dataX, dataY)
     plt.savefig('%s.pdf'%inputFileName.split('/')[-1]), plt.savefig('%s.eps'%inputFileName.split('/')[-1])
 
+def locationIterator():
+    for data in FileIO.iterateJsonFromFile(locationDistributionFile): yield data['location']
+
+def userIterator():
+    for data in FileIO.iterateJsonFromFile(userDistributionFile): yield data['user']
+
+        
+
 if __name__ == '__main__':
 #    MR Jobs
-    runMRJob(MRUserDistribution, userDistributionFile)
+#    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
+
+    print len(list(locationIterator()))
 
 #    Plots
 #    plotDistribution(userDistributionFile)
