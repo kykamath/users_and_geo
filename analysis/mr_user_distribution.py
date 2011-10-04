@@ -16,7 +16,7 @@ class MRUserDistribution(ModifiedMRJob):
     def mapper(self, key, line):
         data = parseData(line)
         if data: yield data['u'], 1
-    def reducer(self, word, occurrences): yield word, sum(occurrences)
+    def reducer(self, user, occurrences): yield user, {'user': user, 'count':sum(occurrences)}
 
 if __name__ == '__main__':
     MRUserDistribution.run()
