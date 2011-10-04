@@ -3,6 +3,8 @@ Created on Oct 4, 2011
 
 @author: kykamath
 '''
+import sys
+sys.path.append('../')
 from analysis.mr_user_distribution import MRUserDistribution
 def userDistribution():
     mrUserDistribution = MRUserDistribution(args='-r hadoop'.split())
