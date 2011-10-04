@@ -5,7 +5,8 @@ Created on Oct 3, 2011
 '''
 from pymongo import Connection, GEO2D, ASCENDING
 
-geoDb = Connection('sid.cs.tamu.edu').geo
+#geoDb = Connection('sid.cs.tamu.edu').geo
+geoDb = Connection('localhost').geo
 
 '''
 {
