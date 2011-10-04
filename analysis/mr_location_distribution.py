@@ -11,7 +11,7 @@ class MRLocationDistribution(ModifiedMRJob):
     def mapper(self, key, line):
         data = parseData(line)
         if data: yield getLidFromLocation(data['l']), 1
-    def reducer(self, user, occurrences): yield user, {'user': user, 'count':sum(occurrences)}
+    def reducer(self, location, occurrences): yield location, {'location': location, 'count':sum(occurrences)}
 
 if __name__ == '__main__':
     MRLocationDistribution.run()
