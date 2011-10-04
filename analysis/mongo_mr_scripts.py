@@ -3,6 +3,8 @@ Created on Oct 3, 2011
 
 @author: kykamath
 '''
+import sys
+sys.path.append('../')
 from bson.code import Code
 from geo_collections import geoDb, checkinsCollection
 from collections import defaultdict
