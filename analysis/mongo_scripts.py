@@ -29,22 +29,22 @@ def addVenuesToDB():
             venuesCollection.insert({'_id': int(data[0]), 'n': data[1], 'l': [float(data[2]), float(data[3])], 'lid': getLidFromLocation([float(data[2]), float(data[3])]), 'm':' '.join(data[4:-2]), 'tp': int(data[-2]),  'tc': int(data[-1])})
         except Exception as e: print i, 'Exception while processing:', data; i+=1
 
-def addUserCheckinDistributionToDB():
-    i = 0
-    for data in FileIO.iterateJsonFromFile(userDistributionFile):
-        try:
-            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
-        except Exception as e: print i, 'Exception while processing:', data; i+=1
-
-def addLocationCheckinDistributionToDB():
-    i = 0
-    for data in FileIO.iterateJsonFromFile(locationDistributionFile):
-        try:
-            usersCollection.insert({'_id': data['location'], 'tc': data['count'] })
-        except Exception as e: print i, 'Exception while processing:', data; i+=1
+#def addUserCheckinDistributionToDB():
+#    i = 0
+#    for data in FileIO.iterateJsonFromFile(userDistributionFile):
+#        try:
+#            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
+#        except Exception as e: print i, 'Exception while processing:', data; i+=1
+#
+#def addLocationCheckinDistributionToDB():
+#    i = 0
+#    for data in FileIO.iterateJsonFromFile(locationDistributionFile):
+#        try:
+#            locationsCollection.insert({'_id': data['location'], 'tc': data['count'] })
+#        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
 if __name__ == '__main__':
 #    addCheckinsToDB()
-#    addVenuesToDB()
-#    addUserCheckinDistributionToDB()
-    addLocationCheckinDistributionToDB()
+    addVenuesToDB()
+##    addUserCheckinDistributionToDB()
+#    addLocationCheckinDistributionToDB()

@@ -36,11 +36,11 @@ checkinsCollection.create_index([ ('l', GEO2D), ('u', ASCENDING), ('t', ASCENDIN
 venuesCollection = geoDb.venues
 venuesCollection.create_index([ ('l', GEO2D), ('lid', ASCENDING), ('tp', ASCENDING), ('tc', ASCENDING)])
 
-'''
-{
-'_id': user id, 
-'tc': total user checkins, 
-}
-'''
-usersCollection = geoDb.users
-usersCollection.create_index([ ('tc', ASCENDING)])
+#'''
+#{
+#'_id': user id, 
+#'tc': total user checkins, 
+#}
+#'''
+#usersCollection = geoDb.users
+#usersCollection.create_index([ ('tc', ASCENDING)])
