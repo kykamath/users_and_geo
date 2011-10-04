@@ -8,8 +8,9 @@ sys.path.append('../')
 import dateutil.parser
 from settings import checkinsFile, venuesFile, userDistributionFile,\
     locationDistributionFile
-from mongo_settings import checkinsCollection, venuesCollection, usersCollection
-from library.geo import getLidFromLocation
+from mongo_settings import checkinsCollection, venuesCollection,\
+    locationsCollection
+from library.geo import getLidFromLocation, getLocationFromLid
 from library.file_io import FileIO
 
 def addCheckinsToDB():
@@ -36,15 +37,15 @@ def addVenuesToDB():
 #            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
 #
-#def addLocationCheckinDistributionToDB():
-#    i = 0
-#    for data in FileIO.iterateJsonFromFile(locationDistributionFile):
-#        try:
-#            locationsCollection.insert({'_id': data['location'], 'tc': data['count'] })
-#        except Exception as e: print i, 'Exception while processing:', data; i+=1
+def addLocationCheckinDistributionToDB():
+    i = 0
+    for data in FileIO.iterateJsonFromFile(locationDistributionFile):
+        try:
+            locationsCollection.insert({'_id': data['location'], 'l': getLocationFromLid(data['location']), 'tc': data['count'] })
+        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
 if __name__ == '__main__':
 #    addCheckinsToDB()
-    addVenuesToDB()
+#    addVenuesToDB()
 ##    addUserCheckinDistributionToDB()
-#    addLocationCheckinDistributionToDB()
+    addLocationCheckinDistributionToDB()

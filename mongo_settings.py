@@ -5,8 +5,8 @@ Created on Oct 3, 2011
 '''
 from pymongo import Connection, GEO2D, ASCENDING
 
-geoDb = Connection('sid.cs.tamu.edu').geo
-#geoDb = Connection('localhost').geo
+#geoDb = Connection('sid.cs.tamu.edu').geo
+geoDb = Connection('localhost').geo
 
 '''
 {
@@ -44,3 +44,13 @@ venuesCollection.create_index([ ('l', GEO2D), ('lid', ASCENDING), ('tp', ASCENDI
 #'''
 #usersCollection = geoDb.users
 #usersCollection.create_index([ ('tc', ASCENDING)])
+
+'''
+{
+'_id': location id (lid), 
+'l': [latitude, longitude], 
+'tc': total user checkins, 
+}
+'''
+locationsCollection = geoDb.locations
+locationsCollection.create_index([ ('l', GEO2D), ('tc', ASCENDING)])

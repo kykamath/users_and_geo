@@ -36,11 +36,9 @@ if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
-    print len(list(locationIterator(minCheckins=0)))
-    print len(list(userIterator(minCheckins=0)))
-    print len(list(locationIterator()))
-    print len(list(userIterator()))
 
 #    Plots
 #    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
+
+    pass
