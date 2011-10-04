@@ -16,7 +16,7 @@ def iterateCheckins():
         data = data.strip().split('\t')
         if len(data)!=7: data.append(None) 
         if len(data) == 7: yield {'_id':id, 'u': int(data[0]), 'tw': int(data[1]), 'l': [float(data[2]), float(data[3])], 't': dateutil.parser.parse(data[4]), 'x': data[5], 'lid': data[6]}
-        else: 'Problem in line: ', id, data
+        else: print 'Problem in line: ', id, data
         id+=1
 #        if id==1000: break;
     
