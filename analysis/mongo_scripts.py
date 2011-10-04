@@ -6,12 +6,12 @@ Created on Oct 3, 2011
 import sys
 sys.path.append('../')
 import dateutil.parser
-from settings import checkinsFile, venuesFile, userDistributionFile,\
-    locationDistributionFile
+from settings import checkinsFile, venuesFile
 from mongo_settings import checkinsCollection, venuesCollection,\
     locationsCollection
 from library.geo import getLidFromLocation, getLocationFromLid
 from library.file_io import FileIO
+from analysis.mr_analysis import locationIterator
 
 def addCheckinsToDB():
     i = 0
@@ -36,10 +36,10 @@ def addVenuesToDB():
 #        try:
 #            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
-#
+
 def addLocationCheckinDistributionToDB():
     i = 0
-    for data in FileIO.iterateJsonFromFile(locationDistributionFile):
+    for data in locationIterator(fullRecord=True):
         try:
             locationsCollection.insert({'_id': data['location'], 'l': getLocationFromLid(data['location']), 'tc': data['count'] })
         except Exception as e: print i, 'Exception while processing:', data; i+=1
