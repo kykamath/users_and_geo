@@ -46,12 +46,9 @@ def generateRadiusSpots(radiusInMiles):
     graph = nx.Graph()
     spotsFile = radiusSpotsFolder+'%s'%(radiusInMiles)
     FileIO.writeToFileAsJson({'radius_in_miles': radiusInMiles}, spotsFile)
-    i = 0
     for lid in locationIterator():
         if isWithinBoundingBox(getLocationFromLid(lid), us_boundary):
             for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
-            i+=1
-            if i==100: break
     for venues in nx.connected_components(graph): FileIO.writeToFileAsJson({'venues': venues}, spotsFile)
         
 def generateStatsForRadiusSpots():
