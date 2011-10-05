@@ -56,9 +56,9 @@ def cluster():
     plt.savefig('worldmap.pdf')
     
 if __name__ == '__main__':
-#    Map.onWorldMapPlot([
-#                        ([-105.16, -117.16, -77.00], [40.02, 32.73, 38.55], GeneralMethods.getRandomColor()),
-#                        ([-114.21, -88.10], [48.25, 17.29], GeneralMethods.getRandomColor())
-#                        ])
-#    plt.savefig('map.png')
-    cluster()
+    Map.onWorldMapPlot([
+                        ([-105.16, -117.16, -77.00], [40.02, 32.73, 38.55], GeneralMethods.getRandomColor()),
+                        ([-114.21, -88.10], [48.25, 17.29], GeneralMethods.getRandomColor())
+                        ])
+    plt.savefig('map.png')
+#    cluster()
