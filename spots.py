@@ -26,6 +26,7 @@ class Map:
         m.fillcontinents(color='#FFFFFF',lake_color='#FFFFFF')
         m.drawmapboundary(fill_color='#FFFFFF') 
         for longitudes, latitudes, color in dataTuplesToPlot:
+            print longitudes, latitudes, color
             x,y = m(longitudes,latitudes)
             m.plot(x,y,color=color, lw=0, marker='o')
 #        for name,xpt,ypt in zip(cities,x,y): plt.text(xpt+50000,ypt+50000,name)
