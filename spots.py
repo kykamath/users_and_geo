@@ -47,7 +47,7 @@ def cluster():
                 if len(component)>=5: 
 #                    graph.remove_nodes_from(component)
                     longitudes, latitudes = zip(*[getLocationFromLid(l) for l in component])
-                    clustersData.append((longitudes, latitudes, GeneralMethods.getRandomColor()))
+                    clustersData.append((list(longitudes), list(latitudes), GeneralMethods.getRandomColor()))
 #            plot(graph, node_size=20, node_color='#A0CBE2',with_labels=False)
             print len(nx.connected_components(graph))
             break
@@ -56,9 +56,9 @@ def cluster():
     plt.savefig('worldmap.pdf')
     
 if __name__ == '__main__':
-    Map.onWorldMapPlot([
-                        ([-105.16, -117.16, -77.00], [40.02, 32.73, 38.55], GeneralMethods.getRandomColor()),
-                        ([-114.21, -88.10], [48.25, 17.29], GeneralMethods.getRandomColor())
-                        ])
-    plt.savefig('map.png')
-#    cluster()
+#    Map.onWorldMapPlot([
+#                        ([-105.16, -117.16, -77.00], [40.02, 32.73, 38.55], GeneralMethods.getRandomColor()),
+#                        ([-114.21, -88.10], [48.25, 17.29], GeneralMethods.getRandomColor())
+#                        ])
+#    plt.savefig('map.png')
+    cluster()
