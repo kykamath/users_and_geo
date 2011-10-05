@@ -42,7 +42,7 @@ def cluster():
         print i
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
         i+=1
-        if i==1000:
+        if i==100000:
             for component in nx.connected_components(graph):
                 if len(component)>=5: 
 #                    graph.remove_nodes_from(component)
