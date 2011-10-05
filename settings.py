@@ -11,3 +11,7 @@ checkinsHdfsPath = 'hdfs:///user/kykamath/geo/checkin_data.txt'
 analysisFolder = '/mnt/chevron/kykamath/data/geo/analysis/'
 userDistributionFile = analysisFolder+'userDistribution'
 locationDistributionFile = analysisFolder+'locationDistribution'
+
+# Bondaries [[lower left][upper right]]
+us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
+world_boundary = [[-90,-180], [90, 180]]
