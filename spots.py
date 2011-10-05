@@ -51,6 +51,7 @@ def cluster():
 #            plot(graph, node_size=20, node_color='#A0CBE2',with_labels=False)
             print len(nx.connected_components(graph))
             break
+    print len(clustersData)
     Map.onWorldMapPlot(clustersData)
     plt.savefig('worldmap.pdf')
     
