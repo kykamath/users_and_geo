@@ -10,6 +10,7 @@ checkinsHdfsPath = 'hdfs:///user/kykamath/geo/checkin_data.txt'
 #Analysis
 analysisFolder = '/mnt/chevron/kykamath/data/geo/analysis/'
 radiusSpotsFolder = '/mnt/chevron/kykamath/data/geo/analysis/radius_spots/'
+radiusSpotsKmlsFolder = '/Users/kykamath/Dropbox/data/geo/radius_spots/kmls/'
 userDistributionFile = analysisFolder+'userDistribution'
 locationDistributionFile = analysisFolder+'locationDistribution'
 
