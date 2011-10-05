@@ -25,7 +25,7 @@ class Map:
             x,y = m(longitudes,latitudes)
             m.plot(x,y,color=color, lw=0, marker='o')
 #        for name,xpt,ypt in zip(cities,x,y): plt.text(xpt+50000,ypt+50000,name)
-        m.bluemarble()
+#        m.bluemarble()
         
 
 def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
