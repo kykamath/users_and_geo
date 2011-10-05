@@ -43,7 +43,7 @@ def cluster():
         print i
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
         i+=1
-        if i==100000:
+        if i==10000:
             for component in nx.connected_components(graph):
                 if len(component)>=5: 
                     longitudes, latitudes = zip(*[getLocationFromLid(l) for l in component])
