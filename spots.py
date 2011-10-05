@@ -36,6 +36,7 @@ def nearbyLocations(lid, radiusInMiles): return (location for location in locati
 
 def cluster():
     i = 1
+    clustersData = []
     for lid in locationIterator():
         print i
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
@@ -45,10 +46,11 @@ def cluster():
                 if len(component)>=5: 
 #                    graph.remove_nodes_from(component)
                     longitudes, latitudes = zip(*[getLocationFromLid(l) for l in component])
-                    Map.onWorldMapPlot(longitudes, latitudes, color=GeneralMethods.getRandomColor())
+                    clustersData.append(longitudes, latitudes, GeneralMethods.getRandomColor())
 #            plot(graph, node_size=20, node_color='#A0CBE2',with_labels=False)
-            print len(nx.connected_components(graph))                  
+            print len(nx.connected_components(graph))
             break
+    Map.onWorldMapPlot(clustersData)
     plt.savefig('worldmap.pdf')
     
 if __name__ == '__main__':
