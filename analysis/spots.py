@@ -42,19 +42,21 @@ def cluster():
     for lats, longs, color in clustersData: usMap.plotPoints(lats, longs, color)
     plt.savefig('worldmap.png')
 
-def generateRadiusSpots(radiusInMiles, minimumVenuesInSpots):
+def generateRadiusSpots(radiusInMiles):
     graph = nx.Graph()
-    spotsFile = radiusSpotsFolder+'%s_%s'%(radiusInMiles, minimumVenuesInSpots)
-    FileIO.writeToFileAsJson({'radius_in_miles': radiusInMiles, 'min_venues': minimumVenuesInSpots}, spotsFile)
+    spotsFile = radiusSpotsFolder+'%s'%(radiusInMiles)
+    FileIO.writeToFileAsJson({'radius_in_miles': radiusInMiles}, spotsFile)
     i = 0
     for lid in locationIterator():
         if isWithinBoundingBox(getLocationFromLid(lid), us_boundary):
             for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
             i+=1
             if i==100: break
-    for venues in nx.connected_components(graph):
-        if len(venues)>=minimumVenuesInSpots: FileIO.writeToFileAsJson({'venues': venues}, spotsFile)
-    
+    for venues in nx.connected_components(graph): FileIO.writeToFileAsJson({'venues': venues}, spotsFile)
+        
+def generateStatsForRadiusSpots():
+    for radius in [1,5,10,15,20]: generateRadiusSpots(radius)
+            
     
 if __name__ == '__main__':
-    generateRadiusSpots(5, 2)
+    generateStatsForRadiusSpots()
