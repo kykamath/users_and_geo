@@ -3,6 +3,7 @@ Created on Oct 4, 2011
 
 @author: kykamath
 '''
+import matplotlib
 from mongo_settings import locationsCollection
 from library.geo import convertMilesToRadians, getLocationFromLid
 #from library.graphs import plot
@@ -14,6 +15,7 @@ from library.classes import GeneralMethods
 
 radiusInMiles = 5
 graph = nx.Graph()
+matplotlib.use('Agg')
 
 class Map:
     @staticmethod
