@@ -18,11 +18,12 @@ graph = nx.Graph()
 
 class Map:
     @staticmethod
-    def onWorldMapPlot(longitudes, latitudes, color='#C704C4'):
+    def onWorldMapPlot(dataTuplesToPlot):
         from mpl_toolkits.basemap import Basemap
         m = Basemap(projection='robin',lon_0=0,resolution='c')
-        x,y = m(longitudes,latitudes)
-        m.plot(x,y,color=color, lw=0, marker='o')
+        for longitudes, latitudes, color in dataTuplesToPlot:
+            x,y = m(longitudes,latitudes)
+            m.plot(x,y,color=color, lw=0, marker='o')
 #        for name,xpt,ypt in zip(cities,x,y): plt.text(xpt+50000,ypt+50000,name)
         m.bluemarble()
         
@@ -47,7 +48,9 @@ def cluster():
     plt.savefig('worldmap.pdf')
     
 if __name__ == '__main__':
-#    Map.onWorldMapPlot([-105.16, -117.16, -77.00], [40.02, 32.73, 38.55])
-#    Map.onWorldMapPlot([-114.21, -88.10], [48.25, 17.29], color=GeneralMethods.getRandomColor())
-#    plt.show()
-    cluster()
+    Map.onWorldMapPlot([
+                        ([-105.16, -117.16, -77.00], [40.02, 32.73, 38.55], GeneralMethods.getRandomColor()),
+                        ([-114.21, -88.10], [48.25, 17.29], GeneralMethods.getRandomColor())
+                        ])
+    plt.show()
+#    cluster()
