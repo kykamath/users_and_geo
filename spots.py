@@ -70,11 +70,11 @@ if __name__ == '__main__':
     # height instead of lat/lon corners)
     #m = Basemap(width=894887,height=1116766,\
     #            resolution='i',projection='tmerc',lon_0=-4.36,lat_0=54.7)
-    m.drawcoastlines()
+#    m.drawcoastlines()
     m.fillcontinents(color='coral',lake_color='aqua')
     # draw parallels and meridians.
-    m.drawparallels(np.arange(-40,61.,2.))
-    m.drawmeridians(np.arange(-20.,21.,2.))
-    m.drawmapboundary(fill_color='aqua') 
+#    m.drawparallels(np.arange(-40,61.,2.))
+#    m.drawmeridians(np.arange(-20.,21.,2.))
+#    m.drawmapboundary(fill_color='aqua') 
     plt.title("Transverse Mercator Projection")
     plt.savefig('map.png')
