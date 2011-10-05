@@ -18,17 +18,17 @@ graph = nx.Graph()
 
 class Map:
     @staticmethod
-    def onWorldMapPlot(dataTuplesToPlot):
+    def onWorldMapPlot(longitudes, latitudes, color):
         from mpl_toolkits.basemap import Basemap
 #        m = Basemap(projection='robin',lon_0=0,resolution='c')
         m = Basemap(projection='robin',lon_0=0,resolution='c')
         m.drawcoastlines()
         m.fillcontinents(color='#FFFFFF',lake_color='#FFFFFF')
         m.drawmapboundary(fill_color='#FFFFFF') 
-        for longitudes, latitudes, color in dataTuplesToPlot:
-            print longitudes, latitudes, color
-            x,y = m(longitudes,latitudes)
-            m.plot(x,y,color=color, lw=0, marker='o')
+#        for longitudes, latitudes, color in dataTuplesToPlot:
+        print longitudes, latitudes, color
+        x,y = m(longitudes,latitudes)
+        m.plot(x,y,color=color, lw=0, marker='o')
 #        for name,xpt,ypt in zip(cities,x,y): plt.text(xpt+50000,ypt+50000,name)
 #        m.bluemarble()
         
@@ -52,7 +52,7 @@ def cluster():
             print len(nx.connected_components(graph))
             break
 #    print len(clustersData)
-    Map.onWorldMapPlot([longs, lats, GeneralMethods.getRandomColor()])
+    Map.onWorldMapPlot(longs, lats, GeneralMethods.getRandomColor())
     plt.savefig('worldmap.pdf')
     
 def temp():
