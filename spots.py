@@ -75,6 +75,6 @@ if __name__ == '__main__':
     # draw parallels and meridians.
 #    m.drawparallels(np.arange(-40,61.,2.))
 #    m.drawmeridians(np.arange(-20.,21.,2.))
-    m.drawmapboundary(fill_color='aqua') 
+    m.drawmapboundary(fill_color='#FFFFFF') 
     plt.title("Transverse Mercator Projection")
     plt.savefig('map.png')
