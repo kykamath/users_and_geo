@@ -27,7 +27,7 @@ class Map:
         m.drawmapboundary(fill_color='#FFFFFF') 
         for longitudes, latitudes, color in dataTuplesToPlot:
             x,y = m(longitudes,latitudes)
-            m.plot(x,y,color=color, lw=0, marker='o')
+            m.plot(x,y,color=color, lw=0, marker='o', node_size=10)
 #        for name,xpt,ypt in zip(cities,x,y): plt.text(xpt+50000,ypt+50000,name)
 #        m.bluemarble()
         
