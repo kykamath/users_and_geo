@@ -15,7 +15,7 @@ userCooccurenceKmlsFolder = '/Users/kykamath/Dropbox/data/geo/user_co_occurence/
 userDistributionFile = analysisFolder+'userDistribution'
 locationDistributionFile = analysisFolder+'locationDistribution'
 locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
-locationsGraph = '/mnt/chevron/kykamath/data/geo/analysis/locations_graph'
+locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
 
 
 # Bondaries [[lower left][upper right]]
