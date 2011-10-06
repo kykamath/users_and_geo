@@ -61,6 +61,7 @@ def nearbyLocations(lid, radiusInMiles): return (location for location in locati
 def generateRadiusSpots(radiusInMiles):
     graph = nx.Graph()
     spotsFile = radiusSpotsFolder+'%s'%(radiusInMiles)
+    print 'Creating:', spotsFile
     for lid in locationIterator():
 #        if isWithinBoundingBox(getLocationFromLid(lid), us_boundary):
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
