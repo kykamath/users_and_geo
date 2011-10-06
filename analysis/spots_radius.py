@@ -46,10 +46,14 @@ def plotRadiusSpots(radius=10, minLocations=10):
         usMap.plotPoints(lats, longs, color)
     plt.show()
 
+#def drawKMLsForRadiusSpots(radius=10, minLocations=10):
+#    kml = SpotsKML()
+#    for locations in radiusSpotsIterator(radius, minLocations): kml.addPointsWithHull(locations)
+#    kml.write(radiusSpotsKmlsFolder+'%s_%s.kml'%(radius, minLocations))
+
 def drawKMLsForRadiusSpots(radius=10, minLocations=10):
-    kml = SpotsKML()
-    for locations in radiusSpotsIterator(radius, minLocations): kml.addPointsWithHull(locations)
-    kml.write(radiusSpotsKmlsFolder+'%s_%s.kml'%(radius, minLocations))
+    SpotsKML.drawKMLsForSpots(radiusSpotsIterator(radius, minLocations), radiusSpotsKmlsFolder+'%s_%s.kml'%(radius, minLocations))
+    
 def generateKMLsRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
     
 if __name__ == '__main__':

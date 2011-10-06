@@ -22,3 +22,8 @@ class SpotsKML:
         if description: ls.description = description
         ls.linestyle = LineStyle(width=3.0)
     def write(self, fileName): self.kml.save(fileName)
+    @staticmethod
+    def drawKMLsForSpots(locationsIterator, outputKMLFile):
+        kml = SpotsKML()
+        for locations in locationsIterator: kml.addPointsWithHull(locations)
+        kml.write(outputKMLFile)
