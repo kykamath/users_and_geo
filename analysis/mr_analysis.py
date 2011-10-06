@@ -30,7 +30,7 @@ def plotDistribution(inputFileName):
     plt.loglog(dataX, dataY)
     plt.savefig('%s.pdf'%inputFileName.split('/')[-1]), plt.savefig('%s.eps'%inputFileName.split('/')[-1])
 def plotLocationGraphEdgeDistribution():
-    dataX, dataY = getDataDistribution((len(i) for i in (edge['w'] for edge in FileIO.iterateJsonFromFile(locationGraph))))
+    dataX, dataY = getDataDistribution(edge['w'] for edge in FileIO.iterateJsonFromFile(locationGraph))
     plt.loglog(dataX, dataY)
     plt.savefig('%s.pdf'%'locationGraph')
 
