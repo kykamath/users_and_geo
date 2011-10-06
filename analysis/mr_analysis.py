@@ -5,10 +5,10 @@ Created on Oct 4, 2011
 '''
 import sys
 sys.path.append('../')
-
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
-    locationDistributionFile, locationsGraph
+    locationDistributionFile, locationsGraph, locationByUserDistributionFile
 from library.file_io import FileIO
+from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_distribution import MRUserDistribution
 from analysis.mr_user_to_location_map import MRUserToLocationMap
 from analysis.mr_location_distribution import MRLocationDistribution
@@ -40,7 +40,8 @@ if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
-    runMRJob(MRLocationGraphByUsers, locationsGraph)
+#    runMRJob(MRLocationGraphByUsers, locationsGraph)
+    runMRJob(MRLocationByUserDistribution, locationByUserDistributionFile)
     
 
 #    Plots

@@ -11,8 +11,10 @@ checkinsHdfsPath = 'hdfs:///user/kykamath/geo/checkin_data.txt'
 analysisFolder = '/mnt/chevron/kykamath/data/geo/analysis/'
 radiusSpotsFolder = '/mnt/chevron/kykamath/data/geo/analysis/radius_spots/'
 radiusSpotsKmlsFolder = '/Users/kykamath/Dropbox/data/geo/radius_spots/kmls/'
+userCooccurenceKmlsFolder = '/Users/kykamath/Dropbox/data/geo/user_co_occurence/kmls/'
 userDistributionFile = analysisFolder+'userDistribution'
 locationDistributionFile = analysisFolder+'locationDistribution'
+locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
 locationsGraph = '/mnt/chevron/kykamath/data/geo/analysis/locations_graph'
 
 

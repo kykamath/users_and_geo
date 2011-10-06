@@ -21,7 +21,9 @@ class MRLocationGraphByUsers(ModifiedMRJob):
     def buildGraphMapper(self, key, data):
         if len(data['locations'])>=2:
             for v in combinations(data['locations'], 2): yield '%s %s'%v, 1
-    def buildGraphReducer(self, edge, occurrences): yield edge, {'e': edge, 'w':sum(occurrences)}
+    def buildGraphReducer(self, edge, occurrences): 
+        cooccurence = sum(occurrences)
+        yield edge, {'e': edge, 'w':cooccurence}
     
     def steps(self):
         return [
