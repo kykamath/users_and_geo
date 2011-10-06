@@ -16,6 +16,7 @@ class SpotsKML:
         pol.polystyle.outline = 0
     def addLine(self, points, description=None):
         from simplekml import LineStyle
+        points = [list(reversed(getLocationFromLid(point))) for point in points]
         ls = self.kml.newlinestring(coords=points)
         self.kml.newpoint(coords=[points[0]]), self.kml.newpoint(coords=[points[-1]])
         if description: ls.description = description
