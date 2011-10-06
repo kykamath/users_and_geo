@@ -17,11 +17,11 @@ def getLocationPairs(edge):
     data = edge.split()
     return [data[0]+' '+data[1], data[2]+' '+data[3]]
 def getNonJsonGraphFile():
-    with open(locationGraphNonJsonFile, 'w') as f: 
-        for edge in FileIO.iterateJsonFromFile(locationGraph):
-            x,y=getLocationPairs(edge['e'])
-            print '%s %s %s\n'%(x.replace(' ', '_'), y.replace(' ', '_'), edge['w'])
-#            f.write('%s %s %s\n'%(x.replace(' ', '_'), y.replace(' ', '_'), edge['w']))
+    f = open(locationGraphNonJsonFile, 'w') 
+    for edge in FileIO.iterateJsonFromFile(locationGraph):
+        x,y=getLocationPairs(edge['e'])
+        f.write('%s %s %s\n'%(x.replace(' ', '_'), y.replace(' ', '_'), edge['w']))
+    f.close()
     
 def drawKMLsForUserCooccurenceSpots(minEdgeWeight=30):
     kml = SpotsKML()
