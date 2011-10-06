@@ -15,6 +15,7 @@ from analysis.mr_location_distribution import MRLocationDistribution
 from analysis.mr_location_graph_by_users import MRLocationGraphByUsers
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from library.plotting import Map, getDataDistribution
 
 
 
@@ -28,6 +29,10 @@ def plotDistribution(inputFileName):
     dataX, dataY = sorted(dist), [dist[x] for x in sorted(dist)]
     plt.loglog(dataX, dataY)
     plt.savefig('%s.pdf'%inputFileName.split('/')[-1]), plt.savefig('%s.eps'%inputFileName.split('/')[-1])
+def plotLocationGraphEdgeDistribution():
+    dataX, dataY = getDataDistribution((len(i) for i in (edge['w'] for edge in FileIO.iterateJsonFromFile(locationGraph))))
+    plt.loglog(dataX, dataY)
+    plt.savefig('%s.pdf'%'locationGraph')
 
 def locationIterator(minCheckins=10, fullRecord = False): 
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
