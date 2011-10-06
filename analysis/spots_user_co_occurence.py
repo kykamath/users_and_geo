@@ -12,7 +12,7 @@ from library.geo import getLocationFromLid
 
 def getLocationPairs(edge): 
     data = edge.split()
-    return [getLocationFromLid(data[0]+' '+data[1]), getLocationFromLid(data[2]+' '+data[3])]
+    return [data[0]+' '+data[1], data[2]+' '+data[3]]
     
     
 def drawKMLsForUserCooccurenceSpots(minEdgeWeight=30):
