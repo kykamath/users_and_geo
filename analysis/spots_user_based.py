@@ -3,15 +3,16 @@ Created on Oct 5, 2011
 
 @author: kykamath
 '''
-import sys
-from library.file_io import FileIO
+import sys, os
 sys.path.append('../')
 from analysis import SpotsKML
-from settings import userCooccurenceKmlsFolder, locationGraph
+from settings import userCooccurenceKmlsFolder, locationGraph,\
+    userBasedSpotsFolder
 from library.geo import getLocationFromLid
-
+from library.file_io import FileIO
 
 locationGraphNonJsonFile=locationGraph+'NonJson'
+userBasedSpotsUsingClusteringFolder=userBasedSpotsFolder+'clustering/'
 
 def getLocationPairs(edge): 
     data = edge.split()
@@ -22,6 +23,12 @@ def getNonJsonGraphFile():
         x,y=getLocationPairs(edge['e'])
         f.write('%s %s %s\n'%(x.replace(' ', '_'), y.replace(' ', '_'), edge['w']))
     f.close()
+def clusterNonJsonGraphFile(inflation):
+    spotsFile = userBasedSpotsUsingClusteringFolder+str(inflation)
+    temporaryFile = '/tmp/fname.out'
+    os.system('mcl %s -I %s --abc -o %s'%(locationGraphNonJsonFile, inflation, temporaryFile))
+    for line in open(temporaryFile): FileIO.writeToFileAsJson({'locations': [i.replace('_', ' ') for i in line.strip().split()]}, spotsFile)
+    os.system('rm -rf %s'%temporaryFile)
     
 def drawKMLsForUserCooccurenceSpots(minEdgeWeight=30):
     kml = SpotsKML()
@@ -33,4 +40,5 @@ def drawKMLsForUserCooccurenceSpots(minEdgeWeight=30):
 
 if __name__ == '__main__':
 #    drawKMLsForUserCooccurenceSpots()
-    getNonJsonGraphFile()
+#    getNonJsonGraphFile()
+    clusterNonJsonGraphFile(15)
