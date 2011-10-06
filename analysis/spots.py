@@ -28,35 +28,9 @@ class SpotsKML:
         pol=self.kml.newpolygon(outerboundaryis=geographicConvexHull(points))
         pol.polystyle.color = '99'+color[1:]  # Transparent red
         pol.polystyle.outline = 0
-    def write(self, fileName):
-        self.kml.save(fileName)
+    def write(self, fileName): self.kml.save(fileName)
 
 def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
-
-#def cluster():
-#    i = 0
-#    radiusInMiles = 5
-#    graph = nx.Graph()
-#    longs, lats = [], []
-#    for lid in locationIterator():
-#        if isWithinBoundingBox(getLocationFromLid(lid), us_boundary):
-#            print i
-#            for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
-#            i+=1
-#            if i==50000: break
-#    i = 0
-#    clustersData = []
-#    for component in nx.connected_components(graph):
-##        if len(component)>=5: 
-#        i+=1
-#        longitudes, latitudes = zip(*[getLocationFromLid(l) for l in component])
-#        longs+=longitudes; lats+=latitudes
-##        if i==5: break;
-#        clustersData.append((list(longitudes), list(latitudes), GeneralMethods.getRandomColor()))
-#    print len(nx.connected_components(graph))
-#    usMap = Map()
-#    for lats, longs, color in clustersData: usMap.plotPoints(lats, longs, color)
-#    plt.savefig('worldmap.png')
 
 def generateRadiusSpots(radiusInMiles):
     graph = nx.Graph()
@@ -65,9 +39,9 @@ def generateRadiusSpots(radiusInMiles):
     for lid in locationIterator():
 #        if isWithinBoundingBox(getLocationFromLid(lid), us_boundary):
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
-    for venues in nx.connected_components(graph): FileIO.writeToFileAsJson({'venues': venues}, spotsFile)
+    for locations in nx.connected_components(graph): FileIO.writeToFileAsJson({'venues': locations}, spotsFile)
 def generateStatsForRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
-def radiusSpotsIterator(radiusInMiles, minVenues=0): return (data['venues'] for data in FileIO.iterateJsonFromFile(radiusSpotsFolder+'%s'%(radiusInMiles)) if len(data['venues'])>=minVenues)
+def radiusSpotsIterator(radiusInMiles, minLocations=0): return (data['venues'] for data in FileIO.iterateJsonFromFile(radiusSpotsFolder+'%s'%(radiusInMiles)) if len(data['venues'])>=minLocations)
 def plotRadiusSpotDistribution():
     for radius in [1,5,10,15,20]:
         dataX, dataY = getDataDistribution((len(i) for i in radiusSpotsIterator(radius)))
@@ -75,10 +49,10 @@ def plotRadiusSpotDistribution():
         print radius, len([i for i in radiusSpotsIterator(radius, 75)] )
     plt.legend()
     plt.show()
-def plotRadiusSpots(radius=10, minVenues=10):
+def plotRadiusSpots(radius=10, minLocations=10):
     clustersData = []
-    for venues in radiusSpotsIterator(radius, minVenues):
-        longitudes, latitudes = zip(*[getLocationFromLid(l) for l in venues])
+    for locations in radiusSpotsIterator(radius, minLocations):
+        longitudes, latitudes = zip(*[getLocationFromLid(l) for l in locations])
         clustersData.append((list(longitudes), list(latitudes), GeneralMethods.getRandomColor()))
     usMap = Map()
     latitudes, longitudes = [], []
@@ -86,22 +60,11 @@ def plotRadiusSpots(radius=10, minVenues=10):
         usMap.plotPoints(lats, longs, color)
     plt.show()
 
-def drawKMLsForRadiusSpots(radius=10, minVenues=10):
+def drawKMLsForRadiusSpots(radius=10, minLocations=10):
     kml = SpotsKML()
-    for venues in radiusSpotsIterator(radius, minVenues): kml.addPoints(venues)
-    kml.write(radiusSpotsKmlsFolder+'%s_%s.kml'%(radius, minVenues))
+    for locations in radiusSpotsIterator(radius, minLocations): kml.addPoints(locations)
+    kml.write(radiusSpotsKmlsFolder+'%s_%s.kml'%(radius, minLocations))
 def generateKMLsRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
-#def generateKML(points):
-#    import simplekml
-#    kml = simplekml.Kml()
-#    points = [list(reversed(getLocationFromLid(point))) for point in points]
-#    for point in points: kml.newpoint(coords=[point])
-#    pol=kml.newpolygon(outerboundaryis=geographicConvexHull(points))
-#    pol.polystyle.color = '99ff00ff'  # Transparent red
-#    pol.polystyle.outline = 0
-#    kml.save("spots.kml")
-    
-
     
 if __name__ == '__main__':
     generateStatsForRadiusSpots()

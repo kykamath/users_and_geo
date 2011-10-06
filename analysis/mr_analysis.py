@@ -4,13 +4,15 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
-from library.file_io import FileIO
 sys.path.append('../')
+
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
-    locationDistributionFile
+    locationDistributionFile, locationsGraph
+from library.file_io import FileIO
 from analysis.mr_user_distribution import MRUserDistribution
 from analysis.mr_user_to_location_map import MRUserToLocationMap
 from analysis.mr_location_distribution import MRLocationDistribution
+from analysis.mr_location_graph_by_users import MRLocationGraphByUsers
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
@@ -38,9 +40,11 @@ if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
+    runMRJob(MRLocationGraphByUsers, locationsGraph)
+    
 
 #    Plots
 #    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
-
-    pass
+    
+#    print len(list(locationIterator()))

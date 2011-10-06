@@ -13,6 +13,7 @@ radiusSpotsFolder = '/mnt/chevron/kykamath/data/geo/analysis/radius_spots/'
 radiusSpotsKmlsFolder = '/Users/kykamath/Dropbox/data/geo/radius_spots/kmls/'
 userDistributionFile = analysisFolder+'userDistribution'
 locationDistributionFile = analysisFolder+'locationDistribution'
+locationsGraph = '/mnt/chevron/kykamath/data/geo/analysis/locations_graph'
 
 
 # Bondaries [[lower left][upper right]]
