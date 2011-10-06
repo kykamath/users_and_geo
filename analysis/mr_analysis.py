@@ -46,12 +46,12 @@ if __name__ == '__main__':
 #    runMRJob(MRUserDistribution, userDistributionFile)
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 #    runMRJob(MRLocationByUserDistribution, locationByUserDistributionFile)
-    runMRJob(MRLocationGraphByUsers, locationGraph)
+#    runMRJob(MRLocationGraphByUsers, locationGraph)
 
 #    Plots
 #    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
 #    plotDistribution(locationByUserDistributionFile)
-
+    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationIterator()))
