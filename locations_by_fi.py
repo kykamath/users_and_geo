@@ -20,7 +20,7 @@ def locationTransactionsIterator():
             d[k]-=1
             if d[k]==0: del d[k]
     
-    for d in userToLocationMapIterator():
+    for d in userToLocationMapIterator(minLocations=150):
         while len(d.keys())>=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
@@ -51,7 +51,7 @@ def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
     
     
 if __name__ == '__main__':
-#    writeInputFileForFIMahout()
-    calculateFrequentLocationItemsets()
+    writeInputFileForFIMahout()
+#    calculateFrequentLocationItemsets()
 #    getMahoutOutput()
 #    drawKMLsForUserBasedSpotsUsingFI()
