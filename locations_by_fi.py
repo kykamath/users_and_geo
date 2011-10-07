@@ -34,7 +34,7 @@ def calculateFrequentLocationItemsets():
     os.system('gzip %s.tar'%(locationsFIMahoutInputFile))
     os.system('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
     os.system('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -method mapreduce -s %s'%minSupport)
-def getMahoutOutput(): os.system('mahout seqdumper -s fi/output/part-00000 > %s'%locationsFIMahoutOutputFile)
+def getMahoutOutput(): os.system('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile)
     
 def iterateFrequentLocationsFromFIMahout(minSupport=minSupport, minLocations=6): 
     for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile):
