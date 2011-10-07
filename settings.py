@@ -18,8 +18,12 @@ locationDistributionFile = analysisFolder+'locationDistribution'
 locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
 userToLocationMapFile = analysisFolder+'userToLocationMapFile'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
-locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input'
 
+#Frequent location itemsets
+minSupport = 5
+minimumTransactionLength = 4
+locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input'
+locationsFIMahoutOutputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_output'
 
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
