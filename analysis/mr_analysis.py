@@ -39,7 +39,7 @@ def locationIterator(minCheckins=10, fullRecord = False):
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
     return (data['location'] for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
 def userIterator(minCheckins=10): return (data['user'] for data in FileIO.iterateJsonFromFile(userDistributionFile) if data['count']>=minCheckins)
-def userToLocationMapIterator(): return (data['locations'] for data in FileIO.iterateJsonFromFile(userToLocationMapFile))
+def userToLocationMapIterator(minLocations=20): return (data['locations'] for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
 
 if __name__ == '__main__':
 #    MR Jobs
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 #    runMRJob(MRLocationByUserDistribution, locationByUserDistributionFile)
 #    runMRJob(MRLocationGraphByUsers, locationGraph)
-    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
+#    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)
@@ -55,4 +55,4 @@ if __name__ == '__main__':
 #    plotDistribution(locationByUserDistributionFile)
 #    plotLocationGraphEdgeDistribution()
     
-#    print len(list(userIterator(minCheckins=25)))
+    print len(list(userToLocationMapIterator()))
