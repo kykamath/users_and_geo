@@ -52,6 +52,6 @@ if __name__ == '__main__':
 #    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
 #    plotDistribution(locationByUserDistributionFile)
-    plotLocationGraphEdgeDistribution()
+#    plotLocationGraphEdgeDistribution()
     
-#    print len(list(locationIterator()))
+    print len(list(userIterator(minCheckins=25)))
