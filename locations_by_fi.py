@@ -19,7 +19,8 @@ def locationTransactionsIterator():
             yield d.keys()
             decrementDictionary(d)
         i+=1
-        if i==10: break
+        print i
+#        if i==10: break
 
 def generateInputFileForFIMahout(): 
     [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
