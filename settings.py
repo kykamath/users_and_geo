@@ -16,6 +16,7 @@ userBasedSpotsKmlsFolder = '/Users/kykamath/Dropbox/data/geo/user_based_spots/km
 userDistributionFile = analysisFolder+'userDistribution'
 locationDistributionFile = analysisFolder+'locationDistribution'
 locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
+userToLocationMapFile = analysisFolder+'userToLocationMapFile'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
 
 

@@ -6,7 +6,8 @@ Created on Oct 4, 2011
 import sys
 sys.path.append('../')
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
-    locationDistributionFile, locationGraph, locationByUserDistributionFile
+    locationDistributionFile, locationGraph, locationByUserDistributionFile,\
+    userToLocationMapFile
 from library.file_io import FileIO
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_distribution import MRUserDistribution
@@ -45,6 +46,7 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 #    runMRJob(MRLocationByUserDistribution, locationByUserDistributionFile)
 #    runMRJob(MRLocationGraphByUsers, locationGraph)
+    runMRJob(MRUserToLocationMap, userToLocationMapFile)
 
 #    Plots
 #    plotDistribution(userDistributionFile)
@@ -52,4 +54,4 @@ if __name__ == '__main__':
 #    plotDistribution(locationByUserDistributionFile)
 #    plotLocationGraphEdgeDistribution()
     
-    print len(list(userIterator(minCheckins=25)))
+#    print len(list(userIterator(minCheckins=25)))
