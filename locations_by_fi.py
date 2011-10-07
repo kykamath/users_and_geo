@@ -4,7 +4,7 @@ Created on Oct 7, 2011
 @author: kykamath
 '''
 from analysis.mr_analysis import userToLocationMapIterator
-from library.FileIO import writeToFile
+from library.file_io import FileIO
 from settings import locationsFIMahoutInputFile
 
 def locationTransactionsIterator():
@@ -21,4 +21,5 @@ def locationTransactionsIterator():
         i+=1
         if i==10: break
 
-def generateFileForFIMahout(): [writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
+def generateFileForFIMahout(): 
+    [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
