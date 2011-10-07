@@ -6,6 +6,7 @@ Created on Oct 7, 2011
 import os
 from analysis.mr_analysis import userToLocationMapIterator
 from library.file_io import FileIO
+from library.classes import GeneralMethods
 from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
     minimumTransactionLength, minSupport, userBasedSpotsKmlsFolder
 from analysis import SpotsKML
@@ -30,11 +31,11 @@ def locationTransactionsIterator():
 def writeInputFileForFIMahout(): [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
 
 def calculateFrequentLocationItemsets():
-    os.system('tar -cvf %s.tar %s'%(locationsFIMahoutInputFile, locationsFIMahoutInputFile))
-    os.system('gzip %s.tar'%(locationsFIMahoutInputFile))
-    os.system('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
-    os.system('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -method mapreduce -s %s'%minSupport)
-def getMahoutOutput(): os.system('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile)
+    GeneralMethods.runCommand('tar -cvf %s.tar %s'%(locationsFIMahoutInputFile, locationsFIMahoutInputFile))
+    GeneralMethods.runCommand('gzip %s.tar'%(locationsFIMahoutInputFile))
+    GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
+    GeneralMethods.runCommand('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -method mapreduce -s %s'%minSupport)
+def getMahoutOutput(): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile)
     
 def iterateFrequentLocationsFromFIMahout(minSupport=minSupport, minLocations=6): 
     for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile):
@@ -50,5 +51,5 @@ def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
 if __name__ == '__main__':
 #    writeInputFileForFIMahout()
 #    calculateFrequentLocationItemsets()
-    getMahoutOutput()
+#    getMahoutOutput()
 #    drawKMLsForUserBasedSpotsUsingFI()
