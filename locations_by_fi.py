@@ -7,6 +7,8 @@ from analysis.mr_analysis import userToLocationMapIterator
 from library.file_io import FileIO
 from settings import locationsFIMahoutInputFile
 
+minimumTransactionLength = 4
+
 def locationTransactionsIterator():
     i = 0
     def decrementDictionary(d):
@@ -15,7 +17,7 @@ def locationTransactionsIterator():
             if d[k]==0: del d[k]
     
     for d in userToLocationMapIterator():
-        while d.keys(): 
+        while len(d.keys())>=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
         i+=1
@@ -23,6 +25,7 @@ def locationTransactionsIterator():
 #        if i==10: break
 
 def generateInputFileForFIMahout(): 
+#    for t in locationTransactionsIterator(): print ' '.join([i.replace(' ', '_') for i in t])
     [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
     
 if __name__ == '__main__':
