@@ -20,9 +20,9 @@ from library.plotting import Map, getDataDistribution
 
 
 
-def runMRJob(mrJobClass, outputFileName, args='-r hadoop'.split()):
+def runMRJob(mrJobClass, outputFileName, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
-    for l in mrJob.runJob(inputFileList=[checkinsHdfsPath]): FileIO.writeToFileAsJson(l[1], outputFileName)
+    for l in mrJob.runJob(inputFileList=[checkinsHdfsPath], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
 def plotDistribution(inputFileName):
     dist = defaultdict(int)
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationDistribution, locationDistributionFile)
 #    runMRJob(MRLocationByUserDistribution, locationByUserDistributionFile)
 #    runMRJob(MRLocationGraphByUsers, locationGraph)
-    runMRJob(MRUserToLocationMap, userToLocationMapFile)
+    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)

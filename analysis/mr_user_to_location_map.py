@@ -12,9 +12,9 @@ class MRUserToLocationMap(ModifiedMRJob):
     def mapper(self, key, line):
         data = parseData(line)
         if data: yield data['u'], getLidFromLocation(data['l'])
-    def reducer(self, word, occurrences):
+    def reducer(self, user, occurrences):
         occurences = [str(s) for s in occurrences]
-        if len(occurences)>10:  yield word, dict([(k, len(list(g))) for k, g in groupby(sorted(occurences))])
+        if len(occurences)>10:  yield user, {'user': user, 'locations': dict([(k, len(list(g))) for k, g in groupby(sorted(occurences))])}
 
 if __name__ == '__main__':
     MRUserToLocationMap.run()
