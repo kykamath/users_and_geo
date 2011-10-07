@@ -31,6 +31,8 @@ def locationTransactionsIterator():
 def writeInputFileForFIMahout(): [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
 
 def calculateFrequentLocationItemsets():
+    GeneralMethods.runCommand('rm -rf %s.*'%locationsFIMahoutInputFile)
+    GeneralMethods.runCommand('hadoop fs -rmr fi/*')
     GeneralMethods.runCommand('tar -cvf %s.tar %s'%(locationsFIMahoutInputFile, locationsFIMahoutInputFile))
     GeneralMethods.runCommand('gzip %s.tar'%(locationsFIMahoutInputFile))
     GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
