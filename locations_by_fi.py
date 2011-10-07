@@ -29,7 +29,7 @@ def writeInputFileForFIMahout(): [FileIO.writeToFile(' '.join([i.replace(' ', '_
 
 def calculateFrequentLocationItemsets():
     os.system('tar -cvf %s.tar %s'%(locationsFIMahoutInputFile, locationsFIMahoutInputFile))
-    os.system('gzip %s.tar %s'%(locationsFIMahoutInputFile))
+    os.system('gzip %s.tar'%(locationsFIMahoutInputFile))
     os.system('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
     os.system('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -method mapreduce -s %s'%minSupport)
     
