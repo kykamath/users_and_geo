@@ -18,6 +18,7 @@ locationDistributionFile = analysisFolder+'locationDistribution'
 locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
 userToLocationMapFile = analysisFolder+'userToLocationMapFile'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
+locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input'
 
 
 # Bondaries [[lower left][upper right]]
