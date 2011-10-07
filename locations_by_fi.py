@@ -7,8 +7,10 @@ import os
 from analysis.mr_analysis import userToLocationMapIterator
 from library.file_io import FileIO
 from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
-    minimumTransactionLength, minSupport
+    minimumTransactionLength, minSupport, userBasedSpotsKmlsFolder
+from analysis import SpotsKML
 
+userBasedSpotsUsingFIKmlsFolder=userBasedSpotsKmlsFolder+'fi/'
 
 def locationTransactionsIterator():
     i = 0
@@ -32,15 +34,21 @@ def calculateFrequentLocationItemsets():
     os.system('gzip %s.tar'%(locationsFIMahoutInputFile))
     os.system('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
     os.system('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -method mapreduce -s %s'%minSupport)
+def getMahoutOutput(): os.system('mahout seqdumper -s fi/fi_out/part-00000 > %s'%locationsFIMahoutOutputFile)
     
-def iterateFrequentLocationsFromFIMahout(): 
+def iterateFrequentLocationsFromFIMahout(minSupport=minSupport, minLocations=6): 
     for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile):
         if line.startswith('Key:'): 
             data = line.split('Value: ')[1][1:-1].split(',')
-            print [i.replace('_', ' ') for i in data[0][1:-1].split()], int(data[1])
+            locationItemset = [i.replace('_', ' ') for i in data[0][1:-1].split()]
+            if int(data[1])>minSupport and len(locationItemset)>=minLocations: yield locationItemset 
+
+def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
+    SpotsKML.drawKMLsForSpots(iterateFrequentLocationsFromFIMahout(minSupport, minLocations), userBasedSpotsUsingFIKmlsFolder+'%s_%s.kml'%(minSupport, minLocations))
     
     
 if __name__ == '__main__':
 #    writeInputFileForFIMahout()
-    calculateFrequentLocationItemsets()
-#    iterateFrequentLocationsFromFIMahout()
+#    calculateFrequentLocationItemsets()
+    getMahoutOutput()
+#    drawKMLsForUserBasedSpotsUsingFI()
