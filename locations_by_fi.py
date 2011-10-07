@@ -21,5 +21,8 @@ def locationTransactionsIterator():
         i+=1
         if i==10: break
 
-def generateFileForFIMahout(): 
+def generateInputFileForFIMahout(): 
     [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
+    
+if __name__ == '__main__':
+    generateInputFileForFIMahout()
