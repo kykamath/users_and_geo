@@ -130,4 +130,4 @@ if __name__ == '__main__':
 #    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=10)
 #    drawKMLsForLocationsFromAllTransactions(minUserLocations=20)
     
-    print len(locationsFromAllTransactionsIterator(minUserLocations=20))
+    print len(locationsFromAllTransactionsIterator(minLocations=20))
