@@ -50,9 +50,9 @@ def filteredUserIterator(minLocationsUserHasCheckedin, minUniqueUsersCheckedIn):
     '''
     validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedIn))
     for userVector in userToLocationMapIterator(minUniqueUsersCheckedIn):
-        for k in userVector:
+#        for k in userVector:
 #            if k not in validLocationsSet: del userVector[k]
-            yield userVector
+        yield userVector
 
 if __name__ == '__main__':
 #    MR Jobs
