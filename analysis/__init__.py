@@ -17,7 +17,7 @@ class SpotsKML:
         pol.polystyle.outline = 0
     def addLocationPoints(self, points, color=None): 
         if not color: color=GeneralMethods.getRandomColor()
-        for point in [list(reversed(point)) for point in points]:
+        for point in (list(reversed(point)) for point in points):
             pnt = self.kml.newpoint(coords=[point])
             pnt.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/paddle/wht-blank.png'
             pnt.iconstyle.color = 'ff'+color[1:]
@@ -38,4 +38,9 @@ class SpotsKML:
     def drawKMLsForSpotsWithPoints(locationsIterator, outputKMLFile):
         kml = SpotsKML()
         for l in  list(locationsIterator): kml.addLocationPoints(l)
+        kml.write(outputKMLFile)
+    @staticmethod
+    def drawKMLsForPoints(pointsIterator, outputKMLFile):
+        kml = SpotsKML()
+        kml.addLocationPoints(pointsIterator)
         kml.write(outputKMLFile)
