@@ -46,7 +46,7 @@ def addLocationCheckinDistributionToDB():
 
 def addLocationToLocationDistanceToDB():
     i = 0
-    for data in locationGraphIterator(minimumWeight=10):
+    for data in locationGraphIterator(minimumWeight=5):
         try:
             d = map(float, data['e'].split())
             d = getHaversineDistance(d[0:2],d[2:])
