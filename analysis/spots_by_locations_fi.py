@@ -42,9 +42,10 @@ def locationsFromAllTransactionsIterator(minLocations):
     observedLocations = set()
     i=0
     for d in userToLocationMapIterator(minLocations=minLocations):
-        print i
-        i+=1
-        for k in filter(lambda l: l not in observedLocations, d): observedLocations.add(k); yield k
+        for k in filter(lambda l: l not in observedLocations, d): 
+            print i
+            i+=1
+            observedLocations.add(k); yield k
 
 class Mahout():
     @staticmethod
