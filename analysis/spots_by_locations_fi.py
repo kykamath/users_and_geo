@@ -27,7 +27,7 @@ def locationTransactionsIterator():
             d[k]-=1
             if d[k]==0: del d[k]
     
-    for d in userToLocationMapIterator(minLocations=50):
+    for d in userToLocationMapIterator(minLocations=5):
         while len(d.keys())>=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
