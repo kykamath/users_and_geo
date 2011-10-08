@@ -56,7 +56,7 @@ class Mahout():
         GeneralMethods.runCommand('tar -cvf %s.tar %s'%(inputFile, inputFile))
         GeneralMethods.runCommand('gzip %s.tar'%(inputFile))
         GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%inputFile)
-        GeneralMethods.runCommand('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -g 100000 -method mapreduce -s %s'%minSupport)
+        GeneralMethods.runCommand('mahout fpg -i fi/%s.tar.gz -o fi/output -k 50 -g 100000 -method mapreduce -s %s'%(inputFile, minSupport))
     @staticmethod
     def getMahoutOutput(minUserLocations, minSupport): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile%(minUserLocations, minSupport))
     @staticmethod
