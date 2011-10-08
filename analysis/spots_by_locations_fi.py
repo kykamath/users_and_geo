@@ -116,7 +116,7 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
 def iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     itemsetsIterator = (itemset[0] for itemset in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
                                                           key=itemgetter(1), reverse=True))
-    for i in itemsetsIterator:
+    for i in getItemClustersFromItemsets(itemsetsIterator, getHaversineDistanceForLids):
         print i
 #        if locationItemsetIsDisjoint(itemset): 
 #            for lid in itemset: observedLocations.add(lid)
