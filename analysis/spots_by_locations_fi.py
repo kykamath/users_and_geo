@@ -7,6 +7,7 @@ import sys
 sys.path.append('../')
 from operator import itemgetter
 from itertools import combinations
+from collections import defaultdict
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -14,6 +15,7 @@ from library.file_io import FileIO
 from library.classes import GeneralMethods
 from library.geo import getLocationFromLid, getHaversineDistanceForLids
 from library.plotting import getDataDistribution
+from library.clustering import getItemClustersFromItemsets
 
 from analysis.mr_analysis import filteredUserIterator
 from analysis import SpotsKML
@@ -112,8 +114,10 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
             yield [getLocationFromLid(lid) for lid in itemset]
 
 def iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
-    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
-        print itemset, support
+    itemsetsIterator = (itemset[1] for itemset in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
+                                                          key=itemgetter(1), reverse=True))
+    for i in itemsetsIterator:
+        print i
 #        if locationItemsetIsDisjoint(itemset): 
 #            for lid in itemset: observedLocations.add(lid)
 #            yield [getLocationFromLid(lid) for lid in itemset]
@@ -140,7 +144,7 @@ if __name__ == '__main__':
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
-    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=5)
+#    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=5)
 #    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
-#    iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport)
+    iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport)
