@@ -43,7 +43,7 @@ def calculateFrequentLocationItemsets():
     GeneralMethods.runCommand('tar -cvf %s.tar %s'%(locationsFIMahoutInputFile, locationsFIMahoutInputFile))
     GeneralMethods.runCommand('gzip %s.tar'%(locationsFIMahoutInputFile))
     GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
-    GeneralMethods.runCommand('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -method mapreduce -s %s'%minSupport)
+    GeneralMethods.runCommand('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -g 100000 -method mapreduce -s %s'%minSupport)
 def getMahoutOutput(): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile)
     
 def iterateFrequentLocationsFromFIMahout(minSupport=minSupport, minLocations=6, yieldSupport=False, lids=False): 
@@ -84,8 +84,8 @@ def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
     
 if __name__ == '__main__':
 #    writeInputFileForFIMahout()
-#    calculateFrequentLocationItemsets()
-    getMahoutOutput()
+    calculateFrequentLocationItemsets()
+#    getMahoutOutput()
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    analyzeFrequentLocations()
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
