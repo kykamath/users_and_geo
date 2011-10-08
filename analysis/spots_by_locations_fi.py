@@ -61,9 +61,9 @@ class Mahout():
     @staticmethod
     def getMahoutOutput(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport))
     @staticmethod
-    def iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCaluclatedSupport, minLocationsInItemset=0, extraMinSupport=minSupport, yieldSupport=False, lids=False): 
-#        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minUserLocations, minCaluclatedSupport)):
-        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCaluclatedSupport)):
+    def iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, minLocationsInItemset=0, extraMinSupport=minSupport, yieldSupport=False, lids=False): 
+#        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minUserLocations, minCalculatedSupport)):
+        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport)):
             if line.startswith('Key:'): 
                 data = line.split('Value: ')[1][1:-1].split(',')
                 if not lids: locationItemset, support = [getLocationFromLid(i.replace('_', ' ')) for i in data[0][1:-1].split()], int(data[1])
@@ -72,22 +72,22 @@ class Mahout():
                     if not yieldSupport: yield locationItemset 
                     else: yield locationItemset, support
     @staticmethod
-    def analyzeFrequentLocations(minUserLocations, minCaluclatedSupport):
+    def analyzeFrequentLocations(minUserLocations, minCalculatedSupport):
     #    dataX, dataY = [], []
-    #    for itemset, support in Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True): dataX.append(len(itemset)), dataY.append(support)
+    #    for itemset, support in Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCalculatedSupport, yieldSupport=True): dataX.append(len(itemset)), dataY.append(support)
     #    plt.scatter(dataY, dataX)
     #    plt.title('%s'%minUserLocations), plt.ylabel('Location itemset length'); plt.xlabel('support')
     #    plt.savefig('sup_vs_itemset_length_%s.pdf'%minUserLocations)
         
     #    values = []
-    #    for locations, support in Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True): values.append(support)
+    #    for locations, support in Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCalculatedSupport, yieldSupport=True): values.append(support)
     #    dataX,dataY = getDataDistribution(values)
     #    plt.loglog(dataX, dataY)
     #    plt.title('%s'%minUserLocations), plt.ylabel('Count'); plt.xlabel('support')
     #    plt.savefig('sup_distribution_%s.pdf'%minUserLocations)
     
         values = []
-        for itemset, support in Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True): values.append(len(itemset))
+        for itemset, support in Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCalculatedSupport, yieldSupport=True): values.append(len(itemset))
         dataX,dataY = getDataDistribution(values)
         plt.loglog(dataX, dataY)
         plt.title('%s'%minUserLocations), plt.ylabel('Count'); plt.xlabel('Location itemset length')
@@ -100,7 +100,7 @@ def iterateFrequentLocationClusters():
             if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
     for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
     
-def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCaluclatedSupport, **kwargs):
+def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
     def locationItemsetIsDisjoint(itemset):
         for location in itemset: 
