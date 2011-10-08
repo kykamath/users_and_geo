@@ -30,7 +30,7 @@ def locationTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsers
             d[k]-=1
             if d[k]==0: del d[k]
     
-    for d in filteredUserIterator(minLocationsUserHasCheckedin, minUniqueUsersCheckedIn):
+    for d in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         while len(d.keys())>=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
@@ -50,7 +50,7 @@ def locationsFromAllTransactionsIterator(minLocations):
 class Mahout():
     @staticmethod
     def writeInputFileForFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation))
-                                       for t in locationTransactionsIterator()]
+                                       for t in locationTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)]
     @staticmethod
     def calculateFrequentLocationItemsets():
         GeneralMethods.runCommand('rm -rf %s.*'%locationsFIMahoutInputFile)
