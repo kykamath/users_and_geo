@@ -49,12 +49,13 @@ class Mahout():
     def writeInputFileForFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation))
                                        for t in locationTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)]
     @staticmethod
-    def calculateFrequentLocationItemsets():
-        GeneralMethods.runCommand('rm -rf %s.*'%locationsFIMahoutInputFile)
+    def calculateFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+        inputFile = locationsFIMahoutInputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
+        GeneralMethods.runCommand('rm -rf %s.*'%inputFile)
         GeneralMethods.runCommand('hadoop fs -rmr fi/*')
-        GeneralMethods.runCommand('tar -cvf %s.tar %s'%(locationsFIMahoutInputFile, locationsFIMahoutInputFile))
-        GeneralMethods.runCommand('gzip %s.tar'%(locationsFIMahoutInputFile))
-        GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%locationsFIMahoutInputFile)
+        GeneralMethods.runCommand('tar -cvf %s.tar %s'%(inputFile, inputFile))
+        GeneralMethods.runCommand('gzip %s.tar'%(inputFile))
+        GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%inputFile)
         GeneralMethods.runCommand('mahout fpg -i fi/mh_input.tar.gz -o fi/output -k 50 -g 100000 -method mapreduce -s %s'%minSupport)
     @staticmethod
     def getMahoutOutput(minUserLocations, minSupport): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile%(minUserLocations, minSupport))
@@ -124,12 +125,12 @@ def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCa
     
 if __name__ == '__main__':
 #    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-#    Mahout.calculateFrequentLocationItemsets()
+    Mahout.calculateFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #    Mahout.getMahoutOutput(minUserLocations=20, minSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
 #    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=10)
-    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
+#    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
 #    print len(list(locationsFromAllTransactionsIterator(minLocations=20)))
