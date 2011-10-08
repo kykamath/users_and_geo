@@ -63,3 +63,5 @@ locationsCollection.create_index([ ('l', GEO2D), ('tc', ASCENDING)])
 }
 '''
 locationToLocationCollection = geoDb.location_to_location
+locationsCollection.create_index('u')
+locationsCollection.create_index('d')

@@ -46,11 +46,11 @@ def addLocationCheckinDistributionToDB():
 
 def addLocationToLocationDistanceToDB():
     i = 0
-    for data in locationGraphIterator(minimumWeight=5):
+    for data in locationGraphIterator():
         try:
             d = map(float, data['e'].split())
             d = getHaversineDistance(d[0:2],d[2:])
-            if d<=10: locationToLocationCollection.insert({'_id': data['e'], 'u': data['w'], 'd': d})
+            locationToLocationCollection.insert({'_id': data['e'], 'u': data['w'], 'd': d})
         except Exception as e: print i, 'Exception while processing:', data; i+=1
         
 def locationToLocationIterator(): return locationToLocationCollection.find()
