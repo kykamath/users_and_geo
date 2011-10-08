@@ -58,7 +58,7 @@ class Mahout():
         GeneralMethods.runCommand('hadoop fs -put %s.tar.gz fi/.'%inputFile)
         GeneralMethods.runCommand('mahout fpg -i fi/mh_input_%s_%s.tar.gz -o fi/output -k 50 -g 100000 -method mapreduce -s %s'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport))
     @staticmethod
-    def getMahoutOutput(minUserLocations, minSupport): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile%(minUserLocations, minSupport))
+    def getMahoutOutput(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport))
     @staticmethod
     def iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, minLocationsInItemset=0, extraMinSupport=minSupport, yieldSupport=False, lids=False): 
         for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minUserLocations, minCaluclatedSupport)):
@@ -125,8 +125,8 @@ def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCa
     
 if __name__ == '__main__':
 #    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-    Mahout.calculateFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-#    Mahout.getMahoutOutput(minUserLocations=20, minSupport=minSupport)
+#    Mahout.calculateFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
+    Mahout.getMahoutOutput(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
