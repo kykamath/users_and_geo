@@ -31,5 +31,5 @@ world_boundary = [[-90,-180], [90, 180]]
 #Experiments
 expMinimumCheckingsPerLocation = 10
 expLocationRadiusInMiles = 10
-expMinimumLocationsPerSpot = 10
+expMinimumLocationsPerSpot = 3
 expMinSharedUsersBetweenLocations = 5
