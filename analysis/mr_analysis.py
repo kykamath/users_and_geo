@@ -42,7 +42,9 @@ def userIterator(minCheckins=10): return (data['user'] for data in FileIO.iterat
 def userToLocationMapIterator(minLocations): return (data['locations'] for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
 def locationGraphIterator(minimumWeight=0): return (d for d in FileIO.iterateJsonFromFile(locationGraph) if d['w']>=minimumWeight)
 
-def getLocationsMeetingCriteria(minTimesUserCheckedIn): return set(locationIterator(minCheckins=minTimesUserCheckedIn, fullRecord=False))
+def locationByUserDistributionIterator(minTimesUserCheckedIn, fullRecord=False): 
+    if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
+    return (data['location'] for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
 
 if __name__ == '__main__':
 #    MR Jobs
@@ -58,4 +60,4 @@ if __name__ == '__main__':
 #    plotDistribution(locationByUserDistributionFile)
 #    plotLocationGraphEdgeDistribution()
     
-    print len(getLocationsMeetingCriteria(minTimesUserCheckedIn=10))
+    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=0)))
