@@ -4,8 +4,8 @@ Created on Oct 7, 2011
 @author: kykamath
 '''
 import sys
-from analysis import SpotsKML
 sys.path.append('../')
+from analysis import SpotsKML
 from analysis.mongo_scripts import locationToLocationIterator
 import networkx as nx
 
