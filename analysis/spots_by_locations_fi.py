@@ -114,7 +114,7 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
             yield [getLocationFromLid(lid) for lid in itemset]
 
 def iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
-    itemsetsIterator = (itemset[1] for itemset in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
+    itemsetsIterator = (itemset[0] for itemset in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
                                                           key=itemgetter(1), reverse=True))
     for i in itemsetsIterator:
         print i
