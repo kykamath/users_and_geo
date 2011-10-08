@@ -87,13 +87,13 @@ def iterateFrequentLocationClusters():
             if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
     for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
     
-def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, *args):
+def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs):
     observedLocations = set()
     def locationItemsetIsDisjoint(itemset):
         for location in itemset: 
             if location in observedLocations: return False
         return True 
-    for itemset, support in sorted(iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True, lids=True, *args), key=itemgetter(1), reverse=True):
+    for itemset, support in sorted(iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
             yield [getLocationFromLid(lid) for lid in itemset]
@@ -102,10 +102,10 @@ def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSuppo
 def drawKMLsForUserBasedSpotsUsingFIClusters(minSupport=minSupport, minLocations=6):
     SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationClusters(), userBasedSpotsUsingFIKmlsFolder+'fi_clusters_%s_%s.kml'%(minSupport, minLocations))
     
-def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, *args):
-    print len(list(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, *args)))
+def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs):
+    print len(list(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs)))
     exit()
-    SpotsKML.drawKMLsForSpotsWithPoints(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, *args), userBasedSpotsUsingFIKmlsFolder+'fi_disjoint_%s_%s.kml'%(minUserLocations, minCaluclatedSupport))
+    SpotsKML.drawKMLsForSpotsWithPoints(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs), userBasedSpotsUsingFIKmlsFolder+'fi_disjoint_%s_%s.kml'%(minUserLocations, minCaluclatedSupport))
     
 def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
     SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationsFromFIMahout(minSupport, minLocations), userBasedSpotsUsingFIKmlsFolder+'%s_%s.kml'%(minSupport, minLocations))
