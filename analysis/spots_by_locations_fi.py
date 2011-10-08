@@ -87,9 +87,17 @@ def iterateFrequentLocationClusters():
             if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
     for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
     
-def getDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport):
-    for itemset, support in sorted(iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True), key=itemgetter(1), reverse=True):
-        print itemset, support
+def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport):
+    observedLocations = set()
+    def locationItemsetIsDisjoint(itemset):
+        for location in itemset: 
+            if location in observedLocations: return False
+        return True 
+    for itemset, support in sorted(iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
+        if locationItemsetIsDisjoint(itemset): 
+            for lid in itemset: observedLocations.add(lid)
+            yield [getLocationFromLid(lid) for lid in itemset]
+            
     
 def drawKMLsForUserBasedSpotsUsingFIClusters(minSupport=minSupport, minLocations=6):
     SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationClusters(), userBasedSpotsUsingFIKmlsFolder+'fi_clusters_%s_%s.kml'%(minSupport, minLocations))
@@ -105,5 +113,5 @@ if __name__ == '__main__':
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
-    getDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport)
+    print len(list(iterateDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport)))
     
