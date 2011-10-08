@@ -34,18 +34,15 @@ def locationTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsers
         while len(d.keys())>=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
-        i+=1
-        print i
+        i+=1; print i
 #        if i==10: break
 
-def locationsFromAllTransactionsIterator(minLocations):
+def locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     observedLocations = set()
     i=0
-    for d in userToLocationMapIterator(minLocations=minLocations):
-        for k in filter(lambda l: l not in observedLocations, d): 
-            print i
-            i+=1
-            observedLocations.add(k); yield k
+    for d in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+        print i; i+=1
+        for k in filter(lambda l: l not in observedLocations, d): observedLocations.add(k); yield k
 
 class Mahout():
     @staticmethod
@@ -112,8 +109,8 @@ def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSuppo
             yield [getLocationFromLid(lid) for lid in itemset]
             
 
-def drawKMLsForLocationsFromAllTransactions(minUserLocations):
-    SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minUserLocations), 'all_locations_%s.kml'%(minUserLocations), color='#E38FF7')
+def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+    SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), 'all_locations_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), color='#E38FF7')
 
 #def drawKMLsForUserBasedSpotsUsingFIClusters(minSupport=minSupport, minLocations=6):
 #    SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationClusters(), userBasedSpotsUsingFIKmlsFolder+'fi_clusters_%s_%s.kml'%(minSupport, minLocations))
@@ -126,13 +123,13 @@ def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCa
     
     
 if __name__ == '__main__':
-    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
+#    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #    Mahout.calculateFrequentLocationItemsets()
 #    Mahout.getMahoutOutput(minUserLocations=20, minSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
 #    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=10)
-#    drawKMLsForLocationsFromAllTransactions(minUserLocations=20)
+    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
 #    print len(list(locationsFromAllTransactionsIterator(minLocations=20)))
