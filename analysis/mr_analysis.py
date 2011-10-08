@@ -70,7 +70,7 @@ if __name__ == '__main__':
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
     i = 0
-    for u in filteredUserIterator(10, 10):
-        print len(u.keys()), u
-        i+=1
-        if i > 5: exit()
+    print len(list(filteredUserIterator(10, 10))
+#        print len(u.keys()), u
+#        i+=1
+#        if i > 5: exit()
