@@ -111,11 +111,12 @@ def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSuppo
             for lid in itemset: observedLocations.add(lid)
             yield [getLocationFromLid(lid) for lid in itemset]
 
-def iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
-    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
-        if locationItemsetIsDisjoint(itemset): 
-            for lid in itemset: observedLocations.add(lid)
-            yield [getLocationFromLid(lid) for lid in itemset]
+def iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
+    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
+        print itemset, support
+#        if locationItemsetIsDisjoint(itemset): 
+#            for lid in itemset: observedLocations.add(lid)
+#            yield [getLocationFromLid(lid) for lid in itemset]
             
 
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
