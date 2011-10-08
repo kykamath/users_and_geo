@@ -33,7 +33,8 @@ def locationTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsers
             if d[k]==0: del d[k]
     
     for d in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
-        while len(d.keys())>=minimumTransactionLength: 
+#        while len(d.keys())>=minimumTransactionLength: 
+        while len(d.keys())!=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
         i+=1; print i
