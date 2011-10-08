@@ -53,7 +53,7 @@ def iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport,
             data = line.split('Value: ')[1][1:-1].split(',')
             if not lids: locationItemset, support = [getLocationFromLid(i.replace('_', ' ')) for i in data[0][1:-1].split()], int(data[1])
             else: locationItemset, support = [i.replace('_', ' ') for i in data[0][1:-1].split()], int(data[1])
-            if support>extraMinSupport and len(locationItemset)>=minLocationsInItemset: 
+            if support>=extraMinSupport and len(locationItemset)>=minLocationsInItemset: 
                 if not yieldSupport: yield locationItemset 
                 else: yield locationItemset, support
 
