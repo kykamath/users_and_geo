@@ -56,4 +56,4 @@ if __name__ == '__main__':
 #    plotDistribution(locationByUserDistributionFile)
 #    plotLocationGraphEdgeDistribution()
     
-    print len(list(userToLocationMapIterator(minLocations=100)))
+    print len(list(userToLocationMapIterator(minLocations=20)))

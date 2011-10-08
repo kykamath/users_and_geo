@@ -83,9 +83,9 @@ def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
     
     
 if __name__ == '__main__':
-    writeInputFileForFIMahout()
-#    calculateFrequentLocationItemsets()
-#    getMahoutOutput()
+#    writeInputFileForFIMahout()
+    calculateFrequentLocationItemsets()
+    getMahoutOutput()
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    analyzeFrequentLocations()
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
