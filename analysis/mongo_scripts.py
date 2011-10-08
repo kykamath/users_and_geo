@@ -8,7 +8,7 @@ sys.path.append('../')
 import dateutil.parser
 from settings import checkinsFile, venuesFile
 from mongo_settings import checkinsCollection, venuesCollection,\
-    locationsCollection, locationToLocationCollection
+    locationsCollection, locationToLocationCollection, geoDb
 from library.geo import getLidFromLocation, getLocationFromLid,\
     getHaversineDistance
 from analysis.mr_analysis import locationIterator, locationGraphIterator
@@ -52,6 +52,8 @@ def addLocationToLocationDistanceToDB():
             d = getHaversineDistance(d[0:2],d[2:])
             if d<=10: locationToLocationCollection.insert({'_id': data['e'], 'u': data['w'], 'd': d})
         except Exception as e: print i, 'Exception while processing:', data; i+=1
+        
+def locationToLocationIterator(): return locationToLocationCollection.find()
 
 if __name__ == '__main__':
 #    addCheckinsToDB()
