@@ -39,7 +39,7 @@ def locationIterator(minCheckins=10, fullRecord = False):
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
     return (data['location'] for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
 def userIterator(minCheckins=10): return (data['user'] for data in FileIO.iterateJsonFromFile(userDistributionFile) if data['count']>=minCheckins)
-def userToLocationMapIterator(minLocations): return (data['locations'] for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
+def userToLocationMapIterator(minLocations): return (data for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
 def locationGraphIterator(minimumWeight=0): return (d for d in FileIO.iterateJsonFromFile(locationGraph) if d['w']>=minimumWeight)
 def locationByUserDistributionIterator(minTimesUserCheckedIn, fullRecord=False): 
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
@@ -71,6 +71,6 @@ if __name__ == '__main__':
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
     i = 0
     for u in filteredUserIterator(10, 0):
-        print len(u.keys()), u
+        print u['user']
         i+=1
-#        if i>5: exit()
+        if i>5: exit()
