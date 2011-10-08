@@ -90,8 +90,8 @@ def iterateFrequentLocationClusters():
 def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport):
     observedLocations = set()
     def locationItemsetIsDisjoint(itemset):
-        for location in itemset: 
-            if location in observedLocations: return False
+#        for location in itemset: 
+#            if location in observedLocations: return False
         return True 
     for itemset, support in sorted(iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
         if locationItemsetIsDisjoint(itemset): 
