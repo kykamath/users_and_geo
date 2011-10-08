@@ -43,6 +43,7 @@ def locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUni
     for d in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         print i; i+=1
         for k in filter(lambda l: l not in observedLocations, d): observedLocations.add(k); yield k
+        if i==10: break;
 
 class Mahout():
     @staticmethod
@@ -60,8 +61,9 @@ class Mahout():
     @staticmethod
     def getMahoutOutput(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): GeneralMethods.runCommand('mahout seqdumper -s fi/output/frequentpatterns/part-r-00000 > %s'%locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport))
     @staticmethod
-    def iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, minLocationsInItemset=0, extraMinSupport=minSupport, yieldSupport=False, lids=False): 
-        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minUserLocations, minCaluclatedSupport)):
+    def iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCaluclatedSupport, minLocationsInItemset=0, extraMinSupport=minSupport, yieldSupport=False, lids=False): 
+#        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minUserLocations, minCaluclatedSupport)):
+        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCaluclatedSupport)):
             if line.startswith('Key:'): 
                 data = line.split('Value: ')[1][1:-1].split(',')
                 if not lids: locationItemset, support = [getLocationFromLid(i.replace('_', ' ')) for i in data[0][1:-1].split()], int(data[1])
@@ -108,6 +110,12 @@ def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSuppo
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
             yield [getLocationFromLid(lid) for lid in itemset]
+
+def iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minUserLocations, minCaluclatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
+        if locationItemsetIsDisjoint(itemset): 
+            for lid in itemset: observedLocations.add(lid)
+            yield [getLocationFromLid(lid) for lid in itemset]
             
 
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
@@ -127,10 +135,10 @@ if __name__ == '__main__':
 #    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #    Mahout.calculateFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #    Mahout.getMahoutOutput(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
+#    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
 #    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=10)
-#    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
+    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
 #    print len(list(locationsFromAllTransactionsIterator(minLocations=20)))
