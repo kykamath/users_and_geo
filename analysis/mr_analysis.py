@@ -44,15 +44,15 @@ def locationGraphIterator(minimumWeight=0): return (d for d in FileIO.iterateJso
 def locationByUserDistributionIterator(minTimesUserCheckedIn, fullRecord=False): 
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
     return (data['location'] for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
-def filteredUserIterator(minLocationsUserHasCheckedin, minUniqueUsersCheckedIn):
+def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     ''' Iterates user vectors who have checked in into at-least minUniqueUsersCheckedIn places.
     Dimensions are places that have been checked in by atleast minUniqueUsersCheckedIn users. 
     '''
-    validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedIn))
-    for userVector in userToLocationMapIterator(minUniqueUsersCheckedIn):
+    validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
+    for userVector in userToLocationMapIterator(minLocationsTheUserHasCheckedin):
         for k in userVector.keys()[:]:
             if k not in validLocationsSet: del userVector[k]
-        yield userVector
+        if userVector: yield userVector
 
 if __name__ == '__main__':
 #    MR Jobs
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
     i = 0
-    for u in filteredUserIterator(10, 10):
+    for u in filteredUserIterator(10, 0):
         print len(u.keys()), u
         i+=1
         if i > 5: exit()

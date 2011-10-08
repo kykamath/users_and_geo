@@ -15,7 +15,7 @@ from library.classes import GeneralMethods
 from library.geo import getLocationFromLid, getHaversineDistanceForLids
 from library.plotting import getDataDistribution
 
-from analysis.mr_analysis import userToLocationMapIterator
+from analysis.mr_analysis import filteredUserIterator
 from analysis import SpotsKML
 from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
     minimumTransactionLength, minSupport, userBasedSpotsKmlsFolder
@@ -23,14 +23,14 @@ from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
 userBasedSpotsUsingFIKmlsFolder=userBasedSpotsKmlsFolder+'fi/'
 maximumFIRadiusInMiles = 10 
 
-def locationTransactionsIterator(minLocations):
+def locationTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     i = 0
     def decrementDictionary(d):
         for k in d.keys()[:]:
             d[k]-=1
             if d[k]==0: del d[k]
     
-    for d in userToLocationMapIterator(minLocations=minLocations):
+    for d in filteredUserIterator(minLocationsUserHasCheckedin, minUniqueUsersCheckedIn):
         while len(d.keys())>=minimumTransactionLength: 
             yield d.keys()
             decrementDictionary(d)
@@ -49,7 +49,8 @@ def locationsFromAllTransactionsIterator(minLocations):
 
 class Mahout():
     @staticmethod
-    def writeInputFileForFIMahout(): [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile) for t in locationTransactionsIterator()]
+    def writeInputFileForFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): [FileIO.writeToFile(' '.join([i.replace(' ', '_') for i in t]), locationsFIMahoutInputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation))
+                                       for t in locationTransactionsIterator()]
     @staticmethod
     def calculateFrequentLocationItemsets():
         GeneralMethods.runCommand('rm -rf %s.*'%locationsFIMahoutInputFile)
@@ -125,13 +126,13 @@ def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCa
     
     
 if __name__ == '__main__':
-#    Mahout.writeInputFileForFIMahout()
+    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #    Mahout.calculateFrequentLocationItemsets()
 #    Mahout.getMahoutOutput(minUserLocations=20, minSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
 #    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations=20, minCaluclatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=10)
-    drawKMLsForLocationsFromAllTransactions(minUserLocations=20)
+#    drawKMLsForLocationsFromAllTransactions(minUserLocations=20)
     
 #    print len(list(locationsFromAllTransactionsIterator(minLocations=20)))
