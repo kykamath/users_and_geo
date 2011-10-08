@@ -8,10 +8,10 @@ sys.path.append('../')
 import dateutil.parser
 from settings import checkinsFile, venuesFile
 from mongo_settings import checkinsCollection, venuesCollection,\
-    locationsCollection
-from library.geo import getLidFromLocation, getLocationFromLid
-from library.file_io import FileIO
-from analysis.mr_analysis import locationIterator
+    locationsCollection, locationToLocationCollection
+from library.geo import getLidFromLocation, getLocationFromLid,\
+    getHaversineDistance
+from analysis.mr_analysis import locationIterator, locationGraphIterator
 
 def addCheckinsToDB():
     i = 0
@@ -44,8 +44,18 @@ def addLocationCheckinDistributionToDB():
             locationsCollection.insert({'_id': data['location'], 'l': getLocationFromLid(data['location']), 'tc': data['count'] })
         except Exception as e: print i, 'Exception while processing:', data; i+=1
 
+def addLocationToLocationDistanceToDB():
+    i = 0
+    for data in locationGraphIterator(minimumWeight=10):
+        try:
+            d = map(float, data['e'].split())
+            d = getHaversineDistance(d[0:2],d[2:])
+            if d<=10: locationToLocationCollection.insert({'_id': data['e'], 'u': data['w'], 'd': d})
+        except Exception as e: print i, 'Exception while processing:', data; i+=1
+
 if __name__ == '__main__':
 #    addCheckinsToDB()
 #    addVenuesToDB()
 ##    addUserCheckinDistributionToDB()
-    addLocationCheckinDistributionToDB()
+#    addLocationCheckinDistributionToDB()
+    addLocationToLocationDistanceToDB()

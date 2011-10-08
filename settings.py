@@ -27,3 +27,9 @@ locationsFIMahoutOutputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_out
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
 world_boundary = [[-90,-180], [90, 180]]
+
+#Experiments
+expMinimumCheckingsPerLocation = 10
+expLocationRadiusInMiles = 10
+expMinimumLocationsPerSpot = 10
+expMinSharedUsersBetweenLocations = 5

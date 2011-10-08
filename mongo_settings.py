@@ -54,3 +54,12 @@ venuesCollection.create_index([ ('l', GEO2D), ('lid', ASCENDING), ('tp', ASCENDI
 '''
 locationsCollection = geoDb.locations
 locationsCollection.create_index([ ('l', GEO2D), ('tc', ASCENDING)])
+
+'''
+{
+'_id': "lid1 lid2"
+'u': # of common users (>=10)
+'d': Haversine distance in miles (<=10)
+}
+'''
+locationToLocationCollection = geoDb.location_to_location
