@@ -103,9 +103,7 @@ def drawKMLsForUserBasedSpotsUsingFIClusters(minSupport=minSupport, minLocations
     SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationClusters(), userBasedSpotsUsingFIKmlsFolder+'fi_clusters_%s_%s.kml'%(minSupport, minLocations))
     
 def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs):
-    print len(list(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs)))
-    exit()
-    SpotsKML.drawKMLsForSpotsWithPoints(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs), userBasedSpotsUsingFIKmlsFolder+'fi_disjoint_%s_%s.kml'%(minUserLocations, minCaluclatedSupport))
+    SpotsKML.drawKMLsForSpotsWithPoints(iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSupport, **kwargs), 'fi_disjoint_%s_%s.kml'%(minUserLocations, minCaluclatedSupport))
     
 def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
     SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationsFromFIMahout(minSupport, minLocations), userBasedSpotsUsingFIKmlsFolder+'%s_%s.kml'%(minSupport, minLocations))
