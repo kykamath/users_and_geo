@@ -42,7 +42,7 @@ def locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUni
     i=0
     for d in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         print i; i+=1
-        for k in filter(lambda l: l not in observedLocations, d): observedLocations.add(k); yield k
+        for k in filter(lambda l: l not in observedLocations, d): observedLocations.add(k); yield getLocationFromLid(k)
         if i==10: break;
 
 class Mahout():
