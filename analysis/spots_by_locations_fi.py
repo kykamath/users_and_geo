@@ -140,7 +140,7 @@ if __name__ == '__main__':
 #    drawKMLsForUserBasedSpotsUsingFI(minSupport=10)
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCaluclatedSupport=minSupport)
 #    drawKMLsForUserBasedSpotsUsingFIClusters()
-    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=5)
+    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCaluclatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=5)
 #    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
 #    iterateSpotsByItemsetMerging(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport)
