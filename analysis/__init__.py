@@ -40,7 +40,8 @@ class SpotsKML:
         for l in  list(locationsIterator): kml.addLocationPoints(l)
         kml.write(outputKMLFile)
     @staticmethod
-    def drawKMLsForPoints(pointsIterator, outputKMLFile):
+    def drawKMLsForPoints(pointsIterator, outputKMLFile, color=None):
         kml = SpotsKML()
-        kml.addLocationPoints(pointsIterator)
+        if not color: color = GeneralMethods.getRandomColor()
+        kml.addLocationPoints(pointsIterator, color=color)
         kml.write(outputKMLFile)

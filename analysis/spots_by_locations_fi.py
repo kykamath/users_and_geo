@@ -108,7 +108,7 @@ def iterateDisjointFrequentLocationItemsets(minUserLocations, minCaluclatedSuppo
             
 
 def drawKMLsForLocationsFromAllTransactions(minUserLocations):
-    SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minUserLocations), 'all_locations_%s.kml'%(minUserLocations))
+    SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minUserLocations), 'all_locations_%s.kml'%(minUserLocations), color='#E38FF7')
 
 #def drawKMLsForUserBasedSpotsUsingFIClusters(minSupport=minSupport, minLocations=6):
 #    SpotsKML.drawKMLsForSpotsWithPoints(iterateFrequentLocationClusters(), userBasedSpotsUsingFIKmlsFolder+'fi_clusters_%s_%s.kml'%(minSupport, minLocations))
