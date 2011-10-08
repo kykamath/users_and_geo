@@ -18,5 +18,5 @@ def spotsIterator():
     graph.add_edges_from((getLocationPairs(edge['_id']) for edge in locationToLocationIterator()))
     return (spot for spot in nx.connected_components(graph))
 
-SpotsKML.drawKMLsForSpots(spotsIterator, 'user_based_spots.kml')
+SpotsKML.drawKMLsForSpots(spotsIterator(), 'user_based_spots.kml')
 
