@@ -21,6 +21,12 @@ class SpotsKML:
             pnt = self.kml.newpoint(coords=[point])
             pnt.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png'
             pnt.iconstyle.color = 'ff'+color[1:]
+    def addLocationPointsWithTitles(self, points, color=None): 
+        if not color: color=GeneralMethods.getRandomColor()
+        for point, title in (list(reversed(point)), title for point, title in points):
+            pnt = self.kml.newpoint(name=title, coords=[point])
+            pnt.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png'
+            pnt.iconstyle.color = 'ff'+color[1:]
     def addLine(self, points, description=None):
         from simplekml import LineStyle
         points = [list(reversed(getLocationFromLid(point))) for point in points]
@@ -40,8 +46,9 @@ class SpotsKML:
         for l in  list(locationsIterator): kml.addLocationPoints(l)
         kml.write(outputKMLFile)
     @staticmethod
-    def drawKMLsForPoints(pointsIterator, outputKMLFile, color=None):
+    def drawKMLsForPoints(pointsIterator, outputKMLFile, color=None, title=False):
         kml = SpotsKML()
         if not color: color = GeneralMethods.getRandomColor()
-        kml.addLocationPoints(pointsIterator, color=color)
+        if title: kml.addLocationPointsWithTitles(pointsIterator, color=color)
+        else: kml.addLocationPoints(pointsIterator, color=color)
         kml.write(outputKMLFile)
