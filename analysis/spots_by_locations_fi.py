@@ -113,7 +113,7 @@ def getClusterForKML(cluster):
             title = venuesCollection.find_one({'lid':lid})
             if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
             else: clusterToYield.append((getLocationFromLid(lid), ''))
-    yield clusterToYield 
+    return clusterToYield 
 
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
