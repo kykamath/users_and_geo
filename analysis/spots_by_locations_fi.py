@@ -122,7 +122,7 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
                                                           key=itemgetter(1), reverse=True):
             if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
             else: itemsetsPostponed.append((itemset, len(itemset)))
-#        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): yield itemset
+        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): yield itemset
     for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): yield [getLocationFromLid(lid) for lid in cluster]
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
