@@ -141,10 +141,10 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
         else: locationsPostponed+=itemset
     
     total = len(locationsPostponed)
-    i=1
+    j=1
     for location in locationsPostponed: 
         closestItem, currentDistance = None, ()
-        print total, i;i+=1
+        print total, j;j+=1
         for i in observedClusters:
             d = getHaversineDistanceForLids(i, location)
             if currentDistance>d: 
