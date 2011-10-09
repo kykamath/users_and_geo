@@ -120,13 +120,9 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
         i=1
         for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True),
                                                           key=itemgetter(1), reverse=True):
-            if len(itemset)>=initialNumberofLocationsInSpot: 
-                print i; i+=1
-                yield itemset
+            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
             else: itemsetsPostponed.append((itemset, len(itemset)))
-        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): 
-            print i; i+=1
-            yield itemset
+#        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): yield itemset
     for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): yield [getLocationFromLid(lid) for lid in cluster]
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
