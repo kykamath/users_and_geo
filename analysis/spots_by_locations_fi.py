@@ -106,59 +106,59 @@ def iterateFrequentLocationClusters():
             if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
     for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
     
-#def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
-#    observedLocations = set()
-#    pointsForFuture = []
-#    def locationItemsetIsDisjoint(itemset):
-#        for location in itemset: 
-#            if location in observedLocations: return False
-#        return True 
-#    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
-#        if locationItemsetIsDisjoint(itemset): 
-#            for lid in itemset: observedLocations.add(lid)
-#            yield [getLocationFromLid(lid) for lid in itemset]
-
-
-def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
-    observedClusters, observedLocations = {}, set()
-    def splitItemSets():
-        validItemSets, locationsPostponed = [], []
-        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
-                                                          key=itemgetter(1), reverse=True):
-            if len(itemset)>=initialNumberofLocationsInSpot: validItemSets.append(itemset)
-            else: 
-#                if len(itemset)>2: 
-                locationsPostponed+=itemset
-        return validItemSets, locationsPostponed
-    
+def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
+    observedLocations = set()
+    pointsForFuture = []
     def locationItemsetIsDisjoint(itemset):
         for location in itemset: 
             if location in observedLocations: return False
         return True 
-    
-    validItemSets, locationsPostponed = splitItemSets()
-    for itemset in validItemSets:
+    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
-            locations = [getLocationFromLid(lid) for lid in itemset]
-            observedClusters[getLidFromLocation(getCenterOfMass(locations))]=locations
-        else: locationsPostponed+=itemset
+            yield [getLocationFromLid(lid) for lid in itemset]
 
-    locationsPostponed = set(locationsPostponed).difference(set(observedLocations))    
-    total = len(locationsPostponed)
-    j=1
-    for location in locationsPostponed: 
-        closestItem, currentDistance = None, ()
-        print total, j;j+=1
-        for i in observedClusters:
-            try:
-                d = getHaversineDistanceForLids(i, location)
-            except Exception as e: print i, location
-            if currentDistance>d: 
-                closestItem = i
-                currentDistance=d
-        if currentDistance<=50: observedClusters[closestItem].append(getLocationFromLid(location))
-    return observedClusters.itervalues()
+
+#def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
+#    observedClusters, observedLocations = {}, set()
+#    def splitItemSets():
+#        validItemSets, locationsPostponed = [], []
+#        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
+#                                                          key=itemgetter(1), reverse=True):
+#            if len(itemset)>=initialNumberofLocationsInSpot: validItemSets.append(itemset)
+#            else: 
+##                if len(itemset)>2: 
+#                locationsPostponed+=itemset
+#        return validItemSets, locationsPostponed
+#    
+#    def locationItemsetIsDisjoint(itemset):
+#        for location in itemset: 
+#            if location in observedLocations: return False
+#        return True 
+#    
+#    validItemSets, locationsPostponed = splitItemSets()
+#    for itemset in validItemSets:
+#        if locationItemsetIsDisjoint(itemset): 
+#            for lid in itemset: observedLocations.add(lid)
+#            locations = [getLocationFromLid(lid) for lid in itemset]
+#            observedClusters[getLidFromLocation(getCenterOfMass(locations))]=locations
+#        else: locationsPostponed+=itemset
+#
+#    locationsPostponed = set(locationsPostponed).difference(set(observedLocations))    
+#    total = len(locationsPostponed)
+#    j=1
+#    for location in locationsPostponed: 
+#        closestItem, currentDistance = None, ()
+#        print total, j;j+=1
+#        for i in observedClusters:
+#            try:
+#                d = getHaversineDistanceForLids(i, location)
+#            except Exception as e: print i, location
+#            if currentDistance>d: 
+#                closestItem = i
+#                currentDistance=d
+#        if currentDistance<=50: observedClusters[closestItem].append(getLocationFromLid(location))
+#    return observedClusters.itervalues()
 
 def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
     def itemsetsIterator():
