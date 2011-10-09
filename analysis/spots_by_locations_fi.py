@@ -140,7 +140,7 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
             observedClusters[getLidFromLocation(getCenterOfMass(locations))]=locations
         else: locationsPostponed+=itemset
 
-    locationsPostponed = set(locationsPostponed)    
+    locationsPostponed = set(locationsPostponed).difference(set(observedLocations))    
     total = len(locationsPostponed)
     j=1
     for location in locationsPostponed: 
@@ -154,7 +154,7 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
                 closestItem = i
                 currentDistance=d
         observedClusters[closestItem].append(getLocationFromLid(location))
-    return observedClusters.iteritems()
+    return observedClusters.itervalues()
 
 def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot):
     def itemsetsIterator():
