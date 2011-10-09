@@ -115,28 +115,19 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
             yield [getLocationFromLid(lid) for lid in itemset]
 
 def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
-#    itemsetsIterator = (itemset[0] for itemset in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
-#                                                          key=itemgetter(1), reverse=True))
-
     def itemsetsIterator():
         itemsetsPostponed = []
+        i=1
         for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport),
                                                           key=itemgetter(1), reverse=True):
-            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
+            if len(itemset)>=initialNumberofLocationsInSpot: 
+                print i; i+=1
+                yield itemset
             else: itemsetsPostponed.append((itemset, len(itemset)))
-        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): yield itemset
-                
-
-#    def completeFIMahoutIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot): 
-#        for line in FileIO.iterateLinesFromFile(locationsFIMahoutOutputFile%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport)):
-#            if line.startswith('Key:'): 
-#                data = line.split('Value: ')[1][1:-1].split(',')
-#                itemset, support =  [getLocationFromLid(i.replace('_', ' ')) for i in data[0][1:-1].split()], int(data[1])
-#    
-#                yield itemset, support
-
-    for i in itemsetsIterator(): print i
-#    for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): yield [getLocationFromLid(lid) for lid in cluster]
+        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): 
+            print i; i+=1
+            yield itemset
+    for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): yield [getLocationFromLid(lid) for lid in cluster]
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), 'all_locations_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), color='#E38FF7')
