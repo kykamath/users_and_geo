@@ -20,7 +20,7 @@ userToLocationMapFile = analysisFolder+'userToLocationMapFile'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
 #Analysis - Frequent location itemsets
 minSupport = 3
-initialNumberofLocationsInSpot = 7 # The spot discovery algorithms use locations itemsets greater than this length to discover spots. 
+initialNumberofLocationsInSpot = 10 # The spot discovery algorithms use locations itemsets greater than this length to discover spots. 
 locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input_%s_%s'
 locationsFIMahoutOutputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_output_min_user_locations_%s_%s_min_support_%s'
 
