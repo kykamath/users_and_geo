@@ -23,7 +23,7 @@ class SpotsKML:
             pnt.iconstyle.color = 'ff'+color[1:]
     def addLocationPointsWithTitles(self, points, color=None): 
         if not color: color=GeneralMethods.getRandomColor()
-        for point, title in (list(reversed(point)), title for point, title in points):
+        for point, title in ((list(reversed(point)), title) for point, title in points):
             pnt = self.kml.newpoint(name=title, coords=[point])
             pnt.iconstyle.icon.href = 'http://maps.google.com/mapfiles/kml/shapes/shaded_dot.png'
             pnt.iconstyle.color = 'ff'+color[1:]
