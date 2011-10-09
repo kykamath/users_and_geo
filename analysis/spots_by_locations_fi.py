@@ -125,7 +125,8 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
                                                           key=itemgetter(1), reverse=True):
             if len(itemset)>=initialNumberofLocationsInSpot: validItemSets.append(itemset)
             else: 
-                if len(itemset)>2: locationsPostponed+=itemset
+#                if len(itemset)>2: 
+                locationsPostponed+=itemset
         return validItemSets, locationsPostponed
     
     def locationItemsetIsDisjoint(itemset):
