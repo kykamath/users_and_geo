@@ -119,19 +119,20 @@ def iterateFrequentLocationClusters():
 
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot):
     locationsPostponed, observedClusters = [], {}
-    def itemsetsIterator():
-        i=1
+    def getValidItemSets():
+        validItemSets = []
         for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True),
                                                           key=itemgetter(1), reverse=True):
-            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
+            if len(itemset)>=initialNumberofLocationsInSpot: validItemSets.append(itemset)
             else: locationsPostponed+=itemset
-            
+        return validItemSets
+    
     observedLocations = set()
     def locationItemsetIsDisjoint(itemset):
         for location in itemset: 
             if location in observedLocations: return False
         return True 
-    for itemset in itemsetsIterator():
+    for itemset in getValidItemSets():
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
             locations = [getLocationFromLid(lid) for lid in itemset]
