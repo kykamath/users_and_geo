@@ -154,7 +154,7 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
             if currentDistance>d: 
                 closestItem = i
                 currentDistance=d
-        observedClusters[closestItem].append(getLocationFromLid(location))
+        if currentDistance<=50: observedClusters[closestItem].append(getLocationFromLid(location))
     return observedClusters.itervalues()
 
 def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot):
