@@ -139,14 +139,17 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
             locations = [getLocationFromLid(lid) for lid in itemset]
             observedClusters[getLidFromLocation(getCenterOfMass(locations))]=locations
         else: locationsPostponed+=itemset
-    
+
+    locationsPostponed = set(locationsPostponed)    
     total = len(locationsPostponed)
     j=1
     for location in locationsPostponed: 
         closestItem, currentDistance = None, ()
         print total, j;j+=1
         for i in observedClusters:
-            d = getHaversineDistanceForLids(i, location)
+            try:
+                d = getHaversineDistanceForLids(i, location)
+            except Exception as e: print i, location
             if currentDistance>d: 
                 closestItem = i
                 currentDistance=d
