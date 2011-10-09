@@ -159,11 +159,11 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
         if currentDistance<=50: observedClusters[closestItem].append(getLocationFromLid(location))
     return observedClusters.itervalues()
 
-def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot):
+def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
     def itemsetsIterator():
         itemsetsPostponed = []
         i=1
-        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True),
+        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs),
                                                           key=itemgetter(1), reverse=True):
             if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
             else: itemsetsPostponed.append((itemset, len(itemset)))
