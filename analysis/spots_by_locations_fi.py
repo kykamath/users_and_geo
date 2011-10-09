@@ -174,7 +174,7 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
         cluster = [getLocationFromLid(lid) for lid in cluster]
         if len(cluster)>3: 
             for c in cluster:
-                title = venuesCollection.find_one({'lid': c})
+                title = venuesCollection.find_one({'lid': getLidFromLocation(c)})
                 print c, title
 #            yield cluster 
             
