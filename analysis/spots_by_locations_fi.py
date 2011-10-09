@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 
 from library.file_io import FileIO
 from library.classes import GeneralMethods
-from library.geo import getLocationFromLid, getHaversineDistanceForLids
+from library.geo import getLocationFromLid, getHaversineDistanceForLids,\
+    getLidFromLocation, getCenterOfMass
 from library.plotting import getDataDistribution
 from library.clustering import getItemClustersFromItemsets
 
@@ -103,16 +104,52 @@ def iterateFrequentLocationClusters():
             if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
     for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
     
-def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
+#def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
+#    observedLocations = set()
+#    pointsForFuture = []
+#    def locationItemsetIsDisjoint(itemset):
+#        for location in itemset: 
+#            if location in observedLocations: return False
+#        return True 
+#    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
+#        if locationItemsetIsDisjoint(itemset): 
+#            for lid in itemset: observedLocations.add(lid)
+#            yield [getLocationFromLid(lid) for lid in itemset]
+
+
+def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot):
+    locationsPostponed, observedClusters = [], {}
+    def itemsetsIterator():
+        i=1
+        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True),
+                                                          key=itemgetter(1), reverse=True):
+            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
+            else: locationsPostponed+=itemset
+            
     observedLocations = set()
     def locationItemsetIsDisjoint(itemset):
         for location in itemset: 
             if location in observedLocations: return False
         return True 
-    for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
+    for itemset in itemsetsIterator():
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
-            yield [getLocationFromLid(lid) for lid in itemset]
+            locations = [getLocationFromLid(lid) for lid in itemset]
+            observedClusters[getLidFromLocation(getCenterOfMass(locations))]=locations
+        else: locationsPostponed+=itemset
+    
+    total = len(locationsPostponed)
+    i=1
+    for location in locationsPostponed: 
+        closestItem, currentDistance = None, ()
+        print total, i;i+=1
+        for i in observedClusters:
+            d = getHaversineDistanceForLids(i, location)
+            if currentDistance>d: 
+                closestItem = i
+                currentDistance=d
+        observedClusters[closestItem].append(getLocationFromLid(location))
+    return observedClusters.iteritems()
 
 def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot):
     def itemsetsIterator():
@@ -150,5 +187,5 @@ if __name__ == '__main__':
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
 
 #    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, extraMinSupport=minSupport, minLocationsInItemset=10)
+    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot) #minLocationsInItemset=10)
 #    drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot)
