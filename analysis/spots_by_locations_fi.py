@@ -170,16 +170,14 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
             else: itemsetsPostponed.append((itemset, len(itemset)))
 #        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): 
 #            if l>1: yield itemset
-    i=0
     for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): 
-        cluster = [getLocationFromLid(lid) for lid in cluster]
+        clusterToYield = []
         if len(cluster)>3: 
-            for c in cluster:
-                title = venuesCollection.find_one({'lid': getLidFromLocation(c)})
-                if title!=None: print getLidFromLocation(c), title['n']
-                else: i+=1
-    print i
-#            yield cluster 
+            for lid in cluster:
+                title = venuesCollection.find_one({'lid': getLidFromLocation(lid)})
+                if title!=None: clusterToYield.append((getLidFromLocation(lid), title['n']))
+                else: clusterToYield.append((getLidFromLocation(lid), ''))
+        yield clusterToYield
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), 'all_locations_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), color='#E38FF7')

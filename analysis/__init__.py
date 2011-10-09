@@ -41,14 +41,16 @@ class SpotsKML:
         for locations in locationsIterator: kml.addLidsWithHull(locations)
         kml.write(outputKMLFile)
     @staticmethod
-    def drawKMLsForSpotsWithPoints(locationsIterator, outputKMLFile):
+    def drawKMLsForSpotsWithPoints(locationsIterator, outputKMLFile, title=False):
         kml = SpotsKML()
-        for l in  list(locationsIterator): kml.addLocationPoints(l)
+        if not title:
+            for l in  list(locationsIterator): kml.addLocationPoints(l)
+        else: 
+            for l in  list(locationsIterator): kml.addLocationPointsWithTitles(l)
         kml.write(outputKMLFile)
     @staticmethod
-    def drawKMLsForPoints(pointsIterator, outputKMLFile, color=None, title=False):
+    def drawKMLsForPoints(pointsIterator, outputKMLFile, color=None):
         kml = SpotsKML()
         if not color: color = GeneralMethods.getRandomColor()
-        if title: kml.addLocationPointsWithTitles(pointsIterator, color=color)
-        else: kml.addLocationPoints(pointsIterator, color=color)
+        kml.addLocationPoints(pointsIterator, color=color)
         kml.write(outputKMLFile)
