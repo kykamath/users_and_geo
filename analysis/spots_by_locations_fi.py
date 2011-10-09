@@ -202,7 +202,9 @@ def drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin, min
                                         title=True)
 
 def drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
-    SpotsKML.drawKMLsForSpotsWithPoints(iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs), 'fi_disjoint_%s_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport))
+    SpotsKML.drawKMLsForSpotsWithPoints(iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs), 
+                                        'fi_disjoint_%s_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport),
+                                        title=True)
 
     
 #def drawKMLsForUserBasedSpotsUsingFI(minSupport=minSupport, minLocations=6):
@@ -216,5 +218,5 @@ if __name__ == '__main__':
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
 
 #    drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-#    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot) #minLocationsInItemset=10)
-    drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=3)
+    drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot) #minLocationsInItemset=10)
+#    drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=3)
