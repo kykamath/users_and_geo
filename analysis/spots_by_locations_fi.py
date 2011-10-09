@@ -174,7 +174,8 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
         cluster = [getLocationFromLid(lid) for lid in cluster]
         if len(cluster)>3: 
             for c in cluster:
-                print c, venuesCollection.find_one({'lid': c})['n']
+                title = venuesCollection.find_one({'lid': c})
+                print c, title
 #            yield cluster 
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
