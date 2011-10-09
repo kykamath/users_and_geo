@@ -105,7 +105,16 @@ def iterateFrequentLocationClusters():
         for l1, l2 in combinations(locations,2): 
             if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
     for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
-    
+
+def getClusterForKML(cluster):
+    clusterToYield = []
+    if len(cluster)>3: 
+        for lid in cluster:
+            title = venuesCollection.find_one({'lid':lid})
+            if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
+            else: clusterToYield.append((getLocationFromLid(lid), ''))
+    yield clusterToYield 
+
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
     pointsForFuture = []
@@ -116,7 +125,8 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
     for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
-            yield [getLocationFromLid(lid) for lid in itemset]
+            yield getClusterForKML(itemset)
+#            yield [getLocationFromLid(lid) for lid in itemset]
 
 
 #def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
@@ -171,13 +181,13 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
 #        for itemset, l in sorted(itemsetsPostponed, key=itemgetter(1), reverse=True): 
 #            if l>1: yield itemset
     for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): 
-        clusterToYield = []
-        if len(cluster)>3: 
-            for lid in cluster:
-                title = venuesCollection.find_one({'lid':lid})
-                if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
-                else: clusterToYield.append((getLocationFromLid(lid), ''))
-        yield clusterToYield
+#        clusterToYield = []
+#        if len(cluster)>3: 
+#            for lid in cluster:
+#                title = venuesCollection.find_one({'lid':lid})
+#                if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
+#                else: clusterToYield.append((getLocationFromLid(lid), ''))
+        yield getClusterForKML(cluster)
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), 'all_locations_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), color='#E38FF7')
