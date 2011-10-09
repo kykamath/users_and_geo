@@ -124,7 +124,8 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
         for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True),
                                                           key=itemgetter(1), reverse=True):
             if len(itemset)>=initialNumberofLocationsInSpot: validItemSets.append(itemset)
-            else: locationsPostponed+=itemset
+            else: 
+                if len(itemset)>2: locationsPostponed+=itemset
         return validItemSets, locationsPostponed
     
     def locationItemsetIsDisjoint(itemset):
