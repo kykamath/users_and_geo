@@ -126,8 +126,9 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
 #            yield getClusterForKML(itemset)
-            print [getLocationFromLid(lid) for lid in itemset]
-            yield [getLocationFromLid(lid) for lid in itemset]
+            if itemset:
+                print [getLocationFromLid(lid) for lid in itemset]
+                yield [getLocationFromLid(lid) for lid in itemset]
 
 
 #def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
