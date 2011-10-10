@@ -232,6 +232,7 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
 #                if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
 #                else: clusterToYield.append((getLocationFromLid(lid), ''))
 #        yield getClusterForKML(cluster)
+        print [getLocationFromLid(lid) for lid in cluster]
         yield [getLocationFromLid(lid) for lid in cluster]
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
