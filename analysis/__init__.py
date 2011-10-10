@@ -41,6 +41,11 @@ class SpotsKML:
         for locations in locationsIterator: kml.addLidsWithHull(locations)
         kml.write(outputKMLFile)
     @staticmethod
+    def drawKMLsForPointsAsHulls(locationsIterator, outputKMLFile):
+        kml = SpotsKML()
+        for locations in locationsIterator: kml.addLocationPointsWithHull(locations)
+        kml.write(outputKMLFile)
+    @staticmethod
     def drawKMLsForSpotsWithPoints(locationsIterator, outputKMLFile, title=False):
         kml = SpotsKML()
         if not title:
