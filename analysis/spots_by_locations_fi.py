@@ -125,8 +125,8 @@ def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, min
     for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, yieldSupport=True, lids=True, **kwargs), key=itemgetter(1), reverse=True):
         if locationItemsetIsDisjoint(itemset): 
             for lid in itemset: observedLocations.add(lid)
-            yield getClusterForKML(itemset)
-#            yield [getLocationFromLid(lid) for lid in itemset]
+#            yield getClusterForKML(itemset)
+            yield [getLocationFromLid(lid) for lid in itemset]
 
 
 #def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
@@ -231,9 +231,7 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
 #                title = venuesCollection.find_one({'lid':lid})
 #                if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
 #                else: clusterToYield.append((getLocationFromLid(lid), ''))
-#        yield getClusterForKML(cluster)
-        print [getLocationFromLid(lid) for lid in cluster]
-        yield [getLocationFromLid(lid) for lid in cluster]
+        yield getClusterForKML(cluster)
             
 def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), 'all_locations_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), color='#E38FF7')
