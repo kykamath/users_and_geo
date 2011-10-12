@@ -5,7 +5,9 @@ Created on Oct 4, 2011
 '''
 checkinsFile = '/mnt/chevron/kykamath/data/geo/checkin_data.txt'
 venuesFile = '/mnt/chevron/kykamath/data/geo/venues.txt'
+validLocationAndUserFile = '/mnt/chevron/kykamath/data/geo/validLocationAndUserFile.txt'
 checkinsHdfsPath = 'hdfs:///user/kykamath/geo/checkin_data.txt'
+validLocationAndUserHdfsPath = 'hdfs:///user/kykamath/geo/validLocationAndUser.txt'
 
 #Analysis
 analysisFolder = '/mnt/chevron/kykamath/data/geo/analysis/'

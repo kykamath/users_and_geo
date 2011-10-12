@@ -4,11 +4,13 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
+from library.classes import GeneralMethods
 sys.path.append('../')
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile,\
-    locationToUserAndTimeMapFile
+    locationToUserAndTimeMapFile, validLocationAndUserFile,\
+    validLocationAndUserHdfsPath
 from library.file_io import FileIO
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
@@ -73,6 +75,13 @@ def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, mi
                 if user not in validUserSet: del locationVector['users'][str(user)]
                 else: locationVector['users'][user]=locationVector['users'][str(user)]; del locationVector['users'][str(user)]
             if locationVector['users']: yield locationVector
+
+def writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+    for locationVector in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+        for user in locationVector['users'].keys()[:]: locationVector['users'][str(user)]=locationVector['users'][user]; del locationVector['users'][user]
+        FileIO.writeToFileAsJson(locationVector, validLocationAndUserFile)
+    GeneralMethods.runCommand('hadoop -fs put %s %s'%(validLocationAndUserFile, validLocationAndUserHdfsPath))
+        
 if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
@@ -90,4 +99,7 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
+#    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
+
+
+    pass
