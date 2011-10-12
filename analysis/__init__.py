@@ -3,6 +3,8 @@ from library.geo import geographicConvexHull, getLidFromLocation
 from library.geo import getLocationFromLid
 from library.file_io import FileIO
 
+from collections import defaultdict
+
 class SpotsKML:
     def __init__(self):
         import simplekml
@@ -71,5 +73,6 @@ class SpotsFile():
         locationToSpotIdMap = {}
         for spot in FileIO.iterateJsonFromFile(spotsFile):
             for location, _ in spot['spot']: locationToSpotIdMap[getLidFromLocation(location)] = spot['id']
-        for u in userToLocationVector: print u
+        for userVector in userToLocationVector: 
+            spotDistribution = defaultdict(int)
         
