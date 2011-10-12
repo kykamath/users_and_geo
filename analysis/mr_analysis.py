@@ -74,4 +74,5 @@ if __name__ == '__main__':
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
 #    i = 0
-#    print len(list(filteredUserIterator(10, 10)))
+    for i in filteredUserIterator(10, 10, True):
+        print i
