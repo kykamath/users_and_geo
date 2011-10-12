@@ -18,9 +18,8 @@ locationDistributionFile = analysisFolder+'locationDistribution'
 locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
 userToLocationMapFile = analysisFolder+'userToLocationMapFile'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
+
 #Analysis - Frequent location itemsets
-minSupport = 3
-initialNumberofLocationsInSpot = 5 # The spot discovery algorithms use locations itemsets greater than this length to discover spots. 
 locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input_%s_%s'
 locationsFIMahoutOutputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_output_min_user_locations_%s_%s_min_support_%s'
 
@@ -29,7 +28,9 @@ us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
 world_boundary = [[-90,-180], [90, 180]]
 
 #Experiments
-expMinimumCheckingsPerLocation = 10
-expLocationRadiusInMiles = 10
-expMinimumLocationsPerSpot = 3
-expMinSharedUsersBetweenLocations = 5
+minLocationsTheUserHasCheckedin = 20
+minUniqueUsersCheckedInTheLocation = 10
+initialNumberofLocationsInSpot = 5 # The spot discovery algorithms use locations itemsets greater than this length to discover spots. 
+minSupport = 3
+minimumLocationsPerSpot = 4
+locationRadiusInMiles = 10
