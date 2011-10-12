@@ -83,6 +83,5 @@ class SpotsFile():
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
                 userDistributionInSpots[spotId].append(userId)
-                print 'comes here'
         for spotId, users in userDistributionInSpots.iteritems(): print spotId, users
             
