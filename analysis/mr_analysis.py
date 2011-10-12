@@ -4,10 +4,12 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
+from analysis.mr_location_by_user_and_time_map import MRLocationToUserAndTimeMap
 sys.path.append('../')
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
-    userToLocationMapFile, userToLocationAndTimeMapFile
+    userToLocationMapFile, userToLocationAndTimeMapFile,\
+    locationToUserAndTimeMapFile
 from library.file_io import FileIO
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
@@ -70,6 +72,7 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationGraphByUsers, locationGraph)
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
+    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)

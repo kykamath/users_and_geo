@@ -18,6 +18,7 @@ locationDistributionFile = analysisFolder+'locationDistribution'
 locationByUserDistributionFile = analysisFolder+'locationByUserDistribution'
 userToLocationMapFile = analysisFolder+'userToLocationMapFile'
 userToLocationAndTimeMapFile = analysisFolder+'userToLocationAndTimeMap'
+locationToUserAndTimeMapFile = analysisFolder+'locationToUserAndTimeMap'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
 
 #Analysis - Frequent location itemsets
