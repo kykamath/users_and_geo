@@ -75,5 +75,6 @@ class SpotsFile():
             for location, _ in spot['spot']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
         for userVector in userToLocationVector: 
             spotDistribution = defaultdict(int)
-            for lid in userVector: spotDistribution[lidToSpotIdMap[lid]]+=1
+            for lid in userVector: 
+                if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
             print spotDistribution
