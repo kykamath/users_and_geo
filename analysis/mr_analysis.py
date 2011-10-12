@@ -40,19 +40,19 @@ def locationIterator(minCheckins=10, fullRecord = False):
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
     return (data['location'] for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
 def userIterator(minCheckins=10): return (data['user'] for data in FileIO.iterateJsonFromFile(userDistributionFile) if data['count']>=minCheckins)
-def userToLocationMapIterator(minLocations, fullRecord = False): 
+def userToLocationMapIterator(minLocations, fullRecord): 
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
     return (data['locations'] for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
 def locationGraphIterator(minimumWeight=0): return (d for d in FileIO.iterateJsonFromFile(locationGraph) if d['w']>=minimumWeight)
 def locationByUserDistributionIterator(minTimesUserCheckedIn, fullRecord=False): 
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
     return (data['location'] for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minTimesUserCheckedIn)
-def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = False):
     ''' Iterates user vectors who have checked in into at-least minUniqueUsersCheckedIn places.
     Dimensions are places that have been checked in by atleast minUniqueUsersCheckedIn users. 
     '''
     validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
-    for userVector in userToLocationMapIterator(minLocationsTheUserHasCheckedin):
+    for userVector in userToLocationMapIterator(minLocationsTheUserHasCheckedin, fullRecord):
         for k in userVector.keys()[:]:
             if k not in validLocationsSet: del userVector[k]
         if userVector: yield userVector
