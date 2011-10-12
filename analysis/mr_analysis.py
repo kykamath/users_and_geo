@@ -41,7 +41,6 @@ def locationIterator(minCheckins=10, fullRecord = False):
     return (data['location'] for data in FileIO.iterateJsonFromFile(locationDistributionFile) if data['count']>=minCheckins)
 def userIterator(minCheckins=10): return (data['user'] for data in FileIO.iterateJsonFromFile(userDistributionFile) if data['count']>=minCheckins)
 def userToLocationMapIterator(minLocations, fullRecord): 
-    print fullRecord
     if fullRecord: return (data for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
     return (data['locations'] for data in FileIO.iterateJsonFromFile(userToLocationMapFile) if len(data['locations'])>minLocations)
 def locationGraphIterator(minimumWeight=0): return (d for d in FileIO.iterateJsonFromFile(locationGraph) if d['w']>=minimumWeight)
@@ -54,9 +53,14 @@ def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedI
     '''
     validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
     for userVector in userToLocationMapIterator(minLocationsTheUserHasCheckedin, fullRecord):
-        for k in userVector.keys()[:]:
-            if k not in validLocationsSet: del userVector[k]
-        if userVector: yield userVector
+        if not fullRecord:
+            for k in userVector.keys()[:]:
+                if k not in validLocationsSet: del userVector[k]
+            if userVector: yield userVector
+        else:
+            for k in userVector['location'].keys()[:]:
+                if k not in validLocationsSet: del userVector['location'][k]
+            if userVector['location']: yield userVector
 
 if __name__ == '__main__':
 #    MR Jobs
