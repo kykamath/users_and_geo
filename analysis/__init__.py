@@ -80,4 +80,4 @@ class SpotsFile():
                 if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1]
-                print spotId
+                print spotId[1]
