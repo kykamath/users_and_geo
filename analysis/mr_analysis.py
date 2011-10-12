@@ -72,7 +72,7 @@ def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, mi
             for user in locationVector['users'].keys()[:]: user, type(user)
 ##                if user not in validUserSet: del locationVector['users'][user]
 ##            if locationVector['users']: 
-#            yield locationVector
+            yield locationVector
 if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
