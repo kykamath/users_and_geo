@@ -63,6 +63,10 @@ def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedI
             for k in userVector['locations'].keys()[:]:
                 if k not in validLocationsSet: del userVector['locations'][k]
             if userVector['locations']: yield userVector
+def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+    validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
+    validUserSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
+    print len(validLocationsSet), len(validUserSet)
 
 if __name__ == '__main__':
 #    MR Jobs
@@ -72,7 +76,7 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationGraphByUsers, locationGraph)
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
-    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
+#    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)
@@ -81,5 +85,5 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-#    i = 0
+    filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     pass
