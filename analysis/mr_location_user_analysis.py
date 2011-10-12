@@ -3,6 +3,8 @@ Created on Oct 12, 2011
 
 @author: kykamath
 '''
+import sys
+sys.path.append('../')
 from settings import validLocationAndUserHdfsPath, locationUserDayBlockMadFile
 from library.file_io import FileIO
 from analysis.mr_location_user_dayblock_mad import MRLocationUserDayBlockMad

@@ -100,6 +100,7 @@ if __name__ == '__main__':
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
 #    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
-
+    
+    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 
     pass
