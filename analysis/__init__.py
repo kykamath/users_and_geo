@@ -4,6 +4,7 @@ from library.geo import getLocationFromLid
 from library.file_io import FileIO
 
 from collections import defaultdict
+from operator import itemgetter
 
 class SpotsKML:
     def __init__(self):
@@ -77,4 +78,4 @@ class SpotsFile():
             spotDistribution = defaultdict(int)
             for lid in userVector: 
                 if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
-            print spotDistribution
+            print sorted(spotDistribution.iteritems(), key=itemgetter(1), reverse=True)
