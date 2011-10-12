@@ -79,7 +79,6 @@ class SpotsFile():
             spotDistribution = defaultdict(int)
             for lid in userVector: 
                 if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
-            print spotDistribution
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
                 userDistributionInSpots[spotId].append(userId)
