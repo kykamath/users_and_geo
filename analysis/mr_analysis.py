@@ -4,7 +4,6 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
-from analysis.mr_location_by_user_and_time_map import MRLocationToUserAndTimeMap
 sys.path.append('../')
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
@@ -17,6 +16,7 @@ from analysis.mr_user_distribution import MRUserDistribution
 from analysis.mr_user_to_location_map import MRUserToLocationMap
 from analysis.mr_location_distribution import MRLocationDistribution
 from analysis.mr_location_graph_by_users import MRLocationGraphByUsers
+from analysis.mr_location_to_user_and_time_map import MRLocationToUserAndTimeMap
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from library.plotting import Map, getDataDistribution
