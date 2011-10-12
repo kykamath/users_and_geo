@@ -70,8 +70,10 @@ class SpotsFile():
         for spot in spotsIterator: FileIO.writeToFileAsJson({'id': i, 'spot': spot}, spotsFile); i+=1
     @staticmethod
     def writeUserDistributionUsingSpots(spotsFile, userToLocationVector):
-        locationToSpotIdMap = {}
+        lidToSpotIdMap = {}
         for spot in FileIO.iterateJsonFromFile(spotsFile):
-            for location, _ in spot['spot']: locationToSpotIdMap[getLidFromLocation(location)] = spot['id']
+            for location, _ in spot['spot']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
         for userVector in userToLocationVector: 
             spotDistribution = defaultdict(int)
+            for lid in userVector: spotDistribution[lidToSpotIdMap]+=1
+            print spotDistribution
