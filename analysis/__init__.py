@@ -64,4 +64,8 @@ class SpotsKML:
 class SpotsFile():
     @staticmethod
     def writeSpotsToFile(spotsIterator, spotsFile):
-        for spot in spotsIterator: FileIO.writeToFileAsJson(spot, spotsFile)
+        i=0
+        for spot in spotsIterator: FileIO.writeToFileAsJson({'id': i, 'spot': spot}, spotsFile); i+=1
+    @staticmethod
+    def iterateSpotsFromFile(spotsFile):
+        return FileIO.iterateJsonFromFile(spotsFile)
