@@ -78,6 +78,6 @@ class SpotsFile():
             
 import datetime
 d = datetime.datetime.now()
-print d.weekday(), d.hour
+print d.weekday(), d.hour/4
 print d
         
