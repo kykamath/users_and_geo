@@ -74,11 +74,13 @@ class SpotsFile():
         lidToSpotIdMap, userDistributionInSpots = {}, defaultdict(list)
         for spot in FileIO.iterateJsonFromFile(spotsFile):
             for location, _ in spot['spot']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
-        for userVector in userToLocationVector: 
-            print userVector.keys()
+        for userObject in userToLocationVector: 
+            userId, userVector = userObject['user'], userObject['locations']
             spotDistribution = defaultdict(int)
             for lid in userVector: 
                 if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
-                userDistributionInSpots[spotId].append(None)
+                userDistributionInSpots[spotId].append(userId)
+        for spotId, users in userDistributionInSpots.iteritems(): print spotId, users
+            
