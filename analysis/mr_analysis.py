@@ -4,10 +4,11 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
+from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 sys.path.append('../')
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
-    userToLocationMapFile
+    userToLocationMapFile, userToLocationAndTimeMapFile
 from library.file_io import FileIO
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_distribution import MRUserDistribution
@@ -61,6 +62,7 @@ if __name__ == '__main__':
 #    runMRJob(MRLocationByUserDistribution, locationByUserDistributionFile)
 #    runMRJob(MRLocationGraphByUsers, locationGraph)
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
+    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)
@@ -69,8 +71,5 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-    i = 0
-    print len(list(filteredUserIterator(10, 10)))
-#        print len(u.keys()), u
-#        i+=1
-#        if i > 5: exit()
+#    i = 0
+#    print len(list(filteredUserIterator(10, 10)))
