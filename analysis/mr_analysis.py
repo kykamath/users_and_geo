@@ -69,9 +69,10 @@ def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, mi
     print len(validLocationsSet), len(validUserSet)
     for locationVector in FileIO.iterateJsonFromFile(locationToUserAndTimeMapFile):
         if locationVector['location'] in validLocationsSet:
-            for user in locationVector['users'].keys()[:]: 
-                if user not in validUserSet: del locationVector['users'][user]
-            if locationVector['users']: yield locationVector
+#            for user in locationVector['users'].keys()[:]: 
+#                if user not in validUserSet: del locationVector['users'][user]
+#            if locationVector['users']: 
+            yield locationVector
 if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
