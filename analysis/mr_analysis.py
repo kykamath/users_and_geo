@@ -4,13 +4,13 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
-from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 sys.path.append('../')
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile
 from library.file_io import FileIO
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
+from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 from analysis.mr_user_distribution import MRUserDistribution
 from analysis.mr_user_to_location_map import MRUserToLocationMap
 from analysis.mr_location_distribution import MRLocationDistribution
