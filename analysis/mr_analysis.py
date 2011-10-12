@@ -66,8 +66,12 @@ def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedI
 def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
     validUserSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
-    print len(validLocationsSet), len(validUserSet)
-
+    
+    for locationVector in FileIO.iterateJsonFromFile(locationToUserAndTimeMapFile):
+        if locationVector['location'] in validLocationsSet:
+            for user in locationVector['users'].keys()[:]: 
+                if user not in validUserSet: del locationVector['users'][user]
+        if locationVector['users']: yield locationVector
 if __name__ == '__main__':
 #    MR Jobs
 #    runMRJob(MRUserDistribution, userDistributionFile)
@@ -85,5 +89,4 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-    filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-    pass
+    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
