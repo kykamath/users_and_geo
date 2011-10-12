@@ -23,6 +23,9 @@ locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
 locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input_%s_%s'
 locationsFIMahoutOutputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_output_min_user_locations_%s_%s_min_support_%s'
 
+#Spots file
+spotsFIFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/fi/'
+
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
 world_boundary = [[-90,-180], [90, 180]]

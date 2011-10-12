@@ -19,10 +19,10 @@ from library.plotting import getDataDistribution
 from library.clustering import getItemClustersFromItemsets
 
 from analysis.mr_analysis import filteredUserIterator
-from analysis import SpotsKML
+from analysis import SpotsKML, SpotsFile
 from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
     initialNumberofLocationsInSpot, minSupport, userBasedSpotsKmlsFolder,\
-    us_boundary, minimumLocationsPerSpot
+    us_boundary, minimumLocationsPerSpot, spotsFIFolder
 from mongo_scripts import venuesCollection
 
 userBasedSpotsUsingFIKmlsFolder=userBasedSpotsKmlsFolder+'fi/'
@@ -163,11 +163,13 @@ class KMLs:
 class Spots:
     @staticmethod
     def writeSpotsUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
-        for i in iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
-            print i
+        spotsFile = '%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
+        SpotsFile.writeSpotsToFile(iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs),
+                                   spotsFile)
     @staticmethod
     def run():
-        Spots.writeSpotsUsingItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)
+        Spots.writeSpotsUsingItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, 
+                                               minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)
 
     
 if __name__ == '__main__':

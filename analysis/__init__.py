@@ -1,6 +1,7 @@
 from library.classes import GeneralMethods
 from library.geo import geographicConvexHull
 from library.geo import getLocationFromLid
+from library.file_io import FileIO
 
 class SpotsKML:
     def __init__(self):
@@ -59,3 +60,8 @@ class SpotsKML:
         if not color: color = GeneralMethods.getRandomColor()
         kml.addLocationPoints(pointsIterator, color=color)
         kml.write(outputKMLFile)
+
+class SpotsFile():
+    @staticmethod
+    def writeSpotsToFile(spotsIterator, spotsFile):
+        for spot in spotsFile: FileIO.writeToFileAsJson(spot, spotsFile)
