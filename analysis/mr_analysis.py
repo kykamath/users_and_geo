@@ -58,9 +58,9 @@ def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedI
                 if k not in validLocationsSet: del userVector[k]
             if userVector: yield userVector
         else:
-            for k in userVector['location'].keys()[:]:
-                if k not in validLocationsSet: del userVector['location'][k]
-            if userVector['location']: yield userVector
+            for k in userVector['locations'].keys()[:]:
+                if k not in validLocationsSet: del userVector['locations'][k]
+            if userVector['locations']: yield userVector
 
 if __name__ == '__main__':
 #    MR Jobs
