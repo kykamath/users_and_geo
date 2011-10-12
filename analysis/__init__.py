@@ -1,5 +1,5 @@
 from library.classes import GeneralMethods
-from library.geo import geographicConvexHull
+from library.geo import geographicConvexHull, getLidFromLocation
 from library.geo import getLocationFromLid
 from library.file_io import FileIO
 
@@ -67,5 +67,9 @@ class SpotsFile():
         i=0
         for spot in spotsIterator: FileIO.writeToFileAsJson({'id': i, 'spot': spot}, spotsFile); i+=1
     @staticmethod
-    def iterateSpotsFromFile(spotsFile):
-        return FileIO.iterateJsonFromFile(spotsFile)
+    def writeUserDistributionUsingSpots(spotsFile, userToLocationVector):
+        locationToSpotIdMap = {}
+        for spot in FileIO.iterateJsonFromFile(spotsFile):
+            for location, _ in spot['spot']: locationToSpotIdMap[getLidFromLocation(location)] = spot['id']
+        for u in userToLocationVector: print u
+        
