@@ -75,4 +75,9 @@ class SpotsFile():
             for location, _ in spot['spot']: locationToSpotIdMap[getLidFromLocation(location)] = spot['id']
         for userVector in userToLocationVector: 
             spotDistribution = defaultdict(int)
+            
+import datetime
+d = datetime.datetime.now()
+print d.weekday(), d.hour
+print d
         
