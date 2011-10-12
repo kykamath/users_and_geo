@@ -70,14 +70,15 @@ class SpotsFile():
         i=0
         for spot in spotsIterator: FileIO.writeToFileAsJson({'id': i, 'spot': spot}, spotsFile); i+=1
     @staticmethod
-    def writeUserDistributionUsingSpots(spotsFile, userToLocationVector):
-        lidToSpotIdMap = {}
+    def writeUserDistributionInSpots(spotsFile, userToLocationVector):
+        lidToSpotIdMap, userDistributionInSpots = {}, defaultdict(list)
         for spot in FileIO.iterateJsonFromFile(spotsFile):
             for location, _ in spot['spot']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
         for userVector in userToLocationVector: 
+            print userVector.keys()
             spotDistribution = defaultdict(int)
             for lid in userVector: 
                 if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
             if spotDistribution: 
-                spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1]
-                print spotId[1]
+                spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
+                userDistributionInSpots[spotId].append(None)
