@@ -80,7 +80,7 @@ def writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin, minUni
     for locationVector in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         for user in locationVector['users'].keys()[:]: locationVector['users'][str(user)]=locationVector['users'][user]; del locationVector['users'][user]
         FileIO.writeToFileAsJson(locationVector, validLocationAndUserFile)
-    GeneralMethods.runCommand('hadoop -fs put %s %s'%(validLocationAndUserFile, validLocationAndUserHdfsPath))
+    GeneralMethods.runCommand('hadoop fs -put %s %s'%(validLocationAndUserFile, validLocationAndUserHdfsPath))
         
 if __name__ == '__main__':
 #    MR Jobs
