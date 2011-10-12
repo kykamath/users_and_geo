@@ -11,8 +11,9 @@ class MRUserToLocationAndTimeMap(ModifiedMRJob):
     DEFAULT_INPUT_PROTOCOL='raw_value'
     def mapper(self, key, line):
         data = parseData(line)
-        d = data['t']
-        if data: yield data['u'],'_'.join([getLidFromLocation(data['l']), str(d.weekday()), str(d.hour/4)])
+        if data: 
+            d = data['t']
+            yield data['u'],'_'.join([getLidFromLocation(data['l']), str(d.weekday()), str(d.hour/4)])
     def reducer(self, user, occurences):
         locationMap = {}
         for s in occurences:
