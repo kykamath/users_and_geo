@@ -84,5 +84,5 @@ class SpotsFile():
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
                 userDistributionInSpots[spotId]['users'].append(userId)
-        for spotId, objects in userDistributionInSpots.iteritems(): print spotId, objects
+        for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsFile+'_users')
             
