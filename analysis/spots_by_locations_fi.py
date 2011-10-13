@@ -77,8 +77,12 @@ class Mahout():
                 if not lids: locationItemset, support = [getLocationFromLid(i.replace('_', ' ')) for i in data[0][1:-1].split()], int(data[1])
                 else: locationItemset, support = [i.replace('_', ' ') for i in data[0][1:-1].split()], int(data[1])
                 if support>=extraMinSupport and len(locationItemset)>=minLocationsInItemset: 
-                    if not yieldSupport: yield [location for location in locationItemset if isWithinBoundingBox(getLocationFromLid(location), us_boundary)] 
+                    if not yieldSupport: yield [location for location in locationItemset if isWithinBoundingBox(location, us_boundary)] 
                     else: yield [location for location in locationItemset if isWithinBoundingBox(getLocationFromLid(location), us_boundary)], support
+    @staticmethod
+    def iterateLocations(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, *args, **kwargs):
+        for locations in Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, *args, **kwargs):
+            for location in locations: yield location
     @staticmethod
     def analyzeFrequentLocations(minUserLocations, minCalculatedSupport):
     #    dataX, dataY = [], []
@@ -101,12 +105,13 @@ class Mahout():
         plt.title('%s'%minUserLocations), plt.ylabel('Count'); plt.xlabel('Location itemset length')
         plt.savefig('location_itemsets_distribution_%s.pdf'%minUserLocations)
 
-def iterateFrequentLocationClusters():
+def iterateFrequentLocationClusters(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport):
     graph = nx.Graph()
-    for locations, support in Mahout.iterateFrequentLocationsFromFIMahout(minSupport=0, minLocations=0, yieldSupport=True, lids=True):
-        for l1, l2 in combinations(locations,2): 
-            if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
-    for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
+    for locations in Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport):
+        print locations
+#        for l1, l2 in combinations(locations,2): 
+#            if l2 not in graph or l1 not in graph or l1 not in graph[l2] and getHaversineDistanceForLids(l1, l2)<=maximumFIRadiusInMiles: graph.add_edge(l1,l2)
+#    for cluster in nx.connected_components(graph): yield [getLocationFromLid(lid) for lid in cluster]
 
 def getClusterForKML(cluster):
     clusterToYield = []
@@ -116,6 +121,8 @@ def getClusterForKML(cluster):
             if title!=None: clusterToYield.append((getLocationFromLid(lid), unicode(title['n']).encode("utf-8")))
             else: clusterToYield.append((getLocationFromLid(lid), ''))
     return clusterToYield 
+
+
 
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
@@ -185,4 +192,5 @@ if __name__ == '__main__':
 
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
 #    KMLs.run()
-    Spots.run()
+#    Spots.run()
+    print len(list(Mahout.iterateLocations(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, extraMinSupport=5)))

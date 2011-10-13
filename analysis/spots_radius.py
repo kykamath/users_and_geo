@@ -25,38 +25,38 @@ def generateRadiusSpots(radiusInMiles):
     for lid in locationIterator():
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
     for locations in nx.connected_components(graph): FileIO.writeToFileAsJson({'venues': locations}, spotsFile)
-def generateStatsForRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
-def radiusSpotsIterator(radiusInMiles, minLocations=0): return (data['venues'] for data in FileIO.iterateJsonFromFile(radiusSpotsFolder+'%s'%(radiusInMiles)) if len(data['venues'])>=minLocations)
-def plotRadiusSpotDistribution():
-    for radius in [1,5,10,15,20]:
-        dataX, dataY = getDataDistribution((len(i) for i in radiusSpotsIterator(radius)))
-        plt.loglog(dataX, dataY, label = str(radius))
-        print radius, len([i for i in radiusSpotsIterator(radius, 10)] )
-    plt.legend()
-    plt.show()
-def plotRadiusSpots(radius=10, minLocations=10):
-    clustersData = []
-    for locations in radiusSpotsIterator(radius, minLocations):
-        longitudes, latitudes = zip(*[getLocationFromLid(l) for l in locations])
-        clustersData.append((list(longitudes), list(latitudes), GeneralMethods.getRandomColor()))
-    usMap = Map()
-    latitudes, longitudes = [], []
-    for longs, lats, color in clustersData: 
-        usMap.plotPoints(lats, longs, color)
-    plt.show()
+#def generateStatsForRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
+#def radiusSpotsIterator(radiusInMiles, minLocations=0): return (data['venues'] for data in FileIO.iterateJsonFromFile(radiusSpotsFolder+'%s'%(radiusInMiles)) if len(data['venues'])>=minLocations)
+#def plotRadiusSpotDistribution():
+#    for radius in [1,5,10,15,20]:
+#        dataX, dataY = getDataDistribution((len(i) for i in radiusSpotsIterator(radius)))
+#        plt.loglog(dataX, dataY, label = str(radius))
+#        print radius, len([i for i in radiusSpotsIterator(radius, 10)] )
+#    plt.legend()
+#    plt.show()
+#def plotRadiusSpots(radius=10, minLocations=10):
+#    clustersData = []
+#    for locations in radiusSpotsIterator(radius, minLocations):
+#        longitudes, latitudes = zip(*[getLocationFromLid(l) for l in locations])
+#        clustersData.append((list(longitudes), list(latitudes), GeneralMethods.getRandomColor()))
+#    usMap = Map()
+#    latitudes, longitudes = [], []
+#    for longs, lats, color in clustersData: 
+#        usMap.plotPoints(lats, longs, color)
+#    plt.show()
 
 #def drawKMLsForRadiusSpots(radius=10, minLocations=10):
 #    kml = SpotsKML()
 #    for locations in radiusSpotsIterator(radius, minLocations): kml.addPointsWithHull(locations)
 #    kml.write(radiusSpotsKmlsFolder+'%s_%s.kml'%(radius, minLocations))
 
-def drawKMLsForRadiusSpots(radius=1, minLocations=10):
-    SpotsKML.drawKMLsForSpots(radiusSpotsIterator(radius, minLocations), radiusSpotsKmlsFolder+'radius_%s_%s.kml'%(radius, minLocations))
+#def drawKMLsForRadiusSpots(radius=1, minLocations=10):
+#    SpotsKML.drawKMLsForSpots(radiusSpotsIterator(radius, minLocations), radiusSpotsKmlsFolder+'radius_%s_%s.kml'%(radius, minLocations))
     
-def generateKMLsRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
+#def generateKMLsRadiusSpots(): [generateRadiusSpots(radius) for radius in [1,5,10,15,20]]
     
 if __name__ == '__main__':
 #    generateStatsForRadiusSpots()
 #    plotRadiusSpotDistribution()
 #    plotRadiusSpots()
-    drawKMLsForRadiusSpots()
+#    drawKMLsForRadiusSpots()

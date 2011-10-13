@@ -75,6 +75,8 @@ def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, mi
                 if user not in validUserSet: del locationVector['users'][str(user)]
                 else: locationVector['users'][user]=locationVector['users'][str(user)]; del locationVector['users'][str(user)]
             if locationVector['users']: yield locationVector
+            
+def getfilteredLocationsSet(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): return set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
 
 def writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     for locationVector in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
@@ -101,6 +103,8 @@ if __name__ == '__main__':
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
 #    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
     
-    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-
+#    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
+    
+    print len(getfilteredLocationsSet(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10))
+    
     pass
