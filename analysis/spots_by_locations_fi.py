@@ -19,7 +19,8 @@ from library.plotting import getDataDistribution
 from library.clustering import getItemClustersFromItemsets
 
 from analysis.mr_analysis import filteredUserIterator
-from analysis import SpotsKML, SpotsFile
+from analysis import SpotsKML
+from analysis import Spots as SpotsAnalysis
 from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
     initialNumberofLocationsInSpot, minSupport, userBasedSpotsKmlsFolder,\
     us_boundary, minimumLocationsPerSpot, spotsFIFolder,\
@@ -164,17 +165,18 @@ class Spots:
     @staticmethod
     def writeUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs):
         spotsFile = '%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
-        SpotsFile.writeSpotsToFile(iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs),
+        SpotsAnalysis.writeSpotsToFile(iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs),
                                    spotsFile)
     @staticmethod
     def writeUserDistributionUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         spotsFile = '%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
-        SpotsFile.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+        SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
 #        Spots.writeUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, 
 #                                               minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)
         Spots.writeUserDistributionUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
+#        SpotsAnalysis.measureSpotAccuracy('%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     
 if __name__ == '__main__':
 #    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)

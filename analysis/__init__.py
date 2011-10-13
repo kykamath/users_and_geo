@@ -3,6 +3,7 @@ from library.geo import geographicConvexHull, getLidFromLocation
 from library.geo import getLocationFromLid
 from library.file_io import FileIO
 
+import os
 from collections import defaultdict
 from operator import itemgetter
 
@@ -64,7 +65,7 @@ class SpotsKML:
         kml.addLocationPoints(pointsIterator, color=color)
         kml.write(outputKMLFile)
 
-class SpotsFile():
+class Spots():
     @staticmethod
     def writeSpotsToFile(spotsIterator, spotsFile):
         i=0
@@ -73,16 +74,41 @@ class SpotsFile():
     def writeUserDistributionInSpots(spotsFile, userToLocationVector):
         lidToSpotIdMap, userDistributionInSpots, spotsWithUsersFile = {}, defaultdict(list), spotsFile+'_users'
         for spot in FileIO.iterateJsonFromFile(spotsFile):
-            for location, _ in spot['spot']: 
-                lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
+            for location, _ in spot['spot']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
             userDistributionInSpots[spot['id']] = {'id': spot['id'], 'lids': spot['spot'], 'users':[]}
         for userObject in userToLocationVector: 
             userId, userVector = userObject['user'], userObject['locations']
+#            if userId == 10020552: 
+#                print [[lidToSpotIdMap[lid]]*userVector[lid] for lid in userVector if lid in lidToSpotIdMap]
             spotDistribution = defaultdict(int)
             for lid in userVector: 
-                if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1
+                if lid in lidToSpotIdMap: 
+#                    if userId == 10020552: print lidToSpotIdMap[lid], spotDistribution
+                    spotDistribution[lidToSpotIdMap[lid]]+=1*userVector[lid]
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
                 userDistributionInSpots[spotId]['users'].append(userId)
-        for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsFile+'_users')
+#        exit()
+        for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsWithUsersFile)
+    @staticmethod
+    def measureSpotAccuracy(spotsFile, userToLocationVector):
+        lidToSpotIdMap, userToSpotIdMap, spotMap, spotsWithUsersFile = {}, {}, defaultdict(dict), spotsFile+'_users'
+        for spot in FileIO.iterateJsonFromFile(spotsWithUsersFile):
+            for location, _ in spot['lids']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
+            for user in spot['users']: userToSpotIdMap[user] = spot['id']
+        observedUsers = set()
+        for useVector in userToLocationVector:
+            user = useVector['user']
+            print user
+            assert user not in observedUsers
+#            exit()
+            if user in userToSpotIdMap: 
+#                spotMap[userToSpotIdMap[user]][user]=[lidToSpotIdMap[lid] for lid in useVector['locations'] if lid in lidToSpotIdMap]; observedUsers.add(user)
+#                print useVector['locations']
+                assignment = [[lidToSpotIdMap[lid]]*useVector['locations'][lid] for lid in useVector['locations'] if lid in lidToSpotIdMap]
+                print userToSpotIdMap[user], [item for t in assignment for item in t]; observedUsers.add(user)
+                exit()
+#        for spotId, userMap in spotMap.iteritems():
+#            totalCheckins, 
+        pass
             
