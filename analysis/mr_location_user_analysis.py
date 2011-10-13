@@ -5,11 +5,12 @@ Created on Oct 12, 2011
 '''
 import sys
 from mongo_settings import venuesCollection
+from analysis.mr_location_user_day_mad import MRLocationUserDayMad
 sys.path.append('../')
 import random
 from settings import validLocationAndUserHdfsPath, locationUserDayBlockMadFile,\
     spotsFIFolder, minLocationsTheUserHasCheckedin,\
-    minUniqueUsersCheckedInTheLocation
+    minUniqueUsersCheckedInTheLocation, locationUserDayMad
 from library.file_io import FileIO
 from library.plotting import getDataDistribution
 from analysis.mr_location_user_dayblock_mad import MRLocationUserDayBlockMad
@@ -65,8 +66,9 @@ def getRandomLocationNames():
     
 if __name__ == '__main__':
 #    runMRJob(MRLocationUserDayBlockMad, locationUserDayBlockMadFile, jobconf={'mapred.reduce.tasks':5})
+    runMRJob(MRLocationUserDayMad, locationUserDayMad, jobconf={'mapred.reduce.tasks':5})
 
 #    plotLocationDBDistribution()
 #    plotLocationToUserDBDistribution()
-    getRandomLocationNames()
+#    getRandomLocationNames()
     

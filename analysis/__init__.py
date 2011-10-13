@@ -92,18 +92,13 @@ class Spots():
             for location, _ in spot['lids']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
             for user in spot['users']: userToSpotIdMap[user] = spot['id']
         observedUsers = set()
-        for useVector in userToLocationVector:
-            user = useVector['user']
-            print user
+        for userVector in userToLocationVector:
+            user = userVector['user']
             assert user not in observedUsers
-#            exit()
             if user in userToSpotIdMap: 
-#                spotMap[userToSpotIdMap[user]][user]=[lidToSpotIdMap[lid] for lid in useVector['locations'] if lid in lidToSpotIdMap]; observedUsers.add(user)
-#                print useVector['locations']
-                assignment = [[lidToSpotIdMap[lid]]*useVector['locations'][lid] for lid in useVector['locations'] if lid in lidToSpotIdMap]
-                print userToSpotIdMap[user], [item for t in assignment for item in t]; observedUsers.add(user)
-                exit()
-#        for spotId, userMap in spotMap.iteritems():
-#            totalCheckins, 
-        pass
+                assignment = [[lidToSpotIdMap[lid]]*userVector['locations'][lid] for lid in userVector['locations'] if lid in lidToSpotIdMap]
+                spotMap[userToSpotIdMap[user]][user]=[item for t in assignment for item in t]; observedUsers.add(user)
+        for spotId, userMap in spotMap.iteritems():
+            for user in userMap:
+                print userMap[user] 
             
