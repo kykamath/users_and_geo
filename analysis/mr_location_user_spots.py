@@ -6,7 +6,7 @@ Created on Oct 13, 2011
 import sys
 sys.path.append('../')
 from settings import minLocationsTheUserHasCheckedin,\
-    minUniqueUsersCheckedInTheLocation
+    minUniqueUsersCheckedInTheLocation, minimumLocationsPerSpot
 from mongo_settings import locationsCollection
 from library.geo import getLocationFromLid, convertMilesToRadians
 import networkx as nx
@@ -19,7 +19,8 @@ def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheck
     for lid in locationSet:
         for location in nearbyLocations(lid, radius): 
             if location['_id'] in locationSet: graph.add_edge(location['_id'], lid)
-    for locations in nx.connected_components(graph): print locations
+    for locations in nx.connected_components(graph): 
+        if len(locations)>=minimumLocationsPerSpot: print locations
         
 if __name__ == '__main__':
     iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radius=1)
