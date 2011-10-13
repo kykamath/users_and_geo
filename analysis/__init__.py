@@ -78,17 +78,12 @@ class Spots():
             userDistributionInSpots[spot['id']] = {'id': spot['id'], 'lids': spot['spot'], 'users':[]}
         for userObject in userToLocationVector: 
             userId, userVector = userObject['user'], userObject['locations']
-#            if userId == 10020552: 
-#                print [[lidToSpotIdMap[lid]]*userVector[lid] for lid in userVector if lid in lidToSpotIdMap]
             spotDistribution = defaultdict(int)
             for lid in userVector: 
-                if lid in lidToSpotIdMap: 
-#                    if userId == 10020552: print lidToSpotIdMap[lid], spotDistribution
-                    spotDistribution[lidToSpotIdMap[lid]]+=1*userVector[lid]
+                if lid in lidToSpotIdMap: spotDistribution[lidToSpotIdMap[lid]]+=1*userVector[lid]
             if spotDistribution: 
                 spotId = sorted(spotDistribution.iteritems(), key=itemgetter(1))[-1][0]
                 userDistributionInSpots[spotId]['users'].append(userId)
-#        exit()
         for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsWithUsersFile)
     @staticmethod
     def measureSpotAccuracy(spotsFile, userToLocationVector):
