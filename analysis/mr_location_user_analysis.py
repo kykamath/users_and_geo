@@ -4,9 +4,9 @@ Created on Oct 12, 2011
 @author: kykamath
 '''
 import sys
+sys.path.append('../')
 from mongo_settings import venuesCollection
 from analysis.mr_location_user_day_mad import MRLocationUserDayMad
-sys.path.append('../')
 import random
 from settings import validLocationAndUserHdfsPath, locationUserDayBlockMadFile,\
     spotsFIFolder, minLocationsTheUserHasCheckedin,\
