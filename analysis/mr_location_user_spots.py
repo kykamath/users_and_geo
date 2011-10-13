@@ -22,4 +22,4 @@ def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheck
     for locations in nx.connected_components(graph): print locations
         
 if __name__ == '__main__':
-    iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radius=0.5)
+    iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radius=1)
