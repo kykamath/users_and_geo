@@ -75,7 +75,7 @@ class SpotsFile():
         for spot in FileIO.iterateJsonFromFile(spotsFile):
             for location, _ in spot['spot']: 
                 lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
-            userDistributionInSpots[spot['id']] = {'id': spot['id'], 'lids': spot['spot'], 'users': defaultdict(list)}
+            userDistributionInSpots[spot['id']] = {'id': spot['id'], 'lids': spot['spot'], 'users':[]}
         for userObject in userToLocationVector: 
             userId, userVector = userObject['user'], userObject['locations']
             spotDistribution = defaultdict(int)
