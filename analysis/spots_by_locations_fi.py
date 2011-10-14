@@ -199,11 +199,15 @@ class Spots:
         spotsFile = '%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
         SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
+    def writeUserDistributionUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
+        spotsFile = '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+        SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
     def run():
-#        Spots.writeUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, 
-#                                               minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)
+#        Spots.writeUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)
+#        Spots.writeUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
 #        Spots.writeUserDistributionUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
-        Spots.writeUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+        Spots.writeUserDistributionUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
 #        SpotsAnalysis.measureSpotAccuracy('%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     
 if __name__ == '__main__':
