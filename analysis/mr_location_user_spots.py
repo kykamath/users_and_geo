@@ -17,7 +17,7 @@ from analysis.mr_analysis import getfilteredLocationsSet,\
 from itertools import combinations
 
 
-radiusInMiles = 2
+radiusInMiles = 4
 
 #def f((x1,x2)): 
 #    d = getHaversineDistanceForLids(x1,x2)
