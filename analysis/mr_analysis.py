@@ -5,6 +5,7 @@ Created on Oct 4, 2011
 '''
 import sys
 from library.geo import isWithinBoundingBox, getLocationFromLid
+from mongo_settings import locationToLocationCollection
 sys.path.append('../')
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -109,6 +110,14 @@ if __name__ == '__main__':
     
 #    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
-    print len(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation=10)))
-    
+    locationsToCheck = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation=10)))
+    j=1
+    for i in locationToLocationCollection.find(fields=['_id']):
+        d = i['_id'].split()
+        n1, n2 = ' '.join(d[:2]), ' '.join(d[2:])
+        if n1 in locationsToCheck: locationsToCheck.remove(n1)
+        if n2 in locationsToCheck: locationsToCheck.remove(n2)
+        print j
+        j+=1
+    print len(locationsToCheck)
     pass

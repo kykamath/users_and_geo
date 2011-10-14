@@ -9,8 +9,7 @@ import dateutil.parser
 from settings import checkinsFile, venuesFile,\
     minUniqueUsersCheckedInTheLocation
 from mongo_settings import checkinsCollection, venuesCollection,\
-    locationsCollection, locationToLocationCollection, geoDb,\
-    validLocationCollection
+    locationsCollection, locationToLocationCollection, geoDb
 from library.geo import getLidFromLocation, getLocationFromLid,\
     getHaversineDistance
 from analysis.mr_analysis import locationIterator, locationGraphIterator,\
@@ -56,12 +55,6 @@ def addLocationToLocationDistanceToDB():
             locationToLocationCollection.insert({'_id': data['e'], 'u': data['w'], 'd': d})
         except Exception as e: print i, 'Exception while processing:', data; i+=1
 
-def addValidLocationsToDB():
-    i=0
-    for l in set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation)):
-        i+=1
-        validLocationCollection.insert({'l': getLocationFromLid(l)})
-        print i, validLocationCollection.count()
 def locationToLocationIterator(): return locationToLocationCollection.find()
 
 if __name__ == '__main__':
@@ -69,5 +62,4 @@ if __name__ == '__main__':
 #    addVenuesToDB()
 ##    addUserCheckinDistributionToDB()
 #    addLocationCheckinDistributionToDB()
-#    addLocationToLocationDistanceToDB()
-    addValidLocationsToDB()
+    addLocationToLocationDistanceToDB()
