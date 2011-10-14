@@ -46,4 +46,4 @@ minSupport = 3
 minimumLocationsPerSpot = 4
 locationRadiusInMiles = 10
 radiusInMiles = 5
-graphNodesDistanceInMiles = 100
+graphNodesDistanceInMiles = 25

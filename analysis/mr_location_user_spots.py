@@ -70,7 +70,7 @@ class UserGraphSpots:
 #        Spots.writeSpotsToFile(UserGraphSpots.iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), spotsFile)
     @staticmethod
     def writeAsKML():
-        spotsFile = '%s/%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
+        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
         SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(spotsFile), title=True)
     @staticmethod
     def run():
