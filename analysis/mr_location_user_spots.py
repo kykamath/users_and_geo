@@ -80,9 +80,9 @@ class UserGraphSpots:
     @staticmethod
     def run():
 #        UserGraphSpots.writeAsKML()
-#        UserGraphSpots.writeToFile()
+        UserGraphSpots.writeToFile()
         UserGraphSpots.writeUserDistribution()
-#        print UserGraphSpots.getStats()
+        print UserGraphSpots.getStats()
 if __name__ == '__main__':
 #    RadiusSpots.run()
     UserGraphSpots.run()
