@@ -32,6 +32,7 @@ locationsFIMahoutOutputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_out
 #Spots file
 spotsFIFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/fi/'
 spotsRadiusFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/radius/'
+spotsUserGraphsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/user_graphs/'
 
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
@@ -45,3 +46,4 @@ minSupport = 3
 minimumLocationsPerSpot = 4
 locationRadiusInMiles = 10
 radiusInMiles = 5
+graphNodesDistanceInMiles = 100
