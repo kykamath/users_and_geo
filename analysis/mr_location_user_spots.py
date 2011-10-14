@@ -155,8 +155,8 @@ class FrequentItemSpots:
     @staticmethod
     def iterateSpots():
         itemsetsPostponed = []
-        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, yieldSupport=True, lids=True, minLocationsInItemset=1), key=itemgetter(1), reverse=True):
-            print support, itemset
+        for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
+            if itemset: print support, itemset
         exit()
 #            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
 #            else: itemsetsPostponed.append((itemset, len(itemset)))
