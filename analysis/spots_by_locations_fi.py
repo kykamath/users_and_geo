@@ -132,7 +132,9 @@ def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheck
         for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):
             for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
         for locations in nx.connected_components(graph): 
-            if len(locations)>=minimumLocationsPerSpot: yield getClusterForKML(locations)
+            if len(locations)>=minimumLocationsPerSpot: 
+                print locations
+                yield getClusterForKML(locations)
 
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
