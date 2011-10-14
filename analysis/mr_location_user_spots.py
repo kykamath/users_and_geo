@@ -13,6 +13,7 @@ from analysis import Spots, SpotsKML
 from mongo_settings import locationsCollection, venuesCollection,\
     locationToLocationCollection
 from library.geo import getLocationFromLid, convertMilesToRadians
+from library.graphs.clustering import clusterUsingMCLClustering
 import networkx as nx
 from analysis.mr_analysis import locationsForUsIterator
 
@@ -58,7 +59,8 @@ class UserGraphSpots:
             l1, l2 = ' '.join(d[:2]), ' '.join(d[2:])
             if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles and e['u']>=graphNodesMinEdgeWeight: graph.add_edge(l1, l2)
         for locations in nx.connected_components(graph): 
-            if len(locations)>=minimumLocationsPerSpot: yield getKMLForCluster(locations)
+            if len(locations)>=minimumLocationsPerSpot: 
+                for cluster in nx.connected_components(clusterUsingMCLClustering(graph.subgraph(locations))): yield getKMLForCluster(cluster)
 #        def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
 #        graph = nx.Graph()
 #        for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):

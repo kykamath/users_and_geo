@@ -181,8 +181,8 @@ class KML:
     def run():
 #        KML.drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #        KML.drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, minLocationsInItemset=initialNumberofLocationsInSpot, extraMinSupport=5) #minLocationsInItemset=10)
-#        KML.drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)    
-        KML.radius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+        KML.drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)    
+#        KML.radius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
 
 class Spots:
     @staticmethod
@@ -216,6 +216,6 @@ if __name__ == '__main__':
 #    Mahout.getMahoutOutput(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
-#    KML.run()
-    Spots.run()
+    KML.run()
+#    Spots.run()
 #    print len(list(Mahout.iterateLocations(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, extraMinSupport=5)))
