@@ -15,7 +15,7 @@ from mongo_settings import locationsCollection, venuesCollection,\
 from library.geo import getLocationFromLid, convertMilesToRadians
 from library.graphs import clusterUsingMCLClustering
 import networkx as nx
-from analysis.mr_analysis import locationsForUsIterator
+from analysis.mr_analysis import locationsForUsIterator, filteredUserIterator
 
 def getKMLForCluster(cluster):
     clusterToYield = []
@@ -45,9 +45,14 @@ class RadiusSpots:
         SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), 
                                             '%s.kml'%(spotsFile), title=True)
     @staticmethod
+    def writeUserDistribution():
+        spotsFile = '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+        Spots.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
     def run():
 #        RadiusSpots.writeAsKML(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
-        RadiusSpots.writeToFile(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+#        RadiusSpots.writeToFile(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+        RadiusSpots.writeUserDistribution()
         
 class UserGraphSpots:
     @staticmethod
@@ -84,6 +89,6 @@ class UserGraphSpots:
         UserGraphSpots.writeAsKML()
 
 if __name__ == '__main__':
-#    RadiusSpots.run()
-    UserGraphSpots.run()
+    RadiusSpots.run()
+#    UserGraphSpots.run()
     
