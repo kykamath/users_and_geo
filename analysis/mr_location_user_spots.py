@@ -60,7 +60,7 @@ class UserGraphSpots:
             if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles and e['u']>=graphNodesMinEdgeWeight: graph.add_edge(l1, l2)
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: 
-                for cluster in nx.connected_components(clusterUsingMCLClustering(graph.subgraph(locations))): yield getKMLForCluster(cluster)
+                for cluster in clusterUsingMCLClustering(graph.subgraph(locations)): yield getKMLForCluster(cluster)
 #        def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
 #        graph = nx.Graph()
 #        for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):
