@@ -13,7 +13,7 @@ from analysis import Spots, SpotsKML
 from mongo_settings import locationsCollection, venuesCollection,\
     locationToLocationCollection
 from library.geo import getLocationFromLid, convertMilesToRadians
-from library.graphs.clustering import clusterUsingMCLClustering
+from library.graphs import clusterUsingMCLClustering
 import networkx as nx
 from analysis.mr_analysis import locationsForUsIterator
 
