@@ -60,7 +60,9 @@ class UserGraphSpots:
             if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles: graph.add_edge(l1.replace(' ', '_'), l2.replace(' ', '_'))
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: 
-                for cluster in clusterUsingMCLClustering(graph.subgraph(locations)): 
+                clusters = clusterUsingMCLClustering(graph.subgraph(locations))
+                print graph.subgraph(locations).number_of_nodes(), graph.subgraph(locations).number_of_edges(), len(clusters)
+                for cluster in clusters: 
                     if len(cluster)>=minimumLocationsPerSpot:  yield getKMLForCluster([c.replace('_', ' ') for c in cluster])
 #                    yield getKMLForCluster(cluster)
 #        def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
@@ -75,7 +77,7 @@ class UserGraphSpots:
 #        Spots.writeSpotsToFile(UserGraphSpots.iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), spotsFile)
     @staticmethod
     def writeAsKML():
-        spotsFile = '%s/%s_%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles, graphNodesMinEdgeWeight)
+        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
         SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(spotsFile), title=True)
     @staticmethod
     def run():
