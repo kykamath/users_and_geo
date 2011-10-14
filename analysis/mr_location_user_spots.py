@@ -2,6 +2,10 @@
 Created on Oct 13, 2011
 
 @author: kykamath
+Why not geo?
+=> Does not work in dense areas. New York?
+=> Doesn't discover regions related but apart? Like discover xxx|yyy|zz instead of xxx|yyy|xx 
+
 '''
 import sys
 sys.path.append('../')
@@ -152,7 +156,7 @@ class FrequentItemSpots:
     def iterateSpots():
         itemsetsPostponed = []
         for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
-            print support, itemset
+            if itemset: print support, itemset
         exit()
 #            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
 #            else: itemsetsPostponed.append((itemset, len(itemset)))
@@ -167,6 +171,6 @@ class FrequentItemSpots:
         FrequentItemSpots.writeAsKML()
         
 if __name__ == '__main__':
-    RadiusSpots.run()
+#    RadiusSpots.run()
 #    UserGraphSpots.run()
-#    FrequentItemSpots.run()
+    FrequentItemSpots.run()
