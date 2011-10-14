@@ -4,8 +4,8 @@ Created on Oct 7, 2011
 @author: kykamath
 '''
 import sys
-from mongo_settings import locationsCollection
 sys.path.append('../')
+from mongo_settings import locationsCollection
 from operator import itemgetter
 from itertools import combinations
 from collections import defaultdict
