@@ -78,8 +78,13 @@ class UserGraphSpots:
         spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
         SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(spotsFile), title=True)
     @staticmethod
+    def writeUserDistribution():
+        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
+        Spots.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
     def run():
-        UserGraphSpots.writeToFile()
+#        UserGraphSpots.writeToFile()
+        UserGraphSpots.writeUserDistribution()
 
 if __name__ == '__main__':
 #    RadiusSpots.run()
