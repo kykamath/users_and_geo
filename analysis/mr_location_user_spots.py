@@ -32,7 +32,7 @@ def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheck
             graph.add_edge(l1, l2)
             print i, l1, l2
         i+=1
-        if i==200000: break
+#        if i==200000: break
     for locations in nx.connected_components(graph): 
         if len(locations)>=minimumLocationsPerSpot: print locations
 
