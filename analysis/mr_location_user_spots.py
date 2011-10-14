@@ -69,26 +69,19 @@ class UserGraphSpots:
                 print graph.subgraph(locations).number_of_nodes(), graph.subgraph(locations).number_of_edges(), len(clusters)
                 for cluster in clusters: 
                     if len(cluster)>=minimumLocationsPerSpot:  yield getKMLForCluster([c.replace('_', ' ') for c in cluster])
-#                    yield getKMLForCluster(cluster)
-#        def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
-#        graph = nx.Graph()
-#        for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):
-#            for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
-#        for locations in nx.connected_components(graph): 
-#            if len(locations)>=minimumLocationsPerSpot: yield getKMLForCluster(locations)
-#    @staticmethod
-#    def writeToFile(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
-#        spotsFile = '%s/%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
-#        Spots.writeSpotsToFile(UserGraphSpots.iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), spotsFile)
+    @staticmethod
+    def writeToFile():
+        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
+        Spots.writeSpotsToFile(UserGraphSpots.iterateSpots(), spotsFile)
     @staticmethod
     def writeAsKML():
         spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
         SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(spotsFile), title=True)
     @staticmethod
     def run():
-        UserGraphSpots.writeAsKML()
+        UserGraphSpots.writeToFile()
 
 if __name__ == '__main__':
-    RadiusSpots.run()
-#    UserGraphSpots.run()
+#    RadiusSpots.run()
+    UserGraphSpots.run()
     
