@@ -6,12 +6,15 @@ Created on Oct 3, 2011
 import sys
 sys.path.append('../')
 import dateutil.parser
-from settings import checkinsFile, venuesFile
+from settings import checkinsFile, venuesFile,\
+    minUniqueUsersCheckedInTheLocation
 from mongo_settings import checkinsCollection, venuesCollection,\
-    locationsCollection, locationToLocationCollection, geoDb
+    locationsCollection, locationToLocationCollection, geoDb,\
+    validLocationCollection
 from library.geo import getLidFromLocation, getLocationFromLid,\
     getHaversineDistance
-from analysis.mr_analysis import locationIterator, locationGraphIterator
+from analysis.mr_analysis import locationIterator, locationGraphIterator,\
+    locationByUserDistributionIterator
 
 def addCheckinsToDB():
     i = 0
@@ -52,12 +55,19 @@ def addLocationToLocationDistanceToDB():
             d = getHaversineDistance(d[0:2],d[2:])
             locationToLocationCollection.insert({'_id': data['e'], 'u': data['w'], 'd': d})
         except Exception as e: print i, 'Exception while processing:', data; i+=1
-        
+
+def addValidLocationsToDB():
+    i=0
+    for l in set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation)):
+        i+=1
+        validLocationCollection.insert({'l': getLocationFromLid(l)})
+        print i, validLocationCollection.count()
 def locationToLocationIterator(): return locationToLocationCollection.find()
 
 if __name__ == '__main__':
 #    addCheckinsToDB()
-    addVenuesToDB()
+#    addVenuesToDB()
 ##    addUserCheckinDistributionToDB()
 #    addLocationCheckinDistributionToDB()
 #    addLocationToLocationDistanceToDB()
+    addValidLocationsToDB()
