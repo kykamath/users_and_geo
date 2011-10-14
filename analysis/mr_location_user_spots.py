@@ -29,7 +29,7 @@ def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheck
     for lid in locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation):
         for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
     for locations in nx.connected_components(graph): 
-        print locations
+        if len(locations)>=minimumLocationsPerSpot: print locations
 #        FileIO.writeToFileAsJson({'venues': locations}, spotsFile)
     #    p = Pool()
 #    i = 1
