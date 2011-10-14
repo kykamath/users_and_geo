@@ -4,8 +4,6 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
-from library.geo import isWithinBoundingBox, getLocationFromLid
-from mongo_settings import locationToLocationCollection
 sys.path.append('../')
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -13,6 +11,9 @@ from collections import defaultdict
 from library.file_io import FileIO
 from library.classes import GeneralMethods
 from library.plotting import Map, getDataDistribution
+
+from library.geo import isWithinBoundingBox, getLocationFromLid
+from mongo_settings import locationToLocationCollection
 
 from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
