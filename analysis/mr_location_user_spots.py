@@ -7,7 +7,8 @@ import sys
 sys.path.append('../')
 from settings import spotsRadiusFolder, minimumLocationsPerSpot,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
-    radiusInMiles, spotsUserGraphsFolder, graphNodesDistanceInMiles
+    radiusInMiles, spotsUserGraphsFolder, graphNodesDistanceInMiles,\
+    graphNodesMinEdgeWeight
 from analysis import Spots, SpotsKML
 from mongo_settings import locationsCollection, venuesCollection,\
     locationToLocationCollection
@@ -55,7 +56,7 @@ class UserGraphSpots:
         for e in locationToLocationCollection.find():
             d = e['_id'].split()
             l1, l2 = ' '.join(d[:2]), ' '.join(d[2:])
-            if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles: graph.add_edge(l1, l2)
+            if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles and e['u']>=graphNodesMinEdgeWeight: graph.add_edge(l1, l2)
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: yield getKMLForCluster(locations)
 #        def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
@@ -70,7 +71,7 @@ class UserGraphSpots:
 #        Spots.writeSpotsToFile(UserGraphSpots.iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), spotsFile)
     @staticmethod
     def writeAsKML():
-        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
+        spotsFile = '%s/%s_%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles, graphNodesMinEdgeWeight)
         SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(spotsFile), title=True)
     @staticmethod
     def run():
