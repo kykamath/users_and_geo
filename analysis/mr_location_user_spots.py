@@ -4,6 +4,7 @@ Created on Oct 13, 2011
 @author: kykamath
 '''
 import sys
+sys.path.append('../')
 from settings import spotsRadiusFolder, minimumLocationsPerSpot,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
     radiusInMiles
@@ -12,7 +13,6 @@ from mongo_settings import locationsCollection, venuesCollection
 from library.geo import getLocationFromLid, convertMilesToRadians
 import networkx as nx
 from analysis.mr_analysis import locationsForUsIterator
-sys.path.append('../')
 
 def getKMLForCluster(cluster):
     clusterToYield = []
