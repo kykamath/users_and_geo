@@ -56,7 +56,7 @@ class UserGraphSpots:
         graph = nx.Graph()
         for e in locationToLocationCollection.find():
             d = e['_id'].split()
-            l1, l2 = ' '.join(d[:2]), ' '.join(d[2:])
+            l1, l2 = '_'.join(d[:2]), '_'.join(d[2:])
             if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles and e['u']>=graphNodesMinEdgeWeight: graph.add_edge(l1, l2)
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: 
