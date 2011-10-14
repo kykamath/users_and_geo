@@ -4,6 +4,7 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
+from library.geo import isWithinBoundingBox, getLocationFromLid
 sys.path.append('../')
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -16,7 +17,7 @@ from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile,\
     locationToUserAndTimeMapFile, validLocationAndUserFile,\
-    validLocationAndUserHdfsPath
+    validLocationAndUserHdfsPath, us_boundary
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 from analysis.mr_user_distribution import MRUserDistribution
@@ -83,6 +84,9 @@ def writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin, minUni
         for user in locationVector['users'].keys()[:]: locationVector['users'][str(user)]=locationVector['users'][user]; del locationVector['users'][user]
         FileIO.writeToFileAsJson(locationVector, validLocationAndUserFile)
     GeneralMethods.runCommand('hadoop fs -put %s %s'%(validLocationAndUserFile, validLocationAndUserHdfsPath))
+    
+def locationsForUsIterator(minUniqueUsersCheckedInTheLocation): 
+    return (data['location'] for data in FileIO.iterateJsonFromFile(locationByUserDistributionFile) if data['count']>=minUniqueUsersCheckedInTheLocation and isWithinBoundingBox(getLocationFromLid(data['location']), us_boundary))
         
 if __name__ == '__main__':
 #    MR Jobs
@@ -105,6 +109,6 @@ if __name__ == '__main__':
     
 #    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
-    print len(getfilteredLocationsSet(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10))
+    print len(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation=10)))
     
     pass

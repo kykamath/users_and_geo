@@ -4,6 +4,7 @@ Created on Oct 7, 2011
 @author: kykamath
 '''
 import sys
+from mongo_settings import locationsCollection
 sys.path.append('../')
 from operator import itemgetter
 from itertools import combinations
@@ -14,17 +15,20 @@ import matplotlib.pyplot as plt
 from library.file_io import FileIO
 from library.classes import GeneralMethods
 from library.geo import getLocationFromLid, getHaversineDistanceForLids,\
-    getLidFromLocation, getCenterOfMass, isWithinBoundingBox
+    getLidFromLocation, getCenterOfMass, isWithinBoundingBox,\
+    convertMilesToRadians
 from library.plotting import getDataDistribution
 from library.clustering import getItemClustersFromItemsets
 
-from analysis.mr_analysis import filteredUserIterator
+from analysis.mr_analysis import filteredUserIterator,\
+    locationByUserDistributionIterator, locationsForUsIterator
 from analysis import SpotsKML
 from analysis import Spots as SpotsAnalysis
 from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
     initialNumberofLocationsInSpot, minSupport, userBasedSpotsKmlsFolder,\
     us_boundary, minimumLocationsPerSpot, spotsFIFolder,\
-    minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation
+    minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
+    spotsRadiusFolder
 from mongo_scripts import venuesCollection
 
 userBasedSpotsUsingFIKmlsFolder=userBasedSpotsKmlsFolder+'fi/'
@@ -122,7 +126,13 @@ def getClusterForKML(cluster):
             else: clusterToYield.append((getLocationFromLid(lid), ''))
     return clusterToYield 
 
-
+def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
+        def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
+        graph = nx.Graph()
+        for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):
+            for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
+        for locations in nx.connected_components(graph): 
+            if len(locations)>=minimumLocationsPerSpot: yield getClusterForKML(locations)
 
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
@@ -148,7 +158,7 @@ def iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUs
     for cluster in getItemClustersFromItemsets(itemsetsIterator(), getHaversineDistanceForLids): 
         if len(cluster)>minimumLocationsPerSpot: yield getClusterForKML(cluster)
         
-class KMLs:
+class KML:
     @staticmethod     
     def drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         SpotsKML.drawKMLsForPoints(locationsFromAllTransactionsIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), 'all_locations_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), color='#E38FF7')
@@ -163,10 +173,16 @@ class KMLs:
                                             'fi_itemset_clustering_%s_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport),
                                             title=True)
     @staticmethod
+    def radius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
+        SpotsKML.drawKMLsForSpotsWithPoints(iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), 
+                                            'radius_%s_%s.kml'%(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation),
+                                            title=True)
+    @staticmethod
     def run():
 #        KMLs.drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 #        KMLs.drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, minLocationsInItemset=initialNumberofLocationsInSpot, extraMinSupport=5) #minLocationsInItemset=10)
-        KMLs.drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)    
+#        KMLs.drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)    
+        KML.radius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles=5)
 
 class Spots:
     @staticmethod
@@ -177,6 +193,10 @@ class Spots:
     @staticmethod
     def writeUserDistributionUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         spotsFile = '%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
+        SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
+    def writeSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+        spotsFile = '%s/%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
         SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
@@ -191,6 +211,6 @@ if __name__ == '__main__':
 #    Mahout.getMahoutOutput(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
-#    KMLs.run()
+    KML.run()
 #    Spots.run()
-    print len(list(Mahout.iterateLocations(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, extraMinSupport=5)))
+#    print len(list(Mahout.iterateLocations(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, extraMinSupport=5)))
