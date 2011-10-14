@@ -60,7 +60,7 @@ class UserGraphSpots:
             if l1 in locationsToCheck and l2 in locationsToCheck and e['d']<=graphNodesDistanceInMiles: graph.add_edge(l1.replace(' ', '_'), l2.replace(' ', '_'))
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: 
-                clusters = clusterUsingMCLClustering(graph.subgraph(locations), inflation=4)
+                clusters = clusterUsingMCLClustering(graph.subgraph(locations), inflation=6)
                 print graph.subgraph(locations).number_of_nodes(), graph.subgraph(locations).number_of_edges(), len(clusters)
                 for cluster in clusters: 
                     if len(cluster)>=minimumLocationsPerSpot:  yield getKMLForCluster([c.replace('_', ' ') for c in cluster])
