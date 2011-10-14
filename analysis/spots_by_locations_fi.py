@@ -28,7 +28,7 @@ from settings import locationsFIMahoutInputFile, locationsFIMahoutOutputFile,\
     initialNumberofLocationsInSpot, minSupport, userBasedSpotsKmlsFolder,\
     us_boundary, minimumLocationsPerSpot, spotsFIFolder,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
-    spotsRadiusFolder
+    spotsRadiusFolder, radiusInMiles
 from mongo_scripts import venuesCollection
 
 userBasedSpotsUsingFIKmlsFolder=userBasedSpotsKmlsFolder+'fi/'
@@ -132,9 +132,7 @@ def iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheck
         for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):
             for location in nearbyLocations(lid, radiusInMiles): graph.add_edge(location['_id'], lid)
         for locations in nx.connected_components(graph): 
-            if len(locations)>=minimumLocationsPerSpot: 
-                print locations
-                yield getClusterForKML(locations)
+            if len(locations)>=minimumLocationsPerSpot: yield getClusterForKML(locations)
 
 def iterateDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, **kwargs):
     observedLocations = set()
@@ -181,10 +179,10 @@ class KML:
                                             title=True)
     @staticmethod
     def run():
-#        KMLs.drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
-#        KMLs.drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, minLocationsInItemset=initialNumberofLocationsInSpot, extraMinSupport=5) #minLocationsInItemset=10)
-#        KMLs.drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)    
-        KML.radius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles=5)
+#        KML.drawKMLsForLocationsFromAllTransactions(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
+#        KML.drawKMLsForUserBasedDisjointFrequentLocationItemsets(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, minLocationsInItemset=initialNumberofLocationsInSpot, extraMinSupport=5) #minLocationsInItemset=10)
+#        KML.drawKMLsForUserBasedOnItemsetClustering(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10, minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)    
+        KML.radius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
 
 class Spots:
     @staticmethod
@@ -193,19 +191,20 @@ class Spots:
         SpotsAnalysis.writeSpotsToFile(iterateSpotsByItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minCalculatedSupport, initialNumberofLocationsInSpot, **kwargs),
                                    spotsFile)
     @staticmethod
+    def writeUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
+        spotsFile = '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+        SpotsAnalysis.writeSpotsToFile(iterateSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), spotsFile)
+    @staticmethod
     def writeUserDistributionUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         spotsFile = '%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
-        SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
-    @staticmethod
-    def writeSpotsUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
-        spotsFile = '%s/%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
         SpotsAnalysis.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
 #        Spots.writeUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, 
 #                                               minCalculatedSupport=minSupport, initialNumberofLocationsInSpot=initialNumberofLocationsInSpot, extraMinSupport=5)
 #        Spots.writeUserDistributionUsingItemsetClustering(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
-        SpotsAnalysis.measureSpotAccuracy('%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+        Spots.writeUsingRadius(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+#        SpotsAnalysis.measureSpotAccuracy('%s/%s_%s'%(spotsFIFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     
 if __name__ == '__main__':
 #    Mahout.writeInputFileForFIMahout(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
@@ -213,6 +212,6 @@ if __name__ == '__main__':
 #    Mahout.getMahoutOutput(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
 
 #    for i in [20, 50, 100, 150]: Mahout.analyzeFrequentLocations(minUserLocations=i, minCalculatedSupport=minSupport)
-    KML.run()
-#    Spots.run()
+#    KML.run()
+    Spots.run()
 #    print len(list(Mahout.iterateLocations(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, extraMinSupport=5)))

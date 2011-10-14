@@ -44,3 +44,4 @@ initialNumberofLocationsInSpot = 5 # The spot discovery algorithms use locations
 minSupport = 3
 minimumLocationsPerSpot = 4
 locationRadiusInMiles = 10
+radiusInMiles = 5
