@@ -28,6 +28,8 @@ def getKMLForCluster(cluster):
 
 class RadiusSpots:
     @staticmethod
+    def getSpotsFile(): return '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
+    @staticmethod
     def iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
         def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
         graph = nx.Graph()
@@ -36,25 +38,23 @@ class RadiusSpots:
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: yield getKMLForCluster(locations)
     @staticmethod
-    def writeToFile(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
-        spotsFile = '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
-        Spots.writeSpotsToFile(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), spotsFile)
+    def writeToFile(): Spots.writeSpotsToFile(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), RadiusSpots.getSpotsFile())
     @staticmethod
-    def writeAsKML(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
-        spotsFile = '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
-        SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), 
-                                            '%s.kml'%(spotsFile), title=True)
+    def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), '%s.kml'%(RadiusSpots.getSpotsFile()), title=True)
     @staticmethod
-    def writeUserDistribution():
-        spotsFile = '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
-        Spots.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    def writeUserDistribution(): Spots.writeUserDistributionInSpots(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
+    def getStats(): return Spots.getStats(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
-#        RadiusSpots.writeAsKML(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
-#        RadiusSpots.writeToFile(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
-        RadiusSpots.writeUserDistribution()
+#        RadiusSpots.writeAsKML()
+#        RadiusSpots.writeToFile()
+#        RadiusSpots.writeUserDistribution()
+        print RadiusSpots.getStats()
         
 class UserGraphSpots:
+    @staticmethod
+    def getSpotsFile(): return '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
     @staticmethod
     def iterateSpots():
         locationsToCheck = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
@@ -70,23 +70,19 @@ class UserGraphSpots:
                 for cluster in clusters: 
                     if len(cluster)>=minimumLocationsPerSpot:  yield getKMLForCluster([c.replace('_', ' ') for c in cluster])
     @staticmethod
-    def writeToFile():
-        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
-        Spots.writeSpotsToFile(UserGraphSpots.iterateSpots(), spotsFile)
+    def writeToFile(): Spots.writeSpotsToFile(UserGraphSpots.iterateSpots(), UserGraphSpots.getSpotsFile())
     @staticmethod
-    def writeAsKML():
-        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
-        SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(spotsFile), title=True)
+    def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(UserGraphSpots.iterateSpots(), '%s.kml'%(UserGraphSpots.getSpotsFile()), title=True)
     @staticmethod
-    def writeUserDistribution():
-        spotsFile = '%s/%s_%s_%s'%(spotsUserGraphsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, graphNodesDistanceInMiles)
-        Spots.writeUserDistributionInSpots(spotsFile, filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    def writeUserDistribution(): Spots.writeUserDistributionInSpots(UserGraphSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
+    def getStats(): return Spots.getStats(UserGraphSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
-        UserGraphSpots.writeAsKML()
+#        UserGraphSpots.writeAsKML()
 #        UserGraphSpots.writeToFile()
-#        UserGraphSpots.writeUserDistribution()
-
+        UserGraphSpots.writeUserDistribution()
+#        print UserGraphSpots.getStats()
 if __name__ == '__main__':
 #    RadiusSpots.run()
     UserGraphSpots.run()

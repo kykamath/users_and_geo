@@ -6,6 +6,7 @@ from library.file_io import FileIO
 import os
 from collections import defaultdict
 from operator import itemgetter
+import numpy as np
 
 class SpotsKML:
     def __init__(self):
@@ -86,7 +87,7 @@ class Spots():
                 userDistributionInSpots[spotId]['users'].append(userId)
         for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsWithUsersFile)
     @staticmethod
-    def measureSpotAccuracy(spotsFile, userToLocationVector):
+    def getStats(spotsFile, userToLocationVector):
         lidToSpotIdMap, userToSpotIdMap, spotMap, spotsWithUsersFile = {}, {}, defaultdict(dict), spotsFile+'_users'
         for spot in FileIO.iterateJsonFromFile(spotsWithUsersFile):
             for location, _ in spot['lids']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
@@ -98,7 +99,13 @@ class Spots():
             if user in userToSpotIdMap: 
                 assignment = [[lidToSpotIdMap[lid]]*userVector['locations'][lid] for lid in userVector['locations'] if lid in lidToSpotIdMap]
                 spotMap[userToSpotIdMap[user]][user]=[item for t in assignment for item in t]; observedUsers.add(user)
+        accuracyList = []
         for spotId, userMap in spotMap.iteritems():
+            totalAssignments, wrongAssignments = 0.0, 0.0
             for user in userMap:
-                print userMap[user] 
-            
+                for a in userMap[user]:
+                    if a!=spotId: wrongAssignments+=1
+                    totalAssignments+=1
+            accuracyList.append(wrongAssignments/totalAssignments)
+        return {'accuracy': np.mean(accuracyList), 'total_locations': len(lidToSpotIdMap), 'total_users': len(userToSpotIdMap)}
+                    
