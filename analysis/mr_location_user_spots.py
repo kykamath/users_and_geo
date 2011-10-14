@@ -38,9 +38,9 @@ class RadiusSpots:
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: yield getKMLForCluster(locations)
     @staticmethod
-    def writeToFile(): Spots.writeSpotsToFile(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), RadiusSpots.getSpotsFile())
+    def writeToFile(): Spots.writeSpotsToFile(RadiusSpots.iterateSpots(), RadiusSpots.getSpotsFile())
     @staticmethod
-    def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles), '%s.kml'%(RadiusSpots.getSpotsFile()), title=True)
+    def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(), '%s.kml'%(RadiusSpots.getSpotsFile()), title=True)
     @staticmethod
     def writeUserDistribution(): Spots.writeUserDistributionInSpots(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
