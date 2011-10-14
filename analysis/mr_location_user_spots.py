@@ -30,7 +30,7 @@ class RadiusSpots:
     @staticmethod
     def getSpotsFile(): return '%s/%s_%s_%s'%(spotsRadiusFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles)
     @staticmethod
-    def iterateSpots(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, radiusInMiles):
+    def iterateSpots():
         def nearbyLocations(lid, radiusInMiles): return (location for location in locationsCollection.find({"l": {"$within": {"$center": [getLocationFromLid(lid), convertMilesToRadians(radiusInMiles)]}}}))
         graph = nx.Graph()
         for lid in locationsForUsIterator(minUniqueUsersCheckedInTheLocation):
@@ -47,9 +47,9 @@ class RadiusSpots:
     def getStats(): return Spots.getStats(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
-#        RadiusSpots.writeAsKML()
-#        RadiusSpots.writeToFile()
-#        RadiusSpots.writeUserDistribution()
+        RadiusSpots.writeAsKML()
+        RadiusSpots.writeToFile()
+        RadiusSpots.writeUserDistribution()
         print RadiusSpots.getStats()
         
 class UserGraphSpots:
@@ -84,6 +84,6 @@ class UserGraphSpots:
         UserGraphSpots.writeUserDistribution()
         print UserGraphSpots.getStats()
 if __name__ == '__main__':
-#    RadiusSpots.run()
-    UserGraphSpots.run()
+    RadiusSpots.run()
+#    UserGraphSpots.run()
     
