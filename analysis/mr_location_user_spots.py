@@ -140,7 +140,7 @@ class UserGraphSpots:
     def getStats(): return Spots.getStats(UserGraphSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
-#        UserGraphSpots.writeAsKML()
+        UserGraphSpots.writeAsKML()
         UserGraphSpots.writeToFile()
         UserGraphSpots.writeUserDistribution()
         print UserGraphSpots.getStats()
@@ -167,6 +167,6 @@ class FrequentItemSpots:
         FrequentItemSpots.writeAsKML()
         
 if __name__ == '__main__':
-#    RadiusSpots.run()
+    RadiusSpots.run()
 #    UserGraphSpots.run()
-    FrequentItemSpots.run()
+#    FrequentItemSpots.run()

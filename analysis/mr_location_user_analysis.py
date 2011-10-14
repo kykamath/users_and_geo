@@ -81,8 +81,8 @@ if __name__ == '__main__':
     dayConf = {'scale': 1, 'row': 3, 'column': 3}
 #    plotLocationDistribution(locationUserDayBlockMadFile, **dayBlockConf)
 #    plotLocationDistribution(locationUserDayMad, **dayConf)
-#    plotLocationToUserDistribution(locationUserDayBlockMadFile, **dayBlockConf)
-#    plotLocationToUserDistribution(locationUserDayMad, **dayConf)
-    getRandomLocationNames(locationUserDayBlockMadFile)
-    getRandomLocationNames(locationUserDayMad)
+    plotLocationToUserDistribution(locationUserDayBlockMadFile, **dayBlockConf)
+    plotLocationToUserDistribution(locationUserDayMad, **dayConf)
+#    getRandomLocationNames(locationUserDayBlockMadFile)
+#    getRandomLocationNames(locationUserDayMad)
     
