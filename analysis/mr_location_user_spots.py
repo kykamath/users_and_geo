@@ -14,7 +14,7 @@ from analysis.spots_by_locations_fi import Mahout
 from settings import spotsRadiusFolder, minimumLocationsPerSpot,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
     radiusInMiles, spotsUserGraphsFolder, graphNodesDistanceInMiles,\
-    spotsFrequentItemsFolder, minSupport
+    spotsFrequentItemsFolder, minSupport, itemsetsMergeThreshold
 from analysis import Spots, SpotsKML
 from mongo_settings import locationsCollection, venuesCollection,\
     locationToLocationCollection
@@ -95,20 +95,29 @@ class UserGraphSpots:
 
 class FrequentItemSpots:        
     @staticmethod
-    def getSpotsFile(): return '%s/%s_%s'%(spotsFrequentItemsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)
+    def getSpotsFile(): return '%s/%s_%s_%s_%s'%(spotsFrequentItemsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, itemsetsMergeThreshold)
     @staticmethod
     def iterateSpots():
         def iterateItemsets():
             for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
                 if len(itemset)>=2: yield itemset
-        for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids, mergeThreshold=0.75):
+        for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids, itemsetsMergeThreshold):
             if len(cluster)>minimumLocationsPerSpot: yield getKMLForCluster(cluster)
     @staticmethod
     def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(FrequentItemSpots.iterateSpots(), '%s.kml'%(FrequentItemSpots.getSpotsFile()), title=True)
     @staticmethod
+    def writeToFile(): Spots.writeSpotsToFile(FrequentItemSpots.iterateSpots(), FrequentItemSpots.getSpotsFile())
+    @staticmethod
+    def writeUserDistribution(): Spots.writeUserDistributionInSpots(FrequentItemSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
+    def getStats(): return Spots.getStats(FrequentItemSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    @staticmethod
     def run():
         FrequentItemSpots.writeAsKML()
-
+        FrequentItemSpots.writeToFile()
+        FrequentItemSpots.writeUserDistribution()
+        print FrequentItemSpots.getStats()
+        
 from collections import defaultdict
 class ItemsetClustering:
     def __init__(self):
