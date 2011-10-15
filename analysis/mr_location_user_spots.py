@@ -101,7 +101,7 @@ class FrequentItemSpots:
         def iterateItemsets():
             for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
                 if len(itemset)>=2: yield itemset
-        for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids):
+        for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids, mergeThreshold=0.75):
             if len(cluster)>minimumLocationsPerSpot: yield getKMLForCluster(cluster)
     @staticmethod
     def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(FrequentItemSpots.iterateSpots(), '%s.kml'%(FrequentItemSpots.getSpotsFile()), title=True)
