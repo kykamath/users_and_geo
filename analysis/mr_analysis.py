@@ -19,7 +19,8 @@ from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile,\
     locationToUserAndTimeMapFile, validLocationAndUserFile,\
-    validLocationAndUserHdfsPath, us_boundary
+    validLocationAndUserHdfsPath, us_boundary,\
+    locationToUserAndActualTimeMapFile
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 from analysis.mr_user_distribution import MRUserDistribution
@@ -99,6 +100,7 @@ if __name__ == '__main__':
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
+    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndActualTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)
@@ -111,14 +113,14 @@ if __name__ == '__main__':
     
 #    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
-    locationsToCheck = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation=10)))
-    j=1
-    for i in locationToLocationCollection.find(fields=['_id']):
-        d = i['_id'].split()
-        n1, n2 = ' '.join(d[:2]), ' '.join(d[2:])
-        if n1 in locationsToCheck: locationsToCheck.remove(n1)
-        if n2 in locationsToCheck: locationsToCheck.remove(n2)
-        print j
-        j+=1
-    print len(locationsToCheck)
-    pass
+#    locationsToCheck = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation=10)))
+#    j=1
+#    for i in locationToLocationCollection.find(fields=['_id']):
+#        d = i['_id'].split()
+#        n1, n2 = ' '.join(d[:2]), ' '.join(d[2:])
+#        if n1 in locationsToCheck: locationsToCheck.remove(n1)
+#        if n2 in locationsToCheck: locationsToCheck.remove(n2)
+#        print j
+#        j+=1
+#    print len(locationsToCheck)
+#    pass

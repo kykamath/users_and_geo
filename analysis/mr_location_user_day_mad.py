@@ -27,7 +27,3 @@ class MRLocationUserDayMad(ModifiedMRJob):
 
 if __name__ == '__main__':
     MRLocationUserDayMad.run()
-#    for l in FileIO.iterateJsonFromFile('../data/locationToUserAndTimeMap'):
-#        print l
-#        print getLocationUserSpecificMads(l)
-#        exit()
