@@ -103,8 +103,8 @@ class FrequentItemSpots:
                 if len(itemset)>=2: 
                     print 'sending: ', itemset
                     yield itemset
-            for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids):
-                print cluster
+        for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids):
+            print cluster
         exit()
 #            if len(itemset)>=initialNumberofLocationsInSpot: yield itemset
 #            else: itemsetsPostponed.append((itemset, len(itemset)))
