@@ -100,9 +100,7 @@ class FrequentItemSpots:
     def iterateSpots():
         def iterateItemsets():
             for itemset, support in sorted(Mahout.iterateFrequentLocationsFromFIMahout(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, minSupport, yieldSupport=True, lids=True), key=itemgetter(1), reverse=True):
-                if len(itemset)>=2: 
-                    print 'sending: ', itemset
-                    yield itemset
+                if len(itemset)>=2: yield itemset
         for cluster in MultistepItemsetClustering().cluster(iterateItemsets(), getHaversineDistanceForLids):
             print cluster
         exit()
