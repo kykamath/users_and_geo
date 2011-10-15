@@ -95,7 +95,7 @@ class UserGraphSpots:
 
 class FrequentItemSpots:        
     @staticmethod
-    def getSpotsFile(): return '%s/%s_%s_%s_%s'%(spotsFrequentItemsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, itemsetsMergeThreshold)
+    def getSpotsFile(): return '%s/%s_%s_%s'%(spotsFrequentItemsFolder, minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, itemsetsMergeThreshold)
     @staticmethod
     def iterateSpots():
         def iterateItemsets():
