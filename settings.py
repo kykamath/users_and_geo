@@ -49,4 +49,4 @@ locationRadiusInMiles = 10
 radiusInMiles = 15
 graphNodesMinEdgeWeight = 5 
 graphNodesDistanceInMiles = 25
-itemsetsMergeThreshold = 1.0
+itemsetsMergeThreshold = 0.5
