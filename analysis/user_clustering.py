@@ -4,6 +4,7 @@ Created on Oct 15, 2011
 @author: kykamath
 '''
 import sys
+from library.clustering import KMeansClustering
 sys.path.append('../')
 from analysis.mr_analysis import filteredUserIterator,\
     filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
@@ -31,11 +32,17 @@ def getDayBlockMeansForClusters(users, userClusterMap):
 
 def getAverageDistanceBetweenClusters(meanDayblockValues): return np.mean([np.abs(m1-m2) for m1, m2 in combinations(meanDayblockValues,2)])
     
-#userVectors = getUserVectors()
 
-    
+userVectors = getUserVectors()
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
+
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
-    userClusterMap = dict((u, random.randint(0,2)) for u in location['users'])
-    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
+#    userClusterMap = dict((u, random.randint(0,2)) for u in location['users'])
+#    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+#    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
+
+    for u in location['users']:
+        print u, userVectors[u]
+    exit()
+#    k = 2
+#    clusters = KMeansClustering(,k).cluster()
