@@ -4,6 +4,7 @@ Created on Oct 15, 2011
 @author: kykamath
 '''
 import sys
+from analysis.mr_location_user_dayblock_mad import getLocationUserSpecificMads
 sys.path.append('../')
 from analysis.mr_analysis import filteredUserIterator,\
     filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
@@ -16,9 +17,8 @@ def getUserVectors():
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 #userVectors = getUserVectors()
 
-def getDayBlockDistributionForUsers(users):
-    for k, v in users.iteritems():
-        print k, v
+def getDayBlockDistributionForUsers(locationVector):
+    print getLocationUserSpecificMads(locationVector)
 
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
