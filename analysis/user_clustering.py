@@ -41,12 +41,12 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
 #    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
 
-#    userVectorsToCluster = [(u, ' '.join([i.replace(' ', '_') for i in userVectors[u].keys()]))for u in location['users']]
-#    k = 2
-#    clusters = KMeansClustering(userVectorsToCluster, k).cluster()
-#    print clusters
-    for u in location['users']:
-        print u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])
+    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in location['users']]
+    k = 2
+    clusters = KMeansClustering(userVectorsToCluster, k).cluster()
+    print clusters
+#    for u in location['users']:
+#        print u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])
 #    for k in [(u, ' '.join([i.replace(' ', '_') for i in userVectors[u].keys() for j in range()]))for u in location['users']]:
 #        print k
     exit()
