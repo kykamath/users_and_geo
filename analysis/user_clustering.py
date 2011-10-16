@@ -49,10 +49,15 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
     dimensions = [d for d in dimensions if dimensions[d]>=2]
 
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in location['users']]
-#    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
     k = 2
-#    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
-    cluster = KMeansClustering(userVectorsToCluster, k).cluster()
+    for k in range(2,5):
+        cluster = KMeansClustering(userVectorsToCluster, k).cluster()
+        userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
+        dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+        clusters.append((k, zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])))
+    
+    for k in clusters: print k
+    
 #    i+=1
 #    if i==100:
 #        for i in clusters:
@@ -70,9 +75,9 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #
 ##    whitened = whiten(documents)
 ##    codes = 2
-    userClusterMap = dict((k,v) for k,v in zip(location['users'], cluster))
-#    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,codes)[1])))
-    print userClusterMap
-    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
+#    userClusterMap = dict((k,v) for k,v in zip(location['users'], cluster))
+##    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,codes)[1])))
+#    print userClusterMap
+#    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+#    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
     exit()
