@@ -11,6 +11,7 @@ from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation
 from operator import itemgetter
 import numpy as np
+import random
 
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
@@ -18,7 +19,7 @@ def getUserVectors():
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 
 #userVectors = getUserVectors()
-def getDayBlockDistributionForUsers(users):
+def getDayBlockDistributionForUsers(users, userClusters):
     completeDayBlockDistribution = []
     for user in users:
         dayBlockDistributionForUser = []
@@ -29,5 +30,6 @@ def getDayBlockDistributionForUsers(users):
 
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
-    getDayBlockDistributionForUsers(location['users'])
+#    getDayBlockDistributionForUsers('location['users']')
+    print dict((u, random.randint(0,2)) for u in location['users'])
     
