@@ -51,8 +51,8 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in location['users']]
 #    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
     k = 2
-    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
-
+#    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
+    cluster = KMeansClustering(userVectorsToCluster, k).cluster()
 #    i+=1
 #    if i==100:
 #        for i in clusters:
@@ -70,9 +70,9 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #
 ##    whitened = whiten(documents)
 ##    codes = 2
-#    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,book)[1])))
-##    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,codes)[1])))
-#    print userClusterMap
-#    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-#    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
+    userClusterMap = dict((k,v) for k,v in zip(location['users'], cluster))
+#    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,codes)[1])))
+    print userClusterMap
+    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
     exit()
