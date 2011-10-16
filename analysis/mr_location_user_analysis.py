@@ -61,8 +61,6 @@ def plotLocationToUserDistribution(file, **conf):
         j+=1
     plt.show()
 
-def plotLocationToUserCheckinDistribution
-    
 def getRandomLocationNames(file, **conf):
     data = defaultdict(list)
     for d in FileIO.iterateJsonFromFile(file): data[d['location_db_mad']].append(d['location'])
