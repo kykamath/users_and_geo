@@ -39,24 +39,19 @@ locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocati
 i = 0
 clusters = []
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
-#    userClusterMap = dict((u, random.randint(0,2)) for u in location['users'])
-#    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-#    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
-
     dimensions = defaultdict(int)
     for u in location['users']:
         for lid in userVectors[u]: dimensions[lid]+=1
     dimensions = [d for d in dimensions if dimensions[d]>=2]
 
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in location['users']]
-    k = 2
-    for k in range(2,5):
+    resultsForVaryingK = []
+    for k in range(2,6):
         cluster = KMeansClustering(userVectorsToCluster, k).cluster()
         userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
         dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-        clusters.append((k, zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])))
-    
-    for k in clusters: print k
+        resultsForVaryingK.append((k, userClusterMap, getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])))
+    for k in resultsForVaryingK: print k
     
 #    i+=1
 #    if i==100:
