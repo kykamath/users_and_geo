@@ -43,16 +43,18 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
 
 #    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in location['users']]
-    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
-    k = 2
-    clusters.append(EMTextClustering(userVectorsToCluster, k).cluster())
-#    print clusters
-#    for u in location['users']:
-#        print u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])
-#    for k in [(u, ' '.join([i.replace(' ', '_') for i in userVectors[u].keys() for j in range()]))for u in location['users']]:
-#        print k
-    i+=1
-    if i==100:
-        for i in clusters:
-            print i
-        exit()
+#    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
+#    k = 2
+#    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
+#
+#    i+=1
+#    if i==100:
+#        for i in clusters:
+#            print i
+#        exit()
+    dimensions = set()
+    for u in location['users']:
+        for lid in userVectors[u]: dimensions.add(lid)
+    print dimensions
+    print len(dimensions)
+    exit()
