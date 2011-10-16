@@ -15,6 +15,7 @@ from operator import itemgetter
 from collections import defaultdict
 from itertools import combinations
 import numpy as np
+from multiprocessing import Pool
 
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
@@ -54,9 +55,14 @@ def clusterLocation(location):
 def locationClusterIterator():
     for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): yield location
 
-for location in locationClusterIterator():
-    location['clustering'] = clusterLocation(location)
-    location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
-    print location
+
+if __name__ == '__main__':
+    p = Pool(5)
+    totalLocations = len(list(locationClusterIterator()))
+    i=1
+    for location in p.imap(clusterLocation, locationClusterIterator()):
+        print '%s of %s'%(i,totalLocations)
+        location['clustering'] = clusterLocation(location)
+        location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
     FileIO.writeToFileAsJson(location, locationClustersFile)
-    exit()
+    i+=1
