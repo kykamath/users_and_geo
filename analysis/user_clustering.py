@@ -47,7 +47,7 @@ def clusterLocation(location):
         cluster = KMeansClustering(userVectorsToCluster, k).cluster()
         userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
         dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-        userClusterMap = dict([(str(k), v) for k, v in userClusterMap.iteritems()])
+        userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
         resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
     return sorted(resultsForVaryingK, key=itemgetter(3))[-1]
 
