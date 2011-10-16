@@ -77,20 +77,10 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #        print d
     documents = np.array(documents)
 #    print documents
-    print np.shape(documents)
-#    print dimensions
-#    print len(dimensions)
-
-#    features  = array([[ 1.9,2.3],
-#                       [ 1.5,2.5],
-#                       [ 0.8,0.6],
-#                       [ 0.4,1.8],
-#                       [ 0.1,0.1],
-#                       [ 0.2,1.8],
-#                       [ 2.0,0.5],
-#                       [ 0.3,1.5],
-#                       [ 1.0,1.0]])
     whitened = whiten(documents)
     book = np.array((whitened[0],whitened[2]))
-    print kmeans2(whitened,book)
+    userClusterMap = dict((k,v) for k,v in zip(location['users'], kmeans2(whitened,book)))
+    print userClusterMap
+    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
     exit()
