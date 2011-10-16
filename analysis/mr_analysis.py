@@ -19,8 +19,7 @@ from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile,\
     locationToUserAndTimeMapFile, validLocationAndUserFile,\
-    validLocationAndUserHdfsPath, us_boundary,\
-    locationToUserAndActualTimeMapFile
+    validLocationAndUserHdfsPath, us_boundary
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 from analysis.mr_user_distribution import MRUserDistribution
@@ -100,7 +99,6 @@ if __name__ == '__main__':
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
-    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndActualTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 
 #    Plots
 #    plotDistribution(userDistributionFile)
@@ -123,4 +121,4 @@ if __name__ == '__main__':
 #        print j
 #        j+=1
 #    print len(locationsToCheck)
-#    pass
+    pass
