@@ -16,6 +16,11 @@ def getUserVectors():
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 #userVectors = getUserVectors()
 
+def getDayBlockDistributionForUsers(users):
+    for k, v in users.iteritems():
+        print k, v
+
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
-    print location['users'].keys()
+    getDayBlockDistributionForUsers(location['users'])
+    
