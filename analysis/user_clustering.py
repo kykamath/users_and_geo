@@ -43,48 +43,36 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
 #    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
 
-#    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in location['users']]
+    dimensions = defaultdict(int)
+    for u in location['users']:
+        for lid in userVectors[u]: dimensions[lid]+=1
+    dimensions = [d for d in dimensions if dimensions[d]>=2]
+
+    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in location['users']]
 #    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
-#    k = 2
-#    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
-#
+    k = 2
+    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
+
 #    i+=1
 #    if i==100:
 #        for i in clusters:
 #            print i
 #        exit()
 
-    dimensions = defaultdict(int)
-    for u in location['users']:
-        for lid in userVectors[u]: dimensions[lid]+=1
-    dimensions = [d for d in dimensions if dimensions[d]>=2]
-    print dimensions
     
-#    exit()
-
-#    dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
-    documents = []
-    for user in location['users']:
-        userDocument = [0.0 if lid not in userVectors[user] else float(userVectors[user][lid]) for lid in dimensions]
-#        userDocument = []
-#        print location['users'][user]
-#        for lid in dimensions:
-#            if lid not in location['users'][user]: userDocument.append(0.0)
-#            else:  userDocument.append(float(location['users'][user][lid]))
-        documents.append(userDocument)
-#        exit()
-#    for d in documents:
-#        print d
-    documents = np.array(documents)
-#    print documents
-    whitened = whiten(documents)
-    book = np.array((whitened[0],whitened[2]))
-
+#    documents = []
+#    for user in location['users']:
+#        userDocument = [0.0 if lid not in userVectors[user] else float(userVectors[user][lid]) for lid in dimensions]
+#        documents.append(userDocument)
+#    documents = np.array(documents)
 #    whitened = whiten(documents)
-#    codes = 2
-    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,book)[1])))
-#    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,codes)[1])))
-    print userClusterMap
-    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
+#    book = np.array((whitened[0],whitened[2]))
+#
+##    whitened = whiten(documents)
+##    codes = 2
+#    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,book)[1])))
+##    userClusterMap = dict((k,v) for k,v in zip(location['users'], list(kmeans2(whitened,codes)[1])))
+#    print userClusterMap
+#    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+#    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
     exit()
