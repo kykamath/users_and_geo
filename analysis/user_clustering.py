@@ -4,7 +4,7 @@ Created on Oct 15, 2011
 @author: kykamath
 '''
 import sys
-from library.clustering import KMeansClustering
+from library.clustering import KMeansClustering, EMTextClustering
 sys.path.append('../')
 from analysis.mr_analysis import filteredUserIterator,\
     filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
@@ -45,7 +45,7 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in location['users']]
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
     k = 2
-    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
+    clusters.append(EMTextClustering(userVectorsToCluster, k).cluster())
 #    print clusters
 #    for u in location['users']:
 #        print u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])
