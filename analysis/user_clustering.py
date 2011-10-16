@@ -63,13 +63,13 @@ def generateLocationClusterData():
 #    p = Pool()
 #    totalLocations = len(list(locationClusterIterator()))
 #    i=1
-#    for location in locationClusterIterator():
-#        location = clusterLocation(location)
+    for location in locationClusterIterator():
+        location = clusterLocation(location)
 #        print '%s of %s'%(i,totalLocations)
-#        FileIO.writeToFileAsJson(location, locationClustersFile)
+        FileIO.writeToFileAsJson(location, locationClustersFile)
 #        i+=1
-    p = Pool()
-    for location in p.imap(clusterLocation, locationClusterIterator()): FileIO.writeToFileAsJson(location, locationClustersFile)
+#    p = Pool()
+#    for location in p.imap(clusterLocation, locationClusterIterator()): FileIO.writeToFileAsJson(location, locationClustersFile)
 
 if __name__ == '__main__':
     generateLocationClusterData()
