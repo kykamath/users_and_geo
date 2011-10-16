@@ -51,7 +51,10 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
         userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
         dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
         resultsForVaryingK.append((k, userClusterMap, getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])))
+    
+    selectedClustering = sorted(resultsForVaryingK, key=itemgetter(2))[-1]
     for k in resultsForVaryingK: print k
+    print selectedClustering
     
 #    i+=1
 #    if i==100:
