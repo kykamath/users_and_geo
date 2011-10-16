@@ -27,7 +27,7 @@ def getDayBlockDistributionForUsers(users, userClusterMap):
         for day in users[user]:
             dayBlockDistributionForUser+=[int(dayBlock) for dayBlock in users[user][day] for i in range(users[user][day][dayBlock])]
         completeDayBlockDistribution[userClusterMap[user]]+=dayBlockDistributionForUser
-    print [(k, np.mean(completeDayBlockDistribution)) for k in completeDayBlockDistribution]
+    print [(k, np.mean(completeDayBlockDistribution[k])) for k in completeDayBlockDistribution]
     
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
