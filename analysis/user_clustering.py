@@ -19,4 +19,4 @@ def getUserVectors():
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
 print len(locationsInUS)
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
-    print location.keys()
+    print location['users']
