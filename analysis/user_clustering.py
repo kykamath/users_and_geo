@@ -52,9 +52,7 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #        for i in clusters:
 #            print i
 #        exit()
-    dimensions = set()
-    for u in location['users']:
-        for lid in userVectors[u]: dimensions.add(lid)
+    dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
     print dimensions
     print len(dimensions)
     exit()
