@@ -29,7 +29,7 @@ def getDayBlockMeansForClusters(users, userClusterMap):
         for day in users[user]:
             dayBlockDistributionForUser+=[int(dayBlock) for dayBlock in users[user][day] for i in range(users[user][day][dayBlock])]
         completeDayBlockDistribution[userClusterMap[user]]+=dayBlockDistributionForUser
-    return [(k, np.mean(completeDayBlockDistribution[k])) for k in completeDayBlockDistribution]
+    return [(k, np.mean(completeDayBlockDistribution[k]), np.std(completeDayBlockDistribution[k])) for k in completeDayBlockDistribution]
 
 def getAverageDistanceBetweenClusters(meanDayblockValues): return np.mean([np.abs(m1-m2) for m1, m2 in combinations(meanDayblockValues,2)])
     
@@ -50,7 +50,7 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
         cluster = KMeansClustering(userVectorsToCluster, k).cluster()
         userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
         dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-        resultsForVaryingK.append((k, userClusterMap, zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])))
+        resultsForVaryingK.append((k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])))
     
     selectedClustering = sorted(resultsForVaryingK, key=itemgetter(3))[-1]
     for k in resultsForVaryingK: print k
