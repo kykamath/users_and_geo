@@ -58,10 +58,11 @@ def locationClusterIterator():
     for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): yield location
 
 def generateLocationClusterData():
-    p = Pool()
+#    p = Pool()
     totalLocations = len(list(locationClusterIterator()))
     i=1
-    for location in p.imap(clusterLocation, locationClusterIterator()):
+    for location in locationClusterIterator():
+        location = clusterLocation(location)
         print '%s of %s'%(i,totalLocations)
         FileIO.writeToFileAsJson(location, locationClustersFile)
         i+=1
