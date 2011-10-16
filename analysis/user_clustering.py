@@ -63,9 +63,11 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #            else:  userDocument.append(float(location['users'][user][lid]))
         documents.append(userDocument)
 #        exit()
-    for d in documents:
-        print d
-#    print np.array(d)
+#    for d in documents:
+#        print d
+    documents = np.array(documents)
+    print documents
+    np.shape(documents)
 #    print dimensions
 #    print len(dimensions)
     exit()
