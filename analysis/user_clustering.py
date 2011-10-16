@@ -52,7 +52,7 @@ def clusterLocation(location):
             userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
             resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
         except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
-    location['clustering'] = sorted(resultsForVaryingK, key=itemgetter(3))[-1]
+    if resultsForVaryingK: location['clustering'] = sorted(resultsForVaryingK, key=itemgetter(3))[-1]
     location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
     return location
 
