@@ -38,4 +38,4 @@ locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocati
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
     userClusterMap = dict((u, random.randint(0,2)) for u in location['users'])
     dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-    print getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
+    print zip(*dayBlockMeansForClusters)[1], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])
