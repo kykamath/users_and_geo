@@ -60,9 +60,9 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
     dimensions = [d for d in dimensions if dimensions[d]>=2]
     print dimensions
     
-    exit()
+#    exit()
 
-    dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
+#    dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
     documents = []
     for user in location['users']:
         userDocument = [0.0 if lid not in userVectors[user] else float(userVectors[user][lid]) for lid in dimensions]
