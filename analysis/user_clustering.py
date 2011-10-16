@@ -16,3 +16,4 @@ def getUserVectors():
 
 userVectors = getUserVectors()
 print len(userVectors)
+print len(set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)]))
