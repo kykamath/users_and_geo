@@ -50,19 +50,22 @@ def clusterLocation(location):
         dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
         userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
         resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
-    return sorted(resultsForVaryingK, key=itemgetter(3))[-1]
+    location['clustering'] = sorted(resultsForVaryingK, key=itemgetter(3))[-1]
+    location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
+    return location
 
 def locationClusterIterator():
     for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): yield location
 
-
-if __name__ == '__main__':
-    p = Pool(5)
+def generateLocationClusterData():
+    p = Pool()
     totalLocations = len(list(locationClusterIterator()))
     i=1
     for location in p.imap(clusterLocation, locationClusterIterator()):
         print '%s of %s'%(i,totalLocations)
-        location['clustering'] = clusterLocation(location)
-        location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
-    FileIO.writeToFileAsJson(location, locationClustersFile)
-    i+=1
+        FileIO.writeToFileAsJson(location, locationClustersFile)
+        i+=1
+
+if __name__ == '__main__':
+    generateLocationClusterData()
+    
