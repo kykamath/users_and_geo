@@ -53,6 +53,12 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #            print i
 #        exit()
     dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
-    print dimensions
-    print len(dimensions)
+    documents = []
+    for user in location['users']:
+        userDocument = [0 if lid not in user else user[lid] for lid in dimensions]
+        documents.append(userDocument)
+    for d in documents:
+        print d
+#    print dimensions
+#    print len(dimensions)
     exit()
