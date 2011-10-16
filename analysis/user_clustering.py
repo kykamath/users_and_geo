@@ -56,6 +56,6 @@ def locationClusterIterator():
 
 for location in locationClusterIterator():
     location['clustering'] = clusterLocation(location)
-    FileIO.writeToFileAsJson(location, locationClustersFile)
     print location
+    FileIO.writeToFileAsJson(location, locationClustersFile)
     exit()
