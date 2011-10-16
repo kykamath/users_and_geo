@@ -45,6 +45,8 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    k = 2
 #    clusters = KMeansClustering(userVectorsToCluster, k).cluster()
 #    print clusters
-    for k in [(u, ' '.join([i.replace(' ', '_') for i in userVectors[u].keys()]))for u in location['users']]:
-        print k
+    for u in location['users']:
+        print u, userVectors[u]
+#    for k in [(u, ' '.join([i.replace(' ', '_') for i in userVectors[u].keys() for j in range()]))for u in location['users']]:
+#        print k
     exit()
