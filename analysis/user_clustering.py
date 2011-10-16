@@ -14,5 +14,5 @@ def getUserVectors():
     '''
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 
-for k, v in getUserVectors().iteritems():
-    print k, v
+userVectors = getUserVectors()
+print len(userVectors())
