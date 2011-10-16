@@ -35,7 +35,8 @@ def getAverageDistanceBetweenClusters(meanDayblockValues): return np.mean([np.ab
 
 userVectors = getUserVectors()
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
-
+i = 0
+clusters = []
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
 #    userClusterMap = dict((u, random.randint(0,2)) for u in location['users'])
 #    dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
@@ -44,10 +45,14 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in location['users']]
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
     k = 2
-    clusters = KMeansClustering(userVectorsToCluster, k).cluster()
-    print clusters
+    clusters.append(KMeansClustering(userVectorsToCluster, k).cluster())
+#    print clusters
 #    for u in location['users']:
 #        print u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])
 #    for k in [(u, ' '.join([i.replace(' ', '_') for i in userVectors[u].keys() for j in range()]))for u in location['users']]:
 #        print k
-    exit()
+    i+=1
+    if i==100:
+        for i in clusters:
+            print i
+        exit()
