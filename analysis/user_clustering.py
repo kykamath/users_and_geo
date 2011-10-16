@@ -45,11 +45,13 @@ def clusterLocation(location):
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in location['users']]
     resultsForVaryingK = []
     for k in range(2,6):
-        cluster = KMeansClustering(userVectorsToCluster, k).cluster()
-        userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
-        dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
-        userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
-        resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
+        try:
+            cluster = KMeansClustering(userVectorsToCluster, k).cluster()
+            userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
+            dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+            userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
+            resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
+        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
     location['clustering'] = sorted(resultsForVaryingK, key=itemgetter(3))[-1]
     location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
     return location
