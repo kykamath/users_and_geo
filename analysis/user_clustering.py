@@ -8,5 +8,8 @@ sys.path.append('../')
 from analysis.mr_analysis import filteredUserIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation
+def getUserVectors():
+    ''' Returns a dict for user vectors across top 100 location dimensions.
+    '''
 for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True):
-    print u
+    print u.keys()
