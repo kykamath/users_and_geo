@@ -5,7 +5,8 @@ Created on Oct 15, 2011
 '''
 import sys
 sys.path.append('../')
-from analysis.mr_analysis import filteredUserIterator
+from analysis.mr_analysis import filteredUserIterator,\
+    filteredLocationToUserAndTimeMapIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation
 from operator import itemgetter
@@ -13,7 +14,7 @@ def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
     '''
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+#userVectors = getUserVectors()
 
-userVectors = getUserVectors()
-print len(userVectors)
-print len(set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)]))
+for l in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+    print l
