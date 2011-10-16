@@ -72,15 +72,15 @@ def getRandomLocationNames(file, **conf):
         print
 
 if __name__ == '__main__':
-    runMRJob(MRLocationUserDayBlockMad, locationUserDayBlockMadFile, jobconf={'mapred.reduce.tasks':5})
+#    runMRJob(MRLocationUserDayBlockMad, locationUserDayBlockMadFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRLocationUserDayMad, locationUserDayMad, jobconf={'mapred.reduce.tasks':5})
 
-#    dayBlockConf = {'scale': 4, 'row': 2, 'column': 3}
-#    dayConf = {'scale': 1, 'row': 3, 'column': 3}
+    dayBlockConf = {'scale': 4, 'row': 2, 'column': 3}
+    dayConf = {'scale': 1, 'row': 3, 'column': 3}
 #    plotLocationDistribution(locationUserDayBlockMadFile, **dayBlockConf)
 #    plotLocationDistribution(locationUserDayMad, **dayConf)
-#    plotLocationToUserDistribution(locationUserDayBlockMadFile, **dayBlockConf)
-#    plotLocationToUserDistribution(locationUserDayMad, **dayConf)
+    plotLocationToUserDistribution(locationUserDayBlockMadFile, **dayBlockConf)
+    plotLocationToUserDistribution(locationUserDayMad, **dayConf)
 #    getRandomLocationNames(locationUserDayBlockMadFile)
 #    getRandomLocationNames(locationUserDayMad)
     

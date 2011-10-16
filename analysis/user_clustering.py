@@ -1,11 +1,15 @@
 '''
+What kind of people visit chipotle at different times?
+What kind of people are at chipotle right now?
+What kind of people will be at chipotle 15 days from now? Make this decision under un certainity.
 Created on Oct 15, 2011
 
 @author: kykamath
 '''
 import sys
-from library.file_io import FileIO
 sys.path.append('../')
+from library.file_io import FileIO
+from mongo_settings import venuesCollection
 from library.clustering import KMeansClustering
 from analysis.mr_analysis import filteredUserIterator,\
     filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
@@ -16,6 +20,8 @@ from collections import defaultdict
 from itertools import combinations
 import numpy as np
 from multiprocessing import Pool
+from library.plotting import plotNorm, getDataDistribution
+import matplotlib.pyplot as plt
 
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
@@ -71,6 +77,32 @@ def generateLocationClusterData():
 #    p = Pool()
 #    for location in p.imap(clusterLocation, locationClusterIterator()): FileIO.writeToFileAsJson(location, locationClustersFile)
 
+def plotLocationDistribution():
+    '''Types of locations seen: 
+        => Locations where different people have to be at same time: Example office, pub
+        => Locations that different people choose to go at different times: cafe+party place
+       Big cluster suggests most people who come to a location go to similar locations (implies similar people). 
+        Their mean suggests the most poplar time to go to that location.
+    '''
+    def scale(val): return (val*4)+2#val*2*4+2
+    for location in FileIO.iterateJsonFromFile(locationClustersFile):
+        if 'clustering' in location:
+            classes, classDistribution = getDataDistribution(location['clustering'][1].values())
+            mu, sigma = location['clustering'][2][0], location['clustering'][2][1]
+            totalUsers = float(sum(classDistribution))
+            for dist, mu, sigma in zip(classDistribution, mu, sigma):
+                if sigma==0: sigma=0.15
+                print dist/totalUsers
+                plotNorm(dist/totalUsers, scale(mu), scale(sigma))
+            title = venuesCollection.find_one({'lid':location['location']})
+            if title!=None: title = unicode(title['n']).encode("utf-8")
+            else: title = ''
+            plt.title('%s (%s)'%(title,location['location']))
+            plt.xlim(xmin=0,xmax=24)
+            plt.show()
+
+
 if __name__ == '__main__':
-    generateLocationClusterData()
+#    generateLocationClusterData()
+    plotLocationDistribution()
     
