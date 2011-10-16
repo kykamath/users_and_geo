@@ -6,7 +6,7 @@ Created on Oct 15, 2011
 import sys
 sys.path.append('../')
 from analysis.mr_analysis import filteredUserIterator,\
-    filteredLocationToUserAndTimeMapIterator
+    filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation
 from operator import itemgetter
@@ -16,5 +16,7 @@ def getUserVectors():
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 #userVectors = getUserVectors()
 
-for l in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
-    print l
+locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
+print len(locationsInUS)
+#for l in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+#    print l
