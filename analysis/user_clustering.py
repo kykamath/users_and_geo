@@ -55,17 +55,17 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
     dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
     documents = []
     for user in location['users']:
-        userDocument = [0.0 if lid not in location['users'][user] else float(location['users'][user][lid]) for lid in dimensions]
-        userDocument = []
-        print location['users'][user]
-        for lid in dimensions:
-            if lid not in location['users'][user]: userDocument.append(0.0)
-            else:  userDocument.append(float(location['users'][user][lid]))
+        userDocument = [0.0 if lid not in userVectors[user] else float(userVectors[user][lid]) for lid in dimensions]
+#        userDocument = []
+#        print location['users'][user]
+#        for lid in dimensions:
+#            if lid not in location['users'][user]: userDocument.append(0.0)
+#            else:  userDocument.append(float(location['users'][user][lid]))
         documents.append(userDocument)
-        exit()
-#    for d in documents:
-#        print d
+#        exit()
+    for d in documents:
+        print d
 #    print np.array(d)
 #    print dimensions
 #    print len(dimensions)
-#    exit()
+    exit()
