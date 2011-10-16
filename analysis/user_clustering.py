@@ -4,8 +4,8 @@ Created on Oct 15, 2011
 @author: kykamath
 '''
 import sys
-from library.clustering import KMeansClustering, EMTextClustering
 sys.path.append('../')
+from library.clustering import KMeansClustering, EMTextClustering
 from analysis.mr_analysis import filteredUserIterator,\
     filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
 from settings import minLocationsTheUserHasCheckedin,\
@@ -15,6 +15,7 @@ from collections import defaultdict
 from itertools import combinations
 import numpy as np
 import random
+from scipy.cluster.vq import vq, kmeans, whiten, kmeans2
 
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
@@ -66,8 +67,21 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #    for d in documents:
 #        print d
     documents = np.array(documents)
-    print documents
-    np.shape(documents)
+#    print documents
+    print np.shape(documents)
 #    print dimensions
 #    print len(dimensions)
+
+#    features  = array([[ 1.9,2.3],
+#                       [ 1.5,2.5],
+#                       [ 0.8,0.6],
+#                       [ 0.4,1.8],
+#                       [ 0.1,0.1],
+#                       [ 0.2,1.8],
+#                       [ 2.0,0.5],
+#                       [ 0.3,1.5],
+#                       [ 1.0,1.0]])
+    whitened = whiten(documents)
+    book = np.array((whitened[0],whitened[2]))
+    print kmeans2(whitened,book)
     exit()
