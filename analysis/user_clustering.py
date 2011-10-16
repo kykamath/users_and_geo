@@ -10,7 +10,7 @@ from analysis.mr_analysis import filteredUserIterator,\
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation
 from operator import itemgetter
-from library.math_modified import getMAD
+import numpy as np
 
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
@@ -25,7 +25,7 @@ def getDayBlockDistributionForUsers(users):
         for day in users[user]:
             dayBlockDistributionForUser+=[int(dayBlock) for dayBlock in users[user][day] for i in range(users[user][day][dayBlock])]
         completeDayBlockDistribution+=dayBlockDistributionForUser
-    print getMAD(completeDayBlockDistribution)
+    print np.mean(completeDayBlockDistribution), completeDayBlockDistribution
 
 locationsInUS = set(list(locationsForUsIterator(minUniqueUsersCheckedInTheLocation)))
 for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): 
