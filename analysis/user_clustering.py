@@ -18,12 +18,12 @@ def getUserVectors():
     return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 #userVectors = getUserVectors()
 
-def getDayBlockDistributionForUsers(locationVector):
+def getDayBlockDistributionForUsers(users):
     completeDayBlockDistribution = []
-    for user in locationVector['users']:
+    for user in users:
         dayBlockDistributionForUser = []
-        for day in locationVector['users'][user]:
-            dayBlockDistributionForUser+=[int(dayBlock) for dayBlock in locationVector['users'][user][day] for i in range(locationVector['users'][user][day][dayBlock])]
+        for day in users[user]:
+            dayBlockDistributionForUser+=[int(dayBlock) for dayBlock in users[user][day] for i in range(users[user][day][dayBlock])]
         completeDayBlockDistribution+=dayBlockDistributionForUser
     dataX, dataY = getDataDistribution(completeDayBlockDistribution)
     print dict((str(x),y) for x,y in zip(dataX, dataY))
