@@ -71,8 +71,6 @@ def getRandomLocationNames(file, **conf):
             if venue: print unicode(venue['n']).encode("utf-8")+', ',
         print
 
-
-    
 if __name__ == '__main__':
     runMRJob(MRLocationUserDayBlockMad, locationUserDayBlockMadFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRLocationUserDayMad, locationUserDayMad, jobconf={'mapred.reduce.tasks':5})
