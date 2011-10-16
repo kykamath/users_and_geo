@@ -57,6 +57,7 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
     dimensions = defaultdict(int)
     for u in location['users']:
         for lid in userVectors[u]: dimensions[lid]+=1
+    dimensions = [d for d in dimensions if dimensions[d]>=2]
     print dimensions
     
     exit()
