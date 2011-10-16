@@ -53,6 +53,14 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 #        for i in clusters:
 #            print i
 #        exit()
+
+    dimensions = defaultdict(int)
+    for u in location['users']:
+        for lid in userVectors[u]: dimensions[lid]+=1
+    print dimensions
+    
+    exit()
+
     dimensions = sorted(list(set([lid for u in location['users'] for lid in userVectors[u] ])))
     documents = []
     for user in location['users']:
