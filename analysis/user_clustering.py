@@ -19,7 +19,7 @@ import random
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
     '''
-    return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:5])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
 
 def getDayBlockMeansForClusters(users, userClusterMap):
     completeDayBlockDistribution = defaultdict(list)
@@ -43,7 +43,7 @@ for location in filter(lambda l: l['location'] in locationsInUS, filteredLocatio
 
 #    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in location['users']]
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(1)])) for u in location['users']]
-    k = 3
+    k = 2
     clusters = KMeansClustering(userVectorsToCluster, k).cluster()
     print clusters
 #    for u in location['users']:
