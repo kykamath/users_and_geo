@@ -12,5 +12,7 @@ from operator import itemgetter
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
     '''
-for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True):
-    print (u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100]))
+    return dict((u['user'], dict(sorted(u['locations'].iteritems(), key=itemgetter(1), reverse=True)[:100])) for u in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+
+for k, v in getUserVectors().iteritems():
+    print k, v
