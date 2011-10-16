@@ -25,6 +25,7 @@ locationToUserAndTimeMapFile = analysisFolder+'locationToUserAndTimeMap'
 locationGraph = '/mnt/chevron/kykamath/data/geo/analysis/locationGraph'
 locationUserDayBlockMadFile = analysisFolder+'locationUserDayBlockMad'
 locationUserDayMad = analysisFolder+'locationUserDayMad'
+locationClustersFile = analysisFolder+'locationClusters'
 
 #Analysis - Frequent location itemsets
 locationsFIMahoutInputFile = '/mnt/chevron/kykamath/data/geo/analysis/fi/mh_input_%s_%s'

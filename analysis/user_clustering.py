@@ -4,18 +4,17 @@ Created on Oct 15, 2011
 @author: kykamath
 '''
 import sys
+from library.file_io import FileIO
 sys.path.append('../')
-from library.clustering import KMeansClustering, EMTextClustering
+from library.clustering import KMeansClustering
 from analysis.mr_analysis import filteredUserIterator,\
     filteredLocationToUserAndTimeMapIterator, locationsForUsIterator
 from settings import minLocationsTheUserHasCheckedin,\
-    minUniqueUsersCheckedInTheLocation
+    minUniqueUsersCheckedInTheLocation, locationClustersFile
 from operator import itemgetter
 from collections import defaultdict
 from itertools import combinations
 import numpy as np
-import random
-from scipy.cluster.vq import vq, kmeans, whiten, kmeans2
 
 def getUserVectors():
     ''' Returns a dict for user vectors across top 100 location dimensions.
@@ -56,5 +55,6 @@ def locationClusterIterator():
 
 for location in locationClusterIterator():
     location['clustering'] = clusterLocation(location)
+    FileIO.writeToFileAsJson(location, locationClustersFile)
     print location
     exit()
