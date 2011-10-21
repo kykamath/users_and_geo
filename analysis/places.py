@@ -16,8 +16,6 @@ from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,
 
 place = ('brazos', brazos_valley_boundary)
 def writeLocationToUserMap((name, boundary)):
-    print name, boundary
-    exit()
     for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         lid=getLocationFromLid(location['location'])
         if isWithinBoundingBox(lid, boundary): 
@@ -25,7 +23,7 @@ def writeLocationToUserMap((name, boundary)):
             if title: location['name'] = unicode(title['n']).encode("utf-8")
             else: location['name']=''
 #        FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
-        print location
+            print location
     print placesLocationToUserMapFile%name
         
 writeLocationToUserMap(place)
