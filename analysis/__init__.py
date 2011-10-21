@@ -96,7 +96,10 @@ class Spots():
             userId, userVector = userObject['user'], userObject['locations']
             for lid in userVector: 
                 if lid in lidToSpotIdMap: userDistributionInSpots[lidToSpotIdMap[lid]]['users'].append(userId)
-        for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsWithUsersFile)        
+        for spotId, object in userDistributionInSpots.iteritems(): 
+            print spotId
+            FileIO.writeToFileAsJson(object, spotsWithUsersFile)        
+#            print spotId
     @staticmethod
     def getStats(spotsFile, userToLocationVector):
         lidToSpotIdMap, userToSpotIdMap, spotMap, spotsWithUsersFile = {}, {}, defaultdict(dict), spotsFile+'_users'

@@ -51,15 +51,15 @@ class RadiusSpots:
     @staticmethod
     def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(), '%s.kml'%(RadiusSpots.getSpotsFile()), title=True)
     @staticmethod
-    def writeUserDistribution(): Spots.writeUserDistributionInSpots(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
+    def writeUserDistribution(): Spots.assignUserToSpots(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def getStats(): return Spots.getStats(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
 #        RadiusSpots.writeAsKML()
 #        RadiusSpots.writeToFile()
-#        RadiusSpots.writeUserDistribution()
-        print RadiusSpots.getStats()
+        RadiusSpots.writeUserDistribution()
+#        print RadiusSpots.getStats()
         
 class UserGraphSpots:
     @staticmethod
@@ -133,11 +133,11 @@ class ItemsetClustering:
 #    def removeCluster(self, clusterId): pass
 
 if __name__ == '__main__':
-#    RadiusSpots.run()
+    RadiusSpots.run()
 #    UserGraphSpots.run()
 #    FrequentItemSpots.run()
-    i = 0
-    for data in FileIO.iterateJsonFromFile('/mnt/chevron/kykamath/data/geo/analysis/spots/radius/users'):
-        if len(data['users'])>10 and len(data['users'])<1000: i+=1
-        print len(data['users'])
-    print i
+#    i = 0
+#    for data in FileIO.iterateJsonFromFile('/mnt/chevron/kykamath/data/geo/analysis/spots/radius/users'):
+#        if len(data['users'])>10 and len(data['users'])<1000: i+=1
+#        print len(data['users'])
+#    print i
