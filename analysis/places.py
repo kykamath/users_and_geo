@@ -24,5 +24,8 @@ def writeLocationToUserMap((name, boundary)):
             else: location['name']=''
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
+
+def locationToUserMapIterator((name, boundary)): FileIO.iterateJsonFromFile(placesLocationToUserMapFile%name)
         
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
+for l in locationToUserMapIterator(place): print l
