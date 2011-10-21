@@ -108,7 +108,8 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-    for i in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10): print i
+    j=0
+    for i in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10): print j,i;j+=1
 #    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
     
 #    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
