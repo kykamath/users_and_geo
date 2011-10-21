@@ -14,7 +14,8 @@ from analysis.spots_by_locations_fi import Mahout
 from settings import spotsRadiusFolder, minimumLocationsPerSpot,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
     radiusInMiles, spotsUserGraphsFolder, graphNodesDistanceInMiles,\
-    spotsFrequentItemsFolder, minSupport, itemsetsMergeThreshold
+    spotsFrequentItemsFolder, minSupport, itemsetsMergeThreshold,\
+    filteredLocationToUserAndTimeMap_20_10
 from analysis import Spots, SpotsKML
 from mongo_settings import locationsCollection, venuesCollection,\
     locationToLocationCollection
@@ -132,12 +133,19 @@ class ItemsetClustering:
     def mergeCluster(self, clusterId1, clusterId2): pass
 #    def removeCluster(self, clusterId): pass
 
+def filteredLocationToUserAndTimeMap_20_10Iterator():
+    for data in FileIO.iterateJsonFromFile(filteredLocationToUserAndTimeMap_20_10):
+        print data
+        for user in data['users'].keys()[:]:  data['users'][int(user)] = data['users'][user]; del data['users'][user]
+        print data
+        exit()
 if __name__ == '__main__':
 #    RadiusSpots.run()
 #    UserGraphSpots.run()
 #    FrequentItemSpots.run()
-    i = 0
-    for data in FileIO.iterateJsonFromFile('../data/spots'):
-        if len(data['users'])>10 and len(data['users'])<1000: i+=1
-        print len(data['users'])
-    print i
+#    i = 0
+#    for data in FileIO.iterateJsonFromFile('../data/spots'):
+#        if len(data['users'])>10 and len(data['users'])<1000: i+=1
+#        print len(data['users'])
+#    print i
+    filteredLocationToUserAndTimeMap_20_10
