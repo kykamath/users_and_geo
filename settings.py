@@ -40,7 +40,7 @@ spotsFrequentItemsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/freque
 
 #Brazos file
 placesFolder = analysisFolder+'places/'
-placesLocationFile = placesFolder+'%s/'
+placesLocationToUserMapFile = placesFolder+'%s/'
 
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
