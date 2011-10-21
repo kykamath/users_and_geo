@@ -19,8 +19,9 @@ for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasC
     lid=getLocationFromLid(location['location'])
     if isWithinBoundingBox(lid, place[1]): 
         title = venuesCollection.find_one({'lid':lid})
-        if title: location['name'] = unicode(title['n']).encode("utf-8")
-        else: location['name']=''
-        print i, location; i+=1
+        print title
+#        if title: location['name'] = unicode(title['n']).encode("utf-8")
+#        else: location['name']=''
+#        print i, location; i+=1
 #    print location
 #    exit()
