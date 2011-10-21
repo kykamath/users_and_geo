@@ -38,6 +38,10 @@ spotsRadiusFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/radius/'
 spotsUserGraphsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/user_graphs/'
 spotsFrequentItemsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/frequent_items/'
 
+#Brazos file
+brazosFolder = analysisFolder+'brazos/'
+brazosLocationFile = 'pass'
+
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
 brazos_valley_boundary = [[30.546887,-96.50322], [30.696973,-96.214828]]
