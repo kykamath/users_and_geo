@@ -40,6 +40,7 @@ spotsFrequentItemsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/freque
 
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
+brazos_valley_boundary = [[30.546887,-96.50322], [30.696973,-96.214828]]
 world_boundary = [[-90,-180], [90, 180]]
 
 #Experiments
