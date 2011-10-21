@@ -19,7 +19,8 @@ from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     locationDistributionFile, locationGraph, locationByUserDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile,\
     locationToUserAndTimeMapFile, validLocationAndUserFile,\
-    validLocationAndUserHdfsPath, us_boundary
+    validLocationAndUserHdfsPath, us_boundary,\
+    filteredLocationToUserAndTimeMap_20_10
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 from analysis.mr_user_distribution import MRUserDistribution
@@ -80,6 +81,9 @@ def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, mi
                 else: locationVector['users'][user]=locationVector['users'][str(user)]; del locationVector['users'][str(user)]
             if locationVector['users']: yield locationVector
             
+def writeFilteredLocationToUserAndTimeMap_20_10():
+    for data in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10): FileIO.writeToFileAsJson(data, filteredLocationToUserAndTimeMap_20_10)
+            
 def getfilteredLocationsSet(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): return set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
 
 def writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
@@ -108,8 +112,6 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-    j=0
-    for i in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10): print j,i;j+=1
 #    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
     
 #    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
@@ -124,4 +126,6 @@ if __name__ == '__main__':
 #        print j
 #        j+=1
 #    print len(locationsToCheck)
+
+    writeFilteredLocationToUserAndTimeMap_20_10()
     pass
