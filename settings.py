@@ -39,8 +39,8 @@ spotsUserGraphsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/user_grap
 spotsFrequentItemsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/frequent_items/'
 
 #Brazos file
-brazosFolder = analysisFolder+'brazos/'
-brazosLocationFile = 'pass'
+placesFolder = analysisFolder+'places/'
+placesLocationFile = placesFolder+'%s/'
 
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
