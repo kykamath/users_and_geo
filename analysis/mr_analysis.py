@@ -84,12 +84,8 @@ def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, mi
             
 def writeFilteredLocationToUserAndTimeMap_20_10():
     for data in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10): 
-        print data
-        for user in data['users'].keys()[:]:
-            data['users'][str(user)] = data['users'][user]; del data['users'][user]
-        print data 
-        exit()
-#        FileIO.writeToFileAsJson(data, filteredLocationToUserAndTimeMap_20_10)
+        for user in data['users'].keys()[:]:  data['users'][str(user)] = data['users'][user]; del data['users'][user]
+        FileIO.writeToFileAsJson(data, filteredLocationToUserAndTimeMap_20_10)
             
 def getfilteredLocationsSet(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation): return set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
 
