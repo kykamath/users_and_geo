@@ -7,6 +7,12 @@ import os
 from collections import defaultdict
 from operator import itemgetter
 import numpy as np
+from settings import filteredLocationToUserAndTimeMap_20_10
+
+def filteredLocationToUserAndTimeMap_20_10Iterator():
+    for data in FileIO.iterateJsonFromFile(filteredLocationToUserAndTimeMap_20_10):
+        for user in data['users'].keys()[:]:  data['users'][int(user)] = data['users'][user]; del data['users'][user]
+        yield data
 
 class SpotsKML:
     def __init__(self):
@@ -122,3 +128,7 @@ class Spots():
                     totalAssignments+=1
             accuracyList.append(wrongAssignments/totalAssignments)
         return {'accuracy': np.mean(accuracyList), 'total_locations': len(lidToSpotIdMap), 'total_users': len(userToSpotIdMap)}
+    
+    
+if __name__ == '__main__':
+    print len(list(filteredLocationToUserAndTimeMap_20_10Iterator()))

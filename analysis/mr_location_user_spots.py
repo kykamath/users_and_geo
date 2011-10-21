@@ -133,12 +133,6 @@ class ItemsetClustering:
     def mergeCluster(self, clusterId1, clusterId2): pass
 #    def removeCluster(self, clusterId): pass
 
-def filteredLocationToUserAndTimeMap_20_10Iterator():
-    for data in FileIO.iterateJsonFromFile(filteredLocationToUserAndTimeMap_20_10):
-        print data
-        for user in data['users'].keys()[:]:  data['users'][int(user)] = data['users'][user]; del data['users'][user]
-        print data
-        exit()
 if __name__ == '__main__':
 #    RadiusSpots.run()
 #    UserGraphSpots.run()
@@ -148,4 +142,4 @@ if __name__ == '__main__':
 #        if len(data['users'])>10 and len(data['users'])<1000: i+=1
 #        print len(data['users'])
 #    print i
-    filteredLocationToUserAndTimeMap_20_10
+#    filteredLocationToUserAndTimeMap_20_10
