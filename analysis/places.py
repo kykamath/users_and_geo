@@ -23,7 +23,7 @@ def writeLocationToUserMap((name, boundary)):
             if title: location['name'] = unicode(title['n']).encode("utf-8")
             else: location['name']=''
             print location
-            for user in location['users']: location['users'][str(user)]=location['users'][user]; del location['users'][user]
+            for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             print location
 #            FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
         
