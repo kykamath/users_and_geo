@@ -13,8 +13,8 @@ from library.geo import isWithinBoundingBox, getLocationFromLid
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile
 
-
 place = ('brazos', brazos_valley_boundary)
+
 def writeLocationToUserMap((name, boundary)):
     for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
         lid=getLocationFromLid(location['location'])
@@ -22,8 +22,6 @@ def writeLocationToUserMap((name, boundary)):
             title = venuesCollection.find_one({'lid':location['location']})
             if title: location['name'] = unicode(title['n']).encode("utf-8")
             else: location['name']=''
-#        FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
-            print location
-    print placesLocationToUserMapFile%name
+            FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
         
 writeLocationToUserMap(place)
