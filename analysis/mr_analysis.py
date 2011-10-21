@@ -71,9 +71,9 @@ def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedI
 def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
     validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
     validUserSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
-#    print len(validLocationsSet), len(validUserSet)
+    print len(validLocationsSet), len(validUserSet)
     for locationVector in FileIO.iterateJsonFromFile(locationToUserAndTimeMapFile):
-        print 'comese here'
+#        print 'comese here'
         if locationVector['location'] in validLocationsSet:
             for user in map(int, locationVector['users'].keys()[:]): 
                 if user not in validUserSet: del locationVector['users'][str(user)]
@@ -108,7 +108,8 @@ if __name__ == '__main__':
 #    plotLocationGraphEdgeDistribution()
     
 #    print len(list(locationByUserDistributionIterator(minTimesUserCheckedIn=10)))
-    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
+    for i in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10): print i
+#    print len(list(filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)))
     
 #    writeHDFSFileForValidLocationAndUser(minLocationsTheUserHasCheckedin=20, minUniqueUsersCheckedInTheLocation=10)
     
