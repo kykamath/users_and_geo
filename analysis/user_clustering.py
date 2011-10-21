@@ -72,7 +72,8 @@ def clusterSpot(spot):
         cluster = KMeansClustering(userVectorsToCluster, k).cluster()
         print '$$$$$$$$$$', cluster   
         userClusterMap = dict((k1,v) for k1,v in zip(spot['users'], cluster))
-#        dayBlockMeansForClusters = getDayBlockMeansForClusters(spot['users'], userClusterMap)
+        dayBlockMeansForClusters = getDayBlockMeansForClusters(spot['users'], userClusterMap)
+        print dayBlockMeansForClusters
 #            userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
 #            resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
 #        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
@@ -124,5 +125,6 @@ def plotLocationDistribution():
 if __name__ == '__main__':
 #    generateLocationClusterData()
 #    plotLocationDistribution()
-    for data in FileIO.iterateJsonFromFile('/mnt/chevron/kykamath/data/geo/analysis/spots/radius/users'): clusterSpot(data)
+#    for data in FileIO.iterateJsonFromFile('../data/spots'): clusterSpot(data)
+    for location in locationClusterIterator(): print location
     

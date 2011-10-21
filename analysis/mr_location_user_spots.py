@@ -133,11 +133,11 @@ class ItemsetClustering:
 #    def removeCluster(self, clusterId): pass
 
 if __name__ == '__main__':
-    RadiusSpots.run()
+#    RadiusSpots.run()
 #    UserGraphSpots.run()
 #    FrequentItemSpots.run()
-#    i = 0
-#    for data in FileIO.iterateJsonFromFile('/mnt/chevron/kykamath/data/geo/analysis/spots/radius/20_10_15_users'):
-#        if len(data['users'])>10 and len(data['users'])<1000: i+=1
-#        print len(data['users'])
-#    print i
+    i = 0
+    for data in FileIO.iterateJsonFromFile('../data/spots'):
+        if len(data['users'])>10 and len(data['users'])<1000: i+=1
+        print len(data['users'])
+    print i
