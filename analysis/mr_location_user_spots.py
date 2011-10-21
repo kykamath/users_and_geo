@@ -56,9 +56,9 @@ class RadiusSpots:
     def getStats(): return Spots.getStats(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
     def run():
-        RadiusSpots.writeAsKML()
-        RadiusSpots.writeToFile()
-        RadiusSpots.writeUserDistribution()
+#        RadiusSpots.writeAsKML()
+#        RadiusSpots.writeToFile()
+#        RadiusSpots.writeUserDistribution()
         print RadiusSpots.getStats()
         
 class UserGraphSpots:
@@ -135,4 +135,9 @@ class ItemsetClustering:
 if __name__ == '__main__':
 #    RadiusSpots.run()
 #    UserGraphSpots.run()
-    FrequentItemSpots.run()
+#    FrequentItemSpots.run()
+    i = 0
+    for data in FileIO.iterateJsonFromFile('/mnt/chevron/kykamath/data/geo/analysis/spots/radius/users'):
+        if len(data['users'])>10 and len(data['users'])<1000: i+=1
+        print len(data['users'])
+    print i

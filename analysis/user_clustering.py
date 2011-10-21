@@ -7,6 +7,7 @@ Created on Oct 15, 2011
 @author: kykamath
 '''
 import sys
+from library.geo import getLidFromLocation
 sys.path.append('../')
 from library.file_io import FileIO
 from mongo_settings import venuesCollection
@@ -62,6 +63,23 @@ def clusterLocation(location):
     location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
     return location
 
+def clusterSpot(spot):
+    dimensions = [getLidFromLocation(l) for l, n in spot['lids']]
+    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in spot['users']]
+    resultsForVaryingK = []
+    for k in range(2,3):
+#        try:
+        cluster = KMeansClustering(userVectorsToCluster, k).cluster()
+        print cluster   
+#            userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
+#            dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+#            userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
+#            resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
+#        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
+#    if resultsForVaryingK: location['clustering'] = sorted(resultsForVaryingK, key=itemgetter(3))[-1]
+#    location['users'] = dict([(str(k),v) for k,v in location['users'].iteritems()])
+#    return location
+    
 def locationClusterIterator():
     for location in filter(lambda l: l['location'] in locationsInUS, filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation)): yield location
 
@@ -99,10 +117,12 @@ def plotLocationDistribution():
             else: title = ''
             plt.title('%s (%s)'%(title,location['location']))
             plt.xlim(xmin=0,xmax=24)
+            print 'comes here'
             plt.show()
 
 
 if __name__ == '__main__':
 #    generateLocationClusterData()
-    plotLocationDistribution()
+#    plotLocationDistribution()
+    for data in FileIO.iterateJsonFromFile('/mnt/chevron/kykamath/data/geo/analysis/spots/radius/users'): clusterSpot(data)
     

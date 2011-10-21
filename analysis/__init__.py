@@ -87,6 +87,17 @@ class Spots():
                 userDistributionInSpots[spotId]['users'].append(userId)
         for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsWithUsersFile)
     @staticmethod
+    def assignUserToSpots(spotsFile, userToLocationVector):
+        lidToSpotIdMap, userDistributionInSpots, spotsWithUsersFile = {}, defaultdict(list), spotsFile+'_users'
+        for spot in FileIO.iterateJsonFromFile(spotsFile):
+            for location, _ in spot['spot']: lidToSpotIdMap[getLidFromLocation(location)] = spot['id']
+            userDistributionInSpots[spot['id']] = {'id': spot['id'], 'lids': spot['spot'], 'users':[]}
+        for userObject in userToLocationVector: 
+            userId, userVector = userObject['user'], userObject['locations']
+            for lid in userVector: 
+                if lid in lidToSpotIdMap: userDistributionInSpots[lidToSpotIdMap[lid]]['users'].append(userId)
+        for spotId, object in userDistributionInSpots.iteritems(): FileIO.writeToFileAsJson(object, spotsWithUsersFile)        
+    @staticmethod
     def getStats(spotsFile, userToLocationVector):
         lidToSpotIdMap, userToSpotIdMap, spotMap, spotsWithUsersFile = {}, {}, defaultdict(dict), spotsFile+'_users'
         for spot in FileIO.iterateJsonFromFile(spotsWithUsersFile):
@@ -108,4 +119,3 @@ class Spots():
                     totalAssignments+=1
             accuracyList.append(wrongAssignments/totalAssignments)
         return {'accuracy': np.mean(accuracyList), 'total_locations': len(lidToSpotIdMap), 'total_users': len(userToSpotIdMap)}
-                    
