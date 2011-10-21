@@ -22,6 +22,9 @@ def writeLocationToUserMap((name, boundary)):
             title = venuesCollection.find_one({'lid':location['location']})
             if title: location['name'] = unicode(title['n']).encode("utf-8")
             else: location['name']=''
-            FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
+            print location
+            for user in location['users']: location['users'][str(user)]=location['users'][user]; del location['users'][user]
+            print location
+#            FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
         
 writeLocationToUserMap(place)
