@@ -67,12 +67,12 @@ def clusterSpot(spot):
     dimensions = [getLidFromLocation(l) for l, n in spot['lids']]
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] if l in dimensions for j in range(userVectors[u][l])])) for u in spot['users']]
     resultsForVaryingK = []
-    for k in range(2,3):
+    for k in range(2,6):
 #        try:
         cluster = KMeansClustering(userVectorsToCluster, k).cluster()
-        print cluster   
-#            userClusterMap = dict((k1,v) for k1,v in zip(location['users'], cluster))
-#            dayBlockMeansForClusters = getDayBlockMeansForClusters(location['users'], userClusterMap)
+        print '$$$$$$$$$$', cluster   
+        userClusterMap = dict((k1,v) for k1,v in zip(spot['users'], cluster))
+#        dayBlockMeansForClusters = getDayBlockMeansForClusters(spot['users'], userClusterMap)
 #            userClusterMap = dict([(str(k2), v) for k2, v in userClusterMap.iteritems()])
 #            resultsForVaryingK.append([k, userClusterMap, zip(*dayBlockMeansForClusters)[1:], getAverageDistanceBetweenClusters(zip(*dayBlockMeansForClusters)[1])])
 #        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
