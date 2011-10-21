@@ -11,4 +11,4 @@ from settings import brazos_valley_boundary
 
 i=0
 for location in locationIterator():
-    if isWithinBoundingBox(getLocationFromLid(location, brazos_valley_boundary)): print i, location; i+=1
+    if isWithinBoundingBox(getLocationFromLid(location), brazos_valley_boundary): print i, location; i+=1
