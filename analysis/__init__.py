@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from library.classes import GeneralMethods
 from library.geo import geographicConvexHull, getLidFromLocation
 from library.geo import getLocationFromLid
