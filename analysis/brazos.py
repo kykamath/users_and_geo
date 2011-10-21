@@ -3,6 +3,8 @@ Created on Oct 21, 2011
 
 @author: kykamath
 '''
+import sys
+sys.path.append('../')
 from analysis.mr_analysis import locationIterator
 from library.geo import isWithinBoundingBox, getLocationFromLid
 from settings import brazos_valley_boundary
