@@ -125,6 +125,7 @@ def plotLocationDistribution():
 if __name__ == '__main__':
 #    generateLocationClusterData()
 #    plotLocationDistribution()
-#    for data in FileIO.iterateJsonFromFile('../data/spots'): clusterSpot(data)
-    for location in locationClusterIterator(): print location
+    
+    for data in FileIO.iterateJsonFromFile('../data/spots'): clusterSpot(data)
+#    for location in locationClusterIterator(): print location
     

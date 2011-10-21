@@ -48,9 +48,13 @@ class RadiusSpots:
         for locations in nx.connected_components(graph): 
             if len(locations)>=minimumLocationsPerSpot: yield getKMLForCluster(locations)
     @staticmethod
-    def writeToFile(): Spots.writeSpotsToFile(RadiusSpots.iterateSpots(), RadiusSpots.getSpotsFile())
+    def writeToFile(): 
+        print 'Writing', '%s'%RadiusSpots.getSpotsFile()
+        Spots.writeSpotsToFile(RadiusSpots.iterateSpots(), RadiusSpots.getSpotsFile())
     @staticmethod
-    def writeAsKML(): SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(), '%s.kml'%(RadiusSpots.getSpotsFile()), title=True)
+    def writeAsKML(): 
+        print 'Writing', '%s.kml'%RadiusSpots.getSpotsFile()
+        SpotsKML.drawKMLsForSpotsWithPoints(RadiusSpots.iterateSpots(), '%s.kml'%(RadiusSpots.getSpotsFile()), title=True)
     @staticmethod
     def writeUserDistribution(): Spots.assignUserToSpots(RadiusSpots.getSpotsFile(), filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,  fullRecord = True))
     @staticmethod
@@ -59,7 +63,7 @@ class RadiusSpots:
     def run():
         RadiusSpots.writeAsKML()
         RadiusSpots.writeToFile()
-        RadiusSpots.writeUserDistribution()
+#        RadiusSpots.writeUserDistribution()
 #        print RadiusSpots.getStats()
         
 class UserGraphSpots:
@@ -134,7 +138,7 @@ class ItemsetClustering:
 #    def removeCluster(self, clusterId): pass
 
 if __name__ == '__main__':
-#    RadiusSpots.run()
+    RadiusSpots.run()
 #    UserGraphSpots.run()
 #    FrequentItemSpots.run()
 #    i = 0
