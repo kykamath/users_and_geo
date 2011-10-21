@@ -14,13 +14,13 @@ from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,
 
 
 place = ('brazos', brazos_valley_boundary)
-i=0
-for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
-    lid=getLocationFromLid(location['location'])
-    if isWithinBoundingBox(lid, place[1]): 
-        title = venuesCollection.find_one({'lid':location['location']})
-        if title: location['name'] = unicode(title['n']).encode("utf-8")
-        else: location['name']=''
-        print i, location; i+=1
-#    print location
-#    exit()
+def writeLocationToUserMap((name, boundary)):
+    for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+        lid=getLocationFromLid(location['location'])
+        if isWithinBoundingBox(lid, boundary): 
+            title = venuesCollection.find_one({'lid':location['location']})
+            if title: location['name'] = unicode(title['n']).encode("utf-8")
+            else: location['name']=''
+        print location
+        
+writeLocationToUserMap(place)
