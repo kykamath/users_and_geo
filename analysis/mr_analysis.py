@@ -4,6 +4,7 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
+from analysis.mr_location_to_user_and_exact_time_map import MRLocationToUserAndExactTimeMap
 sys.path.append('../')
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -20,7 +21,7 @@ from settings import checkinsHdfsPath, analysisFolder, userDistributionFile,\
     userToLocationMapFile, userToLocationAndTimeMapFile,\
     locationToUserAndTimeMapFile, validLocationAndUserFile,\
     validLocationAndUserHdfsPath, us_boundary,\
-    filteredLocationToUserAndTimeMap_20_10
+    filteredLocationToUserAndTimeMap_20_10, locationToUserAndExactTimeMapFile
 from analysis.mr_location_by_user_distribution import MRLocationByUserDistribution
 from analysis.mr_user_to_location_and_time_map import MRUserToLocationAndTimeMap
 from analysis.mr_user_distribution import MRUserDistribution
@@ -107,7 +108,7 @@ if __name__ == '__main__':
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
-
+    runMRJob(MRLocationToUserAndExactTimeMap, locationToUserAndExactTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 #    Plots
 #    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
@@ -130,5 +131,5 @@ if __name__ == '__main__':
 #        j+=1
 #    print len(locationsToCheck)
 
-    writeFilteredLocationToUserAndTimeMap_20_10()
+#    writeFilteredLocationToUserAndTimeMap_20_10()
     pass
