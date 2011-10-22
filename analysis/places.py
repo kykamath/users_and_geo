@@ -103,7 +103,7 @@ def getLocationDistributionPlots(place):
             FileIO.createDirectoryForFile(fileName)
             getPerLocationDistributionPlots(clustering, location, fileName)
     
-place = {'name':'brazos', 'bondary':brazos_valley_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
 writeLocationToUserMap(place)
 #writePlaceClusters(place)
 #getLocationDistributionPlots(place)
