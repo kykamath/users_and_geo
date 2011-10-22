@@ -82,12 +82,12 @@ def getPerLocationDistributionPlots(clustering, location, fileName):
         totalUsers = float(sum(classDistribution))
         for dist, mu, sigma, color in zip(classDistribution, mu, sigma, [colorMap[c] for c in classes]):
             if sigma==0: sigma=0.15
-            print dist/totalUsers
             plotNorm(dist/totalUsers, scale(mu), scale(sigma), color=color)
         plt.title('%s (%s)'%(locationName,locationId))
         plt.xlim(xmin=0,xmax=24)
 #        plt.show()
         plt.savefig(fileName)
+        plt.clf()
     userClusterMap = {}
     for clusterId, users in clustering[2].iteritems():
         for user in users: 
@@ -98,6 +98,7 @@ def getPerLocationDistributionPlots(clustering, location, fileName):
 def getLocationDistributionPlots(place):
     for clustering in iteraterClusterings(place):
         for location in locationToUserMapIterator(place): 
+            print clustering[0], location['location']
             fileName=placesImagesFolder%place['name']+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
             FileIO.createDirectoryForFile(fileName)
             getPerLocationDistributionPlots(clustering, location, fileName)
