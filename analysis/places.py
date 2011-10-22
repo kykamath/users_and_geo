@@ -16,7 +16,7 @@ from analysis.mr_analysis import locationIterator,\
 from library.geo import isWithinBoundingBox, getLocationFromLid
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
-    placesClustersFile, placesImagesFolder
+    placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 
 def writeLocationToUserMap(place):
     name, boundary = place['name'], place['boundary']
-    for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+    for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, inputFile=locationToUserAndExactTimeMapFile):
         lid=getLocationFromLid(location['location'])
         if isWithinBoundingBox(lid, boundary): 
             title = venuesCollection.find_one({'lid':location['location']})
@@ -44,7 +44,7 @@ def writePlaceClusters(place):
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
     for lid in locationToUserMap:
-        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(locationToUserMap[lid]['users'][user][d][db] for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in userVectors]
@@ -104,6 +104,6 @@ def getLocationDistributionPlots(place):
             getPerLocationDistributionPlots(clustering, location, fileName)
     
 place = {'name':'brazos', 'bondary':brazos_valley_boundary, 'minTotalCheckins':5}
-#writeLocationToUserMap(place)
+writeLocationToUserMap(place)
 #writePlaceClusters(place)
-getLocationDistributionPlots(place)
+#getLocationDistributionPlots(place)

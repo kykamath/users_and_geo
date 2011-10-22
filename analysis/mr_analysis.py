@@ -70,12 +70,12 @@ def filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedI
             for k in userVector['locations'].keys()[:]:
                 if k not in validLocationsSet: del userVector['locations'][k]
             if userVector['locations']: yield userVector
-def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation):
+def filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, inputFile=locationToUserAndTimeMapFile):
     validLocationsSet = set(locationByUserDistributionIterator(minUniqueUsersCheckedInTheLocation))
     validUserSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
     print len(validLocationsSet), len(validUserSet)
 #    i=0
-    for locationVector in FileIO.iterateJsonFromFile(locationToUserAndTimeMapFile):
+    for locationVector in FileIO.iterateJsonFromFile(inputFile):
 #        i+=1;print i
         if locationVector['location'] in validLocationsSet:
             for user in map(int, locationVector['users'].keys()[:]): 
