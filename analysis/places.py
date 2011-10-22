@@ -4,11 +4,11 @@ Created on Oct 21, 2011
 @author: kykamath
 '''
 import sys, datetime
+sys.path.append('../')
 from library.vector import Vector
 from library.classes import GeneralMethods
 from library.plotting import getDataDistribution, plotNorm
 from analysis import SpotsKML
-sys.path.append('../')
 from library.clustering import KMeansClustering
 from library.file_io import FileIO
 from mongo_settings import venuesCollection
