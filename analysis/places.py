@@ -36,7 +36,7 @@ def writeLocationToUserMap(place):
             FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
 def locationToUserMapIterator(place): return FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name'])
   
-def writePlaceClusters(place):
+def writePlaceKMeansClusters(place):
     def meanClusteringDistance(userVectors, clusters):  
         clusterMeans = {}
         for clusterId in clusters: clusterMeans[clusterId] = Vector.getMeanVector(userVectors[user] for user in clusters[clusterId])
@@ -50,7 +50,7 @@ def writePlaceClusters(place):
         if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
     userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in userVectors]
     resultsForVaryingK = []
-    for k in range(3, 10):
+    for k in range(7,20):
         try:
             clusters = KMeansClustering(userVectorsToCluster, k).cluster()
             clusters = dict([(str(clusterId), [u for _,u  in users]) for clusterId, users in groupby(sorted(zip(clusters, userVectors), key=itemgetter(0)), key=itemgetter(0))])
@@ -131,9 +131,9 @@ def getLocationScatterPlots(place):
             scatterPlot(clustering, location, fileName)
 
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 #writeLocationToUserMap(place)
-writePlaceClusters(place)
+writePlaceKMeansClusters(place)
 #getLocationDistributionPlots(place)
 #getLocationScatterPlots(place)
