@@ -4,7 +4,6 @@ Created on Oct 4, 2011
 @author: kykamath
 '''
 import sys
-from analysis.mr_location_to_user_and_exact_time_map import MRLocationToUserAndExactTimeMap
 sys.path.append('../')
 import matplotlib.pyplot as plt
 from collections import defaultdict
@@ -29,6 +28,7 @@ from analysis.mr_user_to_location_map import MRUserToLocationMap
 from analysis.mr_location_distribution import MRLocationDistribution
 from analysis.mr_location_graph_by_users import MRLocationGraphByUsers
 from analysis.mr_location_to_user_and_time_map import MRLocationToUserAndTimeMap
+from analysis.mr_location_to_user_and_exact_time_map import MRLocationToUserAndExactTimeMap
 
 def runMRJob(mrJobClass, outputFileName, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
