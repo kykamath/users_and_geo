@@ -3,7 +3,7 @@ Created on Oct 21, 2011
 
 @author: kykamath
 '''
-import sys
+import sys, datetime
 from library.vector import Vector
 from library.classes import GeneralMethods
 from library.plotting import getDataDistribution, plotNorm
@@ -16,7 +16,8 @@ from analysis.mr_analysis import locationIterator,\
 from library.geo import isWithinBoundingBox, getLocationFromLid
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
-    placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile
+    placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile,\
+    austin_tx_boundary
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -94,7 +95,6 @@ def getPerLocationDistributionPlots(clustering, location, fileName):
             if user in location['users']: userClusterMap[user]=clusterId
     means, deviations = zip(*getDayBlockMeansForClusters(location['users'], userClusterMap))[1:]
     plotLocation(location['name'], location['location'], userClusterMap, means, deviations, clustering[3])
-
 def getLocationDistributionPlots(place):
     for clustering in iteraterClusterings(place):
         for location in locationToUserMapIterator(place): 
@@ -102,8 +102,38 @@ def getLocationDistributionPlots(place):
             fileName=placesImagesFolder%place['name']+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
             FileIO.createDirectoryForFile(fileName)
             getPerLocationDistributionPlots(clustering, location, fileName)
+
+def getLocationScatterPlots(place):
+    def scatterPlot(clustering, location, fileName):
+        userClusterMap = {}
+        for clusterId, users in clustering[2].iteritems():
+            for user in users: 
+                if user in location['users']: userClusterMap[user]=clusterId
+        scatterData = defaultdict(dict)
+        clusterMap = clustering[3]
+        for user, userVector in location['users'].iteritems():
+            if user in userClusterMap:
+                for d in userVector:
+                    for db in userVector[d]:
+                        for h in [datetime.datetime.fromtimestamp(ep).hour for ep in userVector[d][db]]:
+                            if h not in scatterData[userClusterMap[user]]: scatterData[userClusterMap[user]][h]=0
+                            scatterData[userClusterMap[user]][h]+=1
+        for cluster, clusterInfo in scatterData.iteritems(): plt.scatter(clusterInfo.keys(), clusterInfo.values(), color=clusterMap[cluster], label=cluster)
+        plt.title('%s (%s)'%(location['name'],location['location'])),plt.legend()
+#        plt.show()
+        plt.xlim(xmin=0,xmax=24)
+        plt.savefig(fileName), plt.clf()
+    for clustering in iteraterClusterings(place):
+        for location in locationToUserMapIterator(place): 
+            print clustering[0], location['location']
+            fileName=placesImagesFolder%place['name']+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
+            FileIO.createDirectoryForFile(fileName)
+            scatterPlot(clustering, location, fileName)
+
     
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 writeLocationToUserMap(place)
 #writePlaceClusters(place)
 #getLocationDistributionPlots(place)
+#getLocationScatterPlots(place)
