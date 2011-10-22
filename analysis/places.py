@@ -7,17 +7,19 @@ import sys, datetime
 from library.vector import Vector
 from library.classes import GeneralMethods
 from library.plotting import getDataDistribution, plotNorm
+from analysis import SpotsKML
 sys.path.append('../')
 from library.clustering import KMeansClustering
 from library.file_io import FileIO
 from mongo_settings import venuesCollection
 from analysis.mr_analysis import locationIterator,\
     filteredLocationToUserAndTimeMapIterator
-from library.geo import isWithinBoundingBox, getLocationFromLid
+from library.geo import isWithinBoundingBox, getLocationFromLid,\
+    getLidFromLocation
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
     placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile,\
-    austin_tx_boundary
+    austin_tx_boundary, placesKMLsFolder
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -130,10 +132,36 @@ def getLocationScatterPlots(place):
             FileIO.createDirectoryForFile(fileName)
             scatterPlot(clustering, location, fileName)
 
+def getClusterKMLs(place):
+    userVectors = defaultdict(dict)
+    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
+    for lid in locationToUserMap:
+        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+    for user in userVectors.keys()[:]: 
+        if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
+    print userVectors
+    for clustering in iteraterClusterings(place):
+        locationDistributionForClusters = defaultdict(dict)
+        for clusterId, users in clustering[2].iteritems():
+            for user in users:
+                for lid, count in userVectors[user].iteritems():
+                    if lid not in locationDistributionForClusters[clusterId]: locationDistributionForClusters[clusterId][lid]=0
+                    locationDistributionForClusters[clusterId][lid]+=count
+        colorMap = clustering[3]
+        for clusterId, locationDistributionForClusters in locationDistributionForClusters.iteritems(): 
+            kml = SpotsKML()
+            kml.addLocationPointsWithTitles([(getLocationFromLid(p[0]), locationToUserMap[p[0]]['name']) for p in  sorted(locationDistributionForClusters.iteritems(), key=itemgetter(1), reverse=True)[:5]], color=colorMap[clusterId])
+            outputKMLFile=placesKMLsFolder%place['name']+'locations/%s/%s.kml'%(str(clustering[0]), str(clusterId))
+            FileIO.createDirectoryForFile(outputKMLFile)
+            kml.write(outputKMLFile)
+
     
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+
 #writeLocationToUserMap(place)
 writePlaceKMeansClusters(place)
+
 #getLocationDistributionPlots(place)
 #getLocationScatterPlots(place)
+#getClusterKMLs(place)

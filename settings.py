@@ -43,7 +43,7 @@ placesFolder = analysisFolder+'places/'
 placesLocationToUserMapFile = placesFolder+'%s/locationToUserMap'
 placesClustersFile = placesFolder+'%s/clusters'
 placesImagesFolder = '/data/geo/places/%s/images/'
-
+placesKMLsFolder = '/data/geo/places/%s/kmls/'
 # Bondaries [[lower left][upper right]]
 us_boundary = [[24.527135,-127.792969], [49.61071,-59.765625]]
 brazos_valley_boundary = [[30.546887,-96.50322], [30.696973,-96.214828]]
