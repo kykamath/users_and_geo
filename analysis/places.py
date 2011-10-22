@@ -133,7 +133,7 @@ def getLocationScatterPlots(place):
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
-writeLocationToUserMap(place)
-#writePlaceClusters(place)
+#writeLocationToUserMap(place)
+writePlaceClusters(place)
 #getLocationDistributionPlots(place)
 #getLocationScatterPlots(place)
