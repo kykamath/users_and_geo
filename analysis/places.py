@@ -173,11 +173,11 @@ def getClusterKMLs(place):
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
 
 print len(list(locationToUserMapIterator(place)))
-print len(list(locationToUserMapIterator(place,minCheckins=20)))
+print len(list(locationToUserMapIterator(place,minCheckins=50)))
 
 #getLocationsCheckinDistribution(place)
 
