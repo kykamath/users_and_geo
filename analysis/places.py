@@ -85,7 +85,7 @@ def writeLocationWithClusterInfoFile(place):
             for user, userVector in location['users'].iteritems():
                 for day, dayVector in userVector.iteritems():
                     for db, epochs in dayVector.iteritems():
-                        locationMap[location['location']][userClusterMap[user]]++epochs
+                        locationMap[location['location']][userClusterMap[user]]+=epochs
             print locationMap[location['location']]
         exit()
 
