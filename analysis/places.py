@@ -89,7 +89,6 @@ def writeLocationWithClusterInfoFile(place):
                             locationMap[location['location']]['checkins'][userClusterMap[user]]+=epochs
             dataToWrite[str(clustering[0])]=locationMap
         FileIO.writeToFileAsJson(dataToWrite,placesLocationWithClusterInfoFile%place['name']) 
-        exit()
 
 def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
