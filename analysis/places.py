@@ -20,7 +20,8 @@ from library.geo import isWithinBoundingBox, getLocationFromLid,\
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
     placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile,\
-    austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder
+    austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder,\
+    placesLocationWithClusterInfoFile
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -73,8 +74,7 @@ def iteraterClusterings(place):
         i+=1
 
 def writeLocationWithClusterInfoFile(place):
-#    for location in locationToUserMapIterator(place):
-#        print location
+    GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
     for clustering in iteraterClusterings(place):
         dataToWrite, userClusterMap = {}, {}
         for clusterId, users in clustering[2].iteritems(): 
@@ -88,7 +88,7 @@ def writeLocationWithClusterInfoFile(place):
                         for db, epochs in dayVector.iteritems():
                             locationMap[location['location']]['checkins'][userClusterMap[user]]+=epochs
             dataToWrite[clustering[0]]=locationMap
-        print dataToWrite 
+        FileIO.writeToFileAsJson(dataToWrite,placesLocationWithClusterInfoFile%place['name']) 
         exit()
 
 def getLocationsCheckinDistribution(place):

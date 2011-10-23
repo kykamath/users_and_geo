@@ -41,6 +41,7 @@ spotsFrequentItemsFolder = '/mnt/chevron/kykamath/data/geo/analysis/spots/freque
 #Brazos file
 placesFolder = analysisFolder+'places/'
 placesLocationToUserMapFile = placesFolder+'%s/locationToUserMap'
+placesLocationWithClusterInfoFile = placesFolder+'%s/locationWithClusterInfo'
 placesClustersFile = placesFolder+'%s/clusters'
 placesImagesFolder = '/data/geo/places/%s/images/'
 placesKMLsFolder = '/data/geo/places/%s/kmls/'
