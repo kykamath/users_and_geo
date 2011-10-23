@@ -71,7 +71,11 @@ def iteraterClusterings(place):
     for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): 
         if i!=0: yield data; 
         i+=1
-        
+
+def writeLocationWithClusterInfoFile(place):
+    for location in locationToUserMapIterator(place):
+        print location
+
 def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
     for location in locationToUserMapIterator(place):
@@ -170,14 +174,15 @@ def getClusterKMLs(place):
             kml.write(outputKMLFile)
 
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
+writeLocationWithClusterInfoFile(place)
 
-print len(list(locationToUserMapIterator(place)))
-print len(list(locationToUserMapIterator(place,minCheckins=100)))
+#print len(list(locationToUserMapIterator(place)))
+#print len(list(locationToUserMapIterator(place,minCheckins=100)))
 
 #getLocationsCheckinDistribution(place)
 
