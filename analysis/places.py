@@ -1,4 +1,5 @@
 '''
+model iwth probabilites
 Created on Oct 21, 2011
 
 @author: kykamath
@@ -44,34 +45,54 @@ def locationToUserMapIterator(place, minCheckins=0):
         if location['noOfCheckins']>=minCheckins: yield location
   
 def writePlaceKMeansClusters(place):
-    def meanClusteringDistance(userVectors, clusters):  
-        clusterMeans = {}
-        for clusterId in clusters: clusterMeans[clusterId] = Vector.getMeanVector(userVectors[user] for user in clusters[clusterId])
-        return np.mean([Vector.euclideanDistance(clusterMeans[c1], clusterMeans[c2]) for c1, c2 in combinations(clusters,2)])
+    numberOfTopFeatures = 5
+    def meanClusteringDistance(clusterMeans):  
+#        for c1, c2 in combinations(clusterMeans,2):
+#            print set([j[0]for j in c1[:5]]).intersection(set([j[0]for j in c2[:5]]))
+#        exit()
+        return np.mean([Vector.euclideanDistance(Vector(dict(c1)), Vector(dict(c2))) for c1, c2 in combinations(clusterMeans,2)])
     GeneralMethods.runCommand('rm -rf %s'%placesClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
     for lid in locationToUserMap:
-        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+        for user in locationToUserMap[lid]['users']: 
+            userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
-    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in userVectors]
+#    for u in userVectors.iteritems(): print u
+#    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in userVectors]
     resultsForVaryingK = []
     for k in range(7,20):
         try:
-            clusters = KMeansClustering(userVectorsToCluster, k).cluster()
-            clusters = dict([(str(clusterId), [u for _,u  in users]) for clusterId, users in groupby(sorted(zip(clusters, userVectors), key=itemgetter(0)), key=itemgetter(0))])
-            resultsForVaryingK.append((k, meanClusteringDistance(userVectors, clusters), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters)))
+            clusters = KMeansClustering(userVectors.iteritems(), 8, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=10, numberOfTopFeatures=numberOfTopFeatures)
+    #            print clusters['bestFeatures']
+#            print meanClusteringDistance(clusters['bestFeatures'].itervalues())
+    #            clusters = dict([(str(clusterId), [u for _,u  in users]) for clusterId, users in groupby(sorted(zip(clusters, userVectors), key=itemgetter(0)), key=itemgetter(0))])
+#            bestFeatures = defaultdict(list)
+            for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
+            for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
+#            exit()
+            resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
-    FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[-1], placesClustersFile%place['name'])
-    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesClustersFile%place['name'])
-def getBestClustering(place): 
-    for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): return data
+#    print sorted(resultsForVaryingK, key=itemgetter(1))[-]
+    FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesClustersFile%place['name'])
+#    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesClustersFile%place['name'])
+def getBestClustering(place, idOnly=False): 
+    for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): 
+        if idOnly: return data[0]
+        return data
 def iteraterClusterings(place): 
     i = 0
     for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): 
         if i!=0: yield data; 
         i+=1
+        
+def writeLocationClusters(place):
+    clusterId = getBestClustering(place, idOnly=True)
+    locations = getLocationWithClusterDetails(place, clusterId)
+    locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
+    clusters = KMeansClustering(locationVectorsToCluster, 2, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5)
+    print clusters
 
 def writeLocationWithClusterInfoFile(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
@@ -189,15 +210,17 @@ def getClusterKMLs(place):
             outputKMLFile=placesKMLsFolder%place['name']+'locations/%s/%s.kml'%(str(clustering[0]), str(clusterId))
             FileIO.createDirectoryForFile(outputKMLFile)
             kml.write(outputKMLFile)
+            
+    
 
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-#writePlaceKMeansClusters(place)
-writeLocationWithClusterInfoFile(place)
-print getLocationWithClusterDetails(place, 10)
+writePlaceKMeansClusters(place)
+#writeLocationWithClusterInfoFile(place)
+#writeLocationClusters(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
