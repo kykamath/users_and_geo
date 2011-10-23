@@ -10,6 +10,7 @@ from library.classes import GeneralMethods
 from library.plotting import getDataDistribution, plotNorm
 from analysis import SpotsKML
 from library.clustering import KMeansClustering
+from library.plotting import getDataDistribution
 from library.file_io import FileIO
 from mongo_settings import venuesCollection
 from analysis.mr_analysis import locationIterator,\
@@ -19,7 +20,7 @@ from library.geo import isWithinBoundingBox, getLocationFromLid,\
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
     placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile,\
-    austin_tx_boundary, placesKMLsFolder
+    austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -72,7 +73,8 @@ def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
     for location in locationToUserMapIterator(place):
         checkinDistribution[location['location']]=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
-    print checkinDistribution
+    print placesAnalysisFolder%place['name']
+    print getDataDistribution(checkinDistribution.values())
     
 def getPerLocationDistributionPlots(clustering, location, fileName):
     def getDayBlockMeansForClusters(users, userClusterMap):
