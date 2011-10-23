@@ -46,11 +46,7 @@ def locationToUserMapIterator(place, minCheckins=0):
   
 def writeUserClusters(place):
     numberOfTopFeatures = 5
-    def meanClusteringDistance(clusterMeans):  
-#        for c1, c2 in combinations(clusterMeans,2):
-#            print set([j[0]for j in c1[:5]]).intersection(set([j[0]for j in c2[:5]]))
-#        exit()
-        return np.mean([Vector.euclideanDistance(Vector(dict(c1)), Vector(dict(c2))) for c1, c2 in combinations(clusterMeans,2)])
+    def meanClusteringDistance(clusterMeans): return np.mean([Vector.euclideanDistance(Vector(dict(c1)), Vector(dict(c2))) for c1, c2 in combinations(clusterMeans,2)])
     GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
@@ -59,24 +55,16 @@ def writeUserClusters(place):
             userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
-#    for u in userVectors.iteritems(): print u
-#    userVectorsToCluster = [(u, ' '.join([l.replace(' ', '_') for l in userVectors[u] for j in range(userVectors[u][l])])) for u in userVectors]
     resultsForVaryingK = []
     for k in range(7,20):
         try:
-            clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=3, numberOfTopFeatures=numberOfTopFeatures)
-    #            print clusters['bestFeatures']
-#            print meanClusteringDistance(clusters['bestFeatures'].itervalues())
-    #            clusters = dict([(str(clusterId), [u for _,u  in users]) for clusterId, users in groupby(sorted(zip(clusters, userVectors), key=itemgetter(0)), key=itemgetter(0))])
-#            bestFeatures = defaultdict(list)
+            clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures)
             for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
             for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
-#            exit()
             resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
-#    print sorted(resultsForVaryingK, key=itemgetter(1))[-]
     FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesUserClustersFile%place['name'])
-#    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
+    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def getBestClustering(place, idOnly=False): 
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
         if idOnly: return data[0]
@@ -94,11 +82,11 @@ def writeLocationClusters(place):
     clusters = KMeansClustering(locationVectorsToCluster, 2, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5)
     print clusters
 
-def writeLocationWithClusterInfoFile(place):
+def writeLocationsWithClusterInfoFile(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
     for clustering in iteraterClusterings(place):
         dataToWrite, userClusterMap = {}, {}
-        for clusterId, users in clustering[2].iteritems(): 
+        for clusterId, users in clustering[2]['clusters'].iteritems(): 
             for user in users: userClusterMap[user]=clusterId
         locationMap = defaultdict(dict)
         for location in locationToUserMapIterator(place):
@@ -219,7 +207,7 @@ place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5
 
 #writeLocationToUserMap(place)
 writeUserClusters(place)
-#writeLocationWithClusterInfoFile(place)
+#writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
 #print len(list(locationToUserMapIterator(place)))
