@@ -38,7 +38,9 @@ def writeLocationToUserMap(place):
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
             FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
-def locationToUserMapIterator(place): return FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name'])
+def locationToUserMapIterator(place, minCheckins=0): 
+    for location in FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name']):
+        if location['noOfCheckins']>=minCheckins: yield location
   
 def writePlaceKMeansClusters(place):
     def meanClusteringDistance(userVectors, clusters):  
@@ -171,8 +173,11 @@ def getClusterKMLs(place):
 place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
 #place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
+
+print len(list(locationToUserMapIterator(place)))
+print len(list(locationToUserMapIterator(place,minCheckins=20)))
 
 #getLocationsCheckinDistribution(place)
 
