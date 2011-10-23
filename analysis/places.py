@@ -76,7 +76,10 @@ def writeLocationWithClusterInfoFile(place):
 #    for location in locationToUserMapIterator(place):
 #        print location
     for clustering in iteraterClusterings(place):
-        print clustering
+        userClusterMap = {}
+        for clusterId, users in clustering[2].iteritems(): 
+            for user in users: userClusterMap[user]=clusterId
+        print userClusterMap
 
 def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
