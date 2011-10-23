@@ -177,7 +177,7 @@ place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5
 #writePlaceKMeansClusters(place)
 
 print len(list(locationToUserMapIterator(place)))
-print len(list(locationToUserMapIterator(place,minCheckins=50)))
+print len(list(locationToUserMapIterator(place,minCheckins=100)))
 
 #getLocationsCheckinDistribution(place)
 
