@@ -89,6 +89,9 @@ def writeLocationWithClusterInfoFile(place):
                             locationMap[location['location']]['checkins'][userClusterMap[user]]+=epochs
             dataToWrite[str(clustering[0])]=locationMap
         FileIO.writeToFileAsJson(dataToWrite,placesLocationWithClusterInfoFile%place['name']) 
+def getLocationWithClusterDetails(place, clusterId):
+    for data in FileIO.iterateJsonFromFile(placesLocationWithClusterInfoFile%place['name']):
+        if str(clusterId) in data: return data
 
 def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
@@ -193,7 +196,8 @@ place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':
 
 #writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
-writeLocationWithClusterInfoFile(place)
+#writeLocationWithClusterInfoFile(place)
+print getLocationWithClusterDetails(place, 7)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
