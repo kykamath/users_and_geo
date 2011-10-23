@@ -20,9 +20,9 @@ from library.geo import isWithinBoundingBox, getLocationFromLid,\
     getLidFromLocation
 from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,\
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
-    placesClustersFile, placesImagesFolder, locationToUserAndExactTimeMapFile,\
+    placesImagesFolder, locationToUserAndExactTimeMapFile,\
     austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder,\
-    placesLocationWithClusterInfoFile
+    placesLocationWithClusterInfoFile, placesUserClustersFile
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -44,14 +44,14 @@ def locationToUserMapIterator(place, minCheckins=0):
     for location in FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name']):
         if location['noOfCheckins']>=minCheckins: yield location
   
-def writePlaceKMeansClusters(place):
+def writeUserClusters(place):
     numberOfTopFeatures = 5
     def meanClusteringDistance(clusterMeans):  
 #        for c1, c2 in combinations(clusterMeans,2):
 #            print set([j[0]for j in c1[:5]]).intersection(set([j[0]for j in c2[:5]]))
 #        exit()
         return np.mean([Vector.euclideanDistance(Vector(dict(c1)), Vector(dict(c2))) for c1, c2 in combinations(clusterMeans,2)])
-    GeneralMethods.runCommand('rm -rf %s'%placesClustersFile%place['name'])
+    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
     for lid in locationToUserMap:
@@ -64,7 +64,7 @@ def writePlaceKMeansClusters(place):
     resultsForVaryingK = []
     for k in range(7,20):
         try:
-            clusters = KMeansClustering(userVectors.iteritems(), 8, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures)
+            clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures)
     #            print clusters['bestFeatures']
 #            print meanClusteringDistance(clusters['bestFeatures'].itervalues())
     #            clusters = dict([(str(clusterId), [u for _,u  in users]) for clusterId, users in groupby(sorted(zip(clusters, userVectors), key=itemgetter(0)), key=itemgetter(0))])
@@ -75,15 +75,15 @@ def writePlaceKMeansClusters(place):
             resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
 #    print sorted(resultsForVaryingK, key=itemgetter(1))[-]
-    FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesClustersFile%place['name'])
-#    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesClustersFile%place['name'])
+    FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesUserClustersFile%place['name'])
+#    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def getBestClustering(place, idOnly=False): 
-    for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): 
+    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
         if idOnly: return data[0]
         return data
 def iteraterClusterings(place): 
     i = 0
-    for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): 
+    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
         if i!=0: yield data; 
         i+=1
         
@@ -218,7 +218,7 @@ def getClusterKMLs(place):
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-writePlaceKMeansClusters(place)
+writeUserClusters(place)
 #writeLocationWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
