@@ -81,7 +81,7 @@ def writeLocationWithClusterInfoFile(place):
             for user in users: userClusterMap[user]=clusterId
         locationMap = defaultdict(dict)
         for location in locationToUserMapIterator(place):
-            locationMap[location['location']] = {'name':location['name'], 'checkins':defaultdict(list)}
+            locationMap[location['location']] = {'name':unicode(location['name']).encode("utf-8"), 'checkins':defaultdict(list)}
             for user, userVector in location['users'].iteritems():
                 if user in userClusterMap:
                     for day, dayVector in userVector.iteritems():
