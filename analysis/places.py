@@ -73,8 +73,11 @@ def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
     for location in locationToUserMapIterator(place):
         checkinDistribution[location['location']]=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
-    print placesAnalysisFolder%place['name']
-    print getDataDistribution(checkinDistribution.values())
+    dataX, dataY = getDataDistribution(checkinDistribution.values())
+    plt.plot(dataX,dataY)
+    outputFile = placesAnalysisFolder%place['name']+'locationsCheckinDistribution.png'
+    FileIO.createDirectoryForFile(outputFile)
+    plt.savefig(outputFile)
     
 def getPerLocationDistributionPlots(clustering, location, fileName):
     def getDayBlockMeansForClusters(users, userClusterMap):
