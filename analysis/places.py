@@ -22,12 +22,15 @@ from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,
     minLocationsTheUserHasCheckedin, placesLocationToUserMapFile,\
     placesImagesFolder, locationToUserAndExactTimeMapFile,\
     austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder,\
-    placesLocationWithClusterInfoFile, placesUserClustersFile
+    placesLocationWithClusterInfoFile, placesUserClustersFile,\
+    placesLocationClustersFile
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
 import numpy as np
 import matplotlib.pyplot as plt
+
+def meanClusteringDistance(clusterMeans): return np.mean([Vector.euclideanDistance(Vector(dict(c1)), Vector(dict(c2))) for c1, c2 in combinations(clusterMeans,2)])
 
 def writeLocationToUserMap(place):
     name, boundary = place['name'], place['boundary']
@@ -46,7 +49,6 @@ def locationToUserMapIterator(place, minCheckins=0):
   
 def writeUserClusters(place):
     numberOfTopFeatures = 5
-    def meanClusteringDistance(clusterMeans): return np.mean([Vector.euclideanDistance(Vector(dict(c1)), Vector(dict(c2))) for c1, c2 in combinations(clusterMeans,2)])
     GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
@@ -74,13 +76,6 @@ def iteraterClusterings(place):
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
         if i!=0: yield data; 
         i+=1
-        
-def writeLocationClusters(place):
-    clusterId = getBestClustering(place, idOnly=True)
-    locations = getLocationWithClusterDetails(place, clusterId)
-    locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
-    clusters = KMeansClustering(locationVectorsToCluster, 2, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5)
-    print clusters
 
 def writeLocationsWithClusterInfoFile(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
@@ -101,6 +96,23 @@ def writeLocationsWithClusterInfoFile(place):
 def getLocationWithClusterDetails(place, clusterId):
     for data in FileIO.iterateJsonFromFile(placesLocationWithClusterInfoFile%place['name']):
         if str(clusterId) in data: return data
+        
+def writeLocationClusters(place):
+    GeneralMethods.runCommand('rm -rf %s'%placesLocationClustersFile%place['name'])
+    clusterId = getBestClustering(place, idOnly=True)
+    locations = getLocationWithClusterDetails(place, clusterId)
+    locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
+    resultsForVaryingK = []
+    for k in range(7,20):
+        try:
+            clusters = KMeansClustering(locationVectorsToCluster, k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5)
+            for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
+            for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
+            resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
+        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
+    FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesLocationClustersFile%place['name'])
+    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesLocationClustersFile%place['name'])
+
 
 def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
@@ -202,13 +214,13 @@ def getClusterKMLs(place):
     
 
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-writeUserClusters(place)
+#writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
-#writeLocationClusters(place)
+writeLocationClusters(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
