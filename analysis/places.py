@@ -79,8 +79,14 @@ def writeLocationWithClusterInfoFile(place):
         userClusterMap = {}
         for clusterId, users in clustering[2].iteritems(): 
             for user in users: userClusterMap[user]=clusterId
+        locationMap = defaultdict(dict)
         for location in locationToUserMapIterator(place):
-            print location
+            locationMap[location['location']] = defaultdict(list)
+            for user, userVector in location['users'].iteritems():
+                for day, dayVector in userVector.iteritems():
+                    for db, epochs in dayVector.iteritems():
+                        locationMap[location['location']][userClusterMap[user]]++epochs
+            print locationMap[location['location']]
         exit()
 
 def getLocationsCheckinDistribution(place):
