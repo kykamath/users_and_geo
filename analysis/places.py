@@ -36,6 +36,7 @@ def writeLocationToUserMap(place):
             if title: location['name'] = unicode(title['n']).encode("utf-8")
             else: location['name']=''
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
+            location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
             FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
 def locationToUserMapIterator(place): return FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name'])
   
@@ -167,13 +168,13 @@ def getClusterKMLs(place):
             kml.write(outputKMLFile)
 
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
-#writeLocationToUserMap(place)
+writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
 
-getLocationsCheckinDistribution(place)
+#getLocationsCheckinDistribution(place)
 
 #getLocationDistributionPlots(place)
 #getLocationScatterPlots(place)
