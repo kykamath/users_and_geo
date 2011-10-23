@@ -167,8 +167,8 @@ def getClusterKMLs(place):
             kml.write(outputKMLFile)
 
     
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
