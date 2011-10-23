@@ -197,7 +197,7 @@ place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':
 #writeLocationToUserMap(place)
 #writePlaceKMeansClusters(place)
 #writeLocationWithClusterInfoFile(place)
-print getLocationWithClusterDetails(place, 7)
+print getLocationWithClusterDetails(place, 10)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
