@@ -64,7 +64,7 @@ def writePlaceKMeansClusters(place):
     resultsForVaryingK = []
     for k in range(7,20):
         try:
-            clusters = KMeansClustering(userVectors.iteritems(), 8, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=10, numberOfTopFeatures=numberOfTopFeatures)
+            clusters = KMeansClustering(userVectors.iteritems(), 8, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=2, numberOfTopFeatures=numberOfTopFeatures)
     #            print clusters['bestFeatures']
 #            print meanClusteringDistance(clusters['bestFeatures'].itervalues())
     #            clusters = dict([(str(clusterId), [u for _,u  in users]) for clusterId, users in groupby(sorted(zip(clusters, userVectors), key=itemgetter(0)), key=itemgetter(0))])
