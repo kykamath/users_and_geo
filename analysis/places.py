@@ -71,7 +71,7 @@ def iteraterClusterings(place):
 def getLocationsCheckinDistribution(place):
     for location in locationToUserMapIterator(place):
         print location
-        print [dayVector for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems()]
+        print [epochs for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()]
 
 def getPerLocationDistributionPlots(clustering, location, fileName):
     def getDayBlockMeansForClusters(users, userClusterMap):
