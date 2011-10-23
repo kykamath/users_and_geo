@@ -67,6 +67,10 @@ def iteraterClusterings(place):
     for data in FileIO.iterateJsonFromFile(placesClustersFile%place['name']): 
         if i!=0: yield data; 
         i+=1
+        
+def getLocationsCheckinDistribution(place):
+    for location in locationToUserMapIterator(place):
+        print location
 
 def getPerLocationDistributionPlots(clustering, location, fileName):
     def getDayBlockMeansForClusters(users, userClusterMap):
@@ -156,11 +160,13 @@ def getClusterKMLs(place):
             kml.write(outputKMLFile)
 
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-writePlaceKMeansClusters(place)
+#writePlaceKMeansClusters(place)
+
+getLocationsCheckinDistribution(place)
 
 #getLocationDistributionPlots(place)
 #getLocationScatterPlots(place)
