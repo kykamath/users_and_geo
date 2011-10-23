@@ -74,7 +74,7 @@ def getLocationsCheckinDistribution(place):
     for location in locationToUserMapIterator(place):
         checkinDistribution[location['location']]=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
     dataX, dataY = getDataDistribution(checkinDistribution.values())
-    plt.semilogy(dataX,dataY)
+    plt.loglog(dataX,dataY)
     outputFile = placesAnalysisFolder%place['name']+'locationsCheckinDistribution.png'
     FileIO.createDirectoryForFile(outputFile)
     plt.savefig(outputFile)
