@@ -73,8 +73,10 @@ def iteraterClusterings(place):
         i+=1
 
 def writeLocationWithClusterInfoFile(place):
-    for location in locationToUserMapIterator(place):
-        print location
+#    for location in locationToUserMapIterator(place):
+#        print location
+    for clustering in iteraterClusterings(place):
+        print clustering
 
 def getLocationsCheckinDistribution(place):
     checkinDistribution = {}
