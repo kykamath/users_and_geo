@@ -215,7 +215,7 @@ def getClusterKMLs(place):
 def getUserClusterDetails(place):
     clusters = getBestClustering(place)
     locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
-    for clusterId, features in  clusters['bestFeatures'].iteritems():
+    for clusterId, features in  clusters[2]['bestFeatures'].iteritems():
         print clusterId, [locationNameMap[lid] for lid, _ in features]
     
     
