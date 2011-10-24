@@ -59,7 +59,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(4,60):
+    for k in range(60,100):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
@@ -84,7 +84,7 @@ def getUserClusteringDetails(place, clustering):
     locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
     clusterDetails = defaultdict(list)
     for (clusterId, users), (clusterId, features) in zip(clustering[2]['clusters'].iteritems(), clustering[2]['bestFeatures'].iteritems()):
-        if len(users)>place['minimunUsersInUserCluster']: clusterDetails[clusterId] = {'users': users, 'locations': [(lid, locationNameMap[lid], score) for lid, score in features]}
+        if len(users)>place.get('minimunUsersInUserCluster', 0): clusterDetails[clusterId] = {'users': users, 'locations': [(lid, locationNameMap[lid], score) for lid, score in features]}
     return clusterDetails
 
 def writeLocationsWithClusterInfoFile(place):
@@ -246,7 +246,7 @@ def writeUserClusterKMLs(place):
     
 def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
-        print clusterId, details
+        print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForScatterPlots': 200, 'maxLocationCheckinsForScatterPlots': (), 'minimunUsersInUserCluster': 5, 'minLocationCheckins': 0}
