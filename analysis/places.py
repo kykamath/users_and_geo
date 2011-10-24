@@ -67,11 +67,11 @@ def writeUserClusters(place):
         except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
     FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesUserClustersFile%place['name'])
     for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
-def getBestClustering(place, idOnly=False): 
+def getBestUserClustering(place, idOnly=False): 
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
         if idOnly: return data[0]
         return data
-def iteraterClusterings(place): 
+def iteraterUserClusterings(place): 
     i = 0
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
         if i!=0: yield data; 
@@ -79,7 +79,7 @@ def iteraterClusterings(place):
 
 def writeLocationsWithClusterInfoFile(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
-    for clustering in iteraterClusterings(place):
+    for clustering in iteraterUserClusterings(place):
         dataToWrite, userClusterMap = {}, {}
         for clusterId, users in clustering[2]['clusters'].iteritems(): 
             for user in users: userClusterMap[user]=clusterId
@@ -99,7 +99,7 @@ def getLocationWithClusterDetails(place, clusterId):
         
 def writeLocationClusters(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationClustersFile%place['name'])
-    clusterId = getBestClustering(place, idOnly=True)
+    clusterId = getBestUserClustering(place, idOnly=True)
     locations = getLocationWithClusterDetails(place, clusterId)
     locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
     resultsForVaryingK = []
@@ -154,7 +154,7 @@ def getPerLocationDistributionPlots(clustering, location, fileName):
     means, deviations = zip(*getDayBlockMeansForClusters(location['users'], userClusterMap))[1:]
     plotLocation(location['name'], location['location'], userClusterMap, means, deviations, clustering[3])
 def getLocationDistributionPlots(place):
-    for clustering in iteraterClusterings(place):
+    for clustering in iteraterUserClusterings(place):
         for location in locationToUserMapIterator(place): 
             print clustering[0], location['location']
             fileName=placesImagesFolder%place['name']+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
@@ -181,7 +181,7 @@ def getLocationScatterPlots(place):
 #        plt.show()
         plt.xlim(xmin=0,xmax=24)
         plt.savefig(fileName), plt.clf()
-    for clustering in iteraterClusterings(place):
+    for clustering in iteraterUserClusterings(place):
         for location in locationToUserMapIterator(place): 
             print clustering[0], location['location']
             fileName=placesImagesFolder%place['name']+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
@@ -189,45 +189,46 @@ def getLocationScatterPlots(place):
             scatterPlot(clustering, location, fileName)
 
 def getClusterKMLs(place):
-    userVectors = defaultdict(dict)
-    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
-    for lid in locationToUserMap:
-        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
-    for user in userVectors.keys()[:]: 
-        if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
-    print userVectors
-    for clustering in iteraterClusterings(place):
-        locationDistributionForClusters = defaultdict(dict)
-        for clusterId, users in clustering[2].iteritems():
-            for user in users:
-                for lid, count in userVectors[user].iteritems():
-                    if lid not in locationDistributionForClusters[clusterId]: locationDistributionForClusters[clusterId][lid]=0
-                    locationDistributionForClusters[clusterId][lid]+=count
-        colorMap = clustering[3]
-        for clusterId, locationDistributionForClusters in locationDistributionForClusters.iteritems(): 
-            kml = SpotsKML()
-            kml.addLocationPointsWithTitles([(getLocationFromLid(p[0]), locationToUserMap[p[0]]['name']) for p in  sorted(locationDistributionForClusters.iteritems(), key=itemgetter(1), reverse=True)[:5]], color=colorMap[clusterId])
-            outputKMLFile=placesKMLsFolder%place['name']+'locations/%s/%s.kml'%(str(clustering[0]), str(clusterId))
-            FileIO.createDirectoryForFile(outputKMLFile)
-            kml.write(outputKMLFile)
+    pass
+#    userVectors = defaultdict(dict)
+#    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
+#    for lid in locationToUserMap:
+#        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+#    for user in userVectors.keys()[:]: 
+#        if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
+#    print userVectors
+#    for clustering in iteraterUserClusterings(place):
+#        locationDistributionForClusters = defaultdict(dict)
+#        for clusterId, users in clustering[2].iteritems():
+#            for user in users:
+#                for lid, count in userVectors[user].iteritems():
+#                    if lid not in locationDistributionForClusters[clusterId]: locationDistributionForClusters[clusterId][lid]=0
+#                    locationDistributionForClusters[clusterId][lid]+=count
+#        colorMap = clustering[3]
+#        for clusterId, locationDistributionForClusters in locationDistributionForClusters.iteritems(): 
+#            kml = SpotsKML()
+#            kml.addLocationPointsWithTitles([(getLocationFromLid(p[0]), locationToUserMap[p[0]]['name']) for p in  sorted(locationDistributionForClusters.iteritems(), key=itemgetter(1), reverse=True)[:5]], color=colorMap[clusterId])
+#            outputKMLFile=placesKMLsFolder%place['name']+'locations/%s/%s.kml'%(str(clustering[0]), str(clusterId))
+#            FileIO.createDirectoryForFile(outputKMLFile)
+#            kml.write(outputKMLFile)
             
     
 def getUserClusterDetails(place):
-    clusters = getBestClustering(place)
+    clusters = getBestUserClustering(place)
     locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
     for clusterId, features in  sorted(clusters[2]['bestFeatures'].iteritems(), key=lambda k: int(k[0])):
         print clusterId, [(locationNameMap[lid], score) for lid, score in features]
     
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
-#writeLocationToUserMap(place)
+writeLocationToUserMap(place)
 writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
-#writeLocationClusters(place)
+writeLocationClusters(place)
 
-getUserClusterDetails(place)
+#getUserClusterDetails(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
