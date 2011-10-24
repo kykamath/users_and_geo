@@ -59,7 +59,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(4,30):
+    for k in range(4,60):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
@@ -251,7 +251,7 @@ def getUserClusterDetails(place):
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForScatterPlots': 200, 'maxLocationCheckinsForScatterPlots': (), 'minimunUsersInUserCluster': 5, 'minLocationCheckins': 0}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
