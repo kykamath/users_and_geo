@@ -59,14 +59,17 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(5,20):
+    for k in range(4,20):
         try:
-            clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures)
+            print 'Clustering with k=%s'%k
+            clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
+            error=clusters['error']
             for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
             for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
-            resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
-        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
-    FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesUserClustersFile%place['name'])
+            if error: resultsForVaryingK.append((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
+            else: resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
+        except Exception as e: print '*********** Exception while clustering k = %s; %s'%(k, e); pass
+    FileIO.writeToFileAsJson(min(resultsForVaryingK, key=itemgetter(1)), placesUserClustersFile%place['name'])
     for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def getBestUserClustering(place, idOnly=False): 
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
@@ -221,15 +224,15 @@ def getUserClusterDetails(place):
         print clusterId, [(locationNameMap[lid], score) for lid, score in features]
     
     
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5, 'minLocationCheckins': 20}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckins': 20}
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckins': 0}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 writeUserClusters(place)
-writeLocationsWithClusterInfoFile(place)
-writeLocationClusters(place)
+#writeLocationsWithClusterInfoFile(place)
+#writeLocationClusters(place)
 
-#getUserClusterDetails(place)
+getUserClusterDetails(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
