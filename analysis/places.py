@@ -220,15 +220,17 @@ def getClusterKMLs(place):
 def getUserClusterDetails(place):
     clusters = getBestUserClustering(place)
     locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
-    for clusterId, features in  sorted(clusters[2]['bestFeatures'].iteritems(), key=lambda k: int(k[0])):
-        print clusterId, [(locationNameMap[lid], score) for lid, score in features]
-    
+    clusterDetails = defaultdict(list)
+    for clusterId, locations in clusters[2]['clusters'].iteritems(): clusterDetails[clusterId].append(len(locations))
+    for clusterId, features in  clusters[2]['bestFeatures'].iteritems(): clusterDetails[clusterId].append([(locationNameMap[lid], score) for lid, score in features])
+    for clusterId, (size, features) in sorted(clusterDetails.iteritems(), key=lambda k: int(k[0])):
+        print clusterId, size, features
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckins': 0}
 
 #writeLocationToUserMap(place)
-writeUserClusters(place)
+#writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
