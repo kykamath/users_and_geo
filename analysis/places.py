@@ -224,8 +224,8 @@ place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5
 
 #writeLocationToUserMap(place)
 writeUserClusters(place)
-#writeLocationsWithClusterInfoFile(place)
-#writeLocationClusters(place)
+writeLocationsWithClusterInfoFile(place)
+writeLocationClusters(place)
 
 getUserClusterDetails(place)
 
