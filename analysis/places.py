@@ -213,10 +213,11 @@ def getClusterKMLs(place):
             
     
 def getUserClusterDetails(place):
-#    clusters = getBestClustering(place)
-    locationNameMap = {}
-    for locations in locationToUserMapIterator(place, minCheckins=20):
-        print locations
+    clusters = getBestClustering(place)
+    locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
+    print clusters
+    print locationNameMap
+    
     
 place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
 #place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
