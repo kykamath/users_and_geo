@@ -113,7 +113,7 @@ def writeLocationClusters(place):
     locations = getLocationWithClusterDetails(place, clusterId)
     locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
     resultsForVaryingK = []
-    for k in range(30,50):
+    for k in range(60,80):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(locationVectorsToCluster, k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, algorithmSource='biopython')
