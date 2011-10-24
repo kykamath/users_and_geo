@@ -212,15 +212,21 @@ def getClusterKMLs(place):
             kml.write(outputKMLFile)
             
     
-
+def getUserClusterDetails(place):
+#    clusters = getBestClustering(place)
+    locationNameMap = {}
+    for locations in locationToUserMapIterator(place, minCheckins=20):
+        print locations
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-writeUserClusters(place)
-writeLocationsWithClusterInfoFile(place)
-writeLocationClusters(place)
+#writeUserClusters(place)
+#writeLocationsWithClusterInfoFile(place)
+#writeLocationClusters(place)
+
+getUserClusterDetails(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
