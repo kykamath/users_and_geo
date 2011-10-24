@@ -59,7 +59,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(4,20):
+    for k in range(4,30):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
