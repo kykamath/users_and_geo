@@ -216,7 +216,7 @@ def getUserClusterDetails(place):
     clusters = getBestClustering(place)
     locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
     for clusterId, features in  sorted(clusters[2]['bestFeatures'].iteritems(), key=lambda k: int(k[0])):
-        print clusterId, [locationNameMap[lid] for lid, _ in features]
+        print clusterId, [(locationNameMap[lid], score) for lid, score in features]
     
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
