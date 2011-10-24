@@ -51,7 +51,7 @@ def writeUserClusters(place):
     numberOfTopFeatures = 5
     GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
-    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
+    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
     for lid in locationToUserMap:
         for user in locationToUserMap[lid]['users']: 
             userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
@@ -223,7 +223,7 @@ def getUserClusterDetails(place):
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-#writeUserClusters(place)
+writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
