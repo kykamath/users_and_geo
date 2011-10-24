@@ -104,12 +104,12 @@ def writeLocationClusters(place):
     locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
     resultsForVaryingK = []
     for k in range(7,20):
-#        try:
-        clusters = KMeansClustering(locationVectorsToCluster, k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5)
-        for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
-        for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
-        resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
-#        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
+        try:
+            clusters = KMeansClustering(locationVectorsToCluster, k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5)
+            for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
+            for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
+            resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
+        except Exception as e: print '*********** Exception while clustering k = %s'%k; pass
     FileIO.writeToFileAsJson(sorted(resultsForVaryingK, key=itemgetter(1))[0], placesLocationClustersFile%place['name'])
     for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesLocationClustersFile%place['name'])
 
