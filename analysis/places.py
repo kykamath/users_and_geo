@@ -58,7 +58,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(7,20):
+    for k in range(3,20):
         try:
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures)
             for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
@@ -223,8 +223,8 @@ place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':
 #place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
 
 #writeLocationToUserMap(place)
-#writeUserClusters(place)
-#writeLocationsWithClusterInfoFile(place)
+writeUserClusters(place)
+writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
 getUserClusterDetails(place)
