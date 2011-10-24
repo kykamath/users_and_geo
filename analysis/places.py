@@ -34,6 +34,7 @@ def meanClusteringDistance(clusterMeans): return np.mean([Vector.euclideanDistan
 
 def writeLocationToUserMap(place):
     name, boundary = place['name'], place['boundary']
+    GeneralMethods.runCommand('rm -rf %s'%placesLocationToUserMapFile%name)
     for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, inputFile=locationToUserAndExactTimeMapFile):
         lid=getLocationFromLid(location['location'])
         if isWithinBoundingBox(lid, boundary): 
@@ -42,7 +43,7 @@ def writeLocationToUserMap(place):
             else: location['name']=''
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
-            FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
+            if location['noOfCheckins']>place['minLocationCheckins']: FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
 def locationToUserMapIterator(place, minCheckins=0): 
     for location in FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name']):
         if location['noOfCheckins']>=minCheckins: yield location
@@ -56,7 +57,7 @@ def writeUserClusters(place):
         for user in locationToUserMap[lid]['users']: 
             userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
     for user in userVectors.keys()[:]: 
-        if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
+        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
     for k in range(5,20):
         try:
@@ -195,7 +196,7 @@ def getClusterKMLs(place):
 #    for lid in locationToUserMap:
 #        for user in locationToUserMap[lid]['users']: userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
 #    for user in userVectors.keys()[:]: 
-#        if sum(userVectors[user].itervalues())<place['minTotalCheckins']: del userVectors[user]
+#        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
 #    print userVectors
 #    for clustering in iteraterUserClusterings(place):
 #        locationDistributionForClusters = defaultdict(dict)
@@ -220,13 +221,13 @@ def getUserClusterDetails(place):
         print clusterId, [(locationNameMap[lid], score) for lid, score in features]
     
     
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minTotalCheckins':5}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minTotalCheckins':5}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5, 'minLocationCheckins': 20}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckins': 20}
 
-#writeLocationToUserMap(place)
-writeUserClusters(place)
-writeLocationsWithClusterInfoFile(place)
-writeLocationClusters(place)
+writeLocationToUserMap(place)
+#writeUserClusters(place)
+#writeLocationsWithClusterInfoFile(place)
+#writeLocationClusters(place)
 
 #getUserClusterDetails(place)
 
