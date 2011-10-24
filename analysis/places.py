@@ -49,7 +49,7 @@ def locationToUserMapIterator(place, minCheckins=0):
         if location['noOfCheckins']>=minCheckins: yield location
   
 def writeUserClusters(place):
-    numberOfTopFeatures = 5
+    numberOfTopFeatures = 10000
     GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
@@ -230,7 +230,7 @@ def getUserClusterDetails(place):
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckins': 0}
 
 #writeLocationToUserMap(place)
-#writeUserClusters(place)
+writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
