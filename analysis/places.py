@@ -44,9 +44,9 @@ def writeLocationToUserMap(place):
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
             if location['noOfCheckins']>place['minLocationCheckins']: FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
-def locationToUserMapIterator(place, minCheckins=0): 
+def locationToUserMapIterator(place, minCheckins=0, maxCheckins=()): 
     for location in FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name']):
-        if location['noOfCheckins']>=minCheckins: yield location
+        if location['noOfCheckins']<maxCheckins and location['noOfCheckins']>=minCheckins: yield location
   
 def writeUserClusters(place):
     numberOfTopFeatures = 10000
@@ -175,10 +175,12 @@ def getLocationDistributionPlots(place):
             FileIO.createDirectoryForFile(fileName)
             getPerLocationDistributionPlots(clustering, location, fileName)
 
-def getLocationScatterPlots(place):
+def getLocationPlots(place, type='scatter'):
+    clustering = getBestUserClustering(place)
+    validClusters = getUserClusteringDetails(place, clustering).keys()
     def scatterPlot(clustering, location, fileName):
         userClusterMap = {}
-        for clusterId, users in clustering[2].iteritems():
+        for clusterId, users in clustering[2]['clusters'].iteritems():
             for user in users: 
                 if user in location['users']: userClusterMap[user]=clusterId
         scatterData = defaultdict(dict)
@@ -187,20 +189,27 @@ def getLocationScatterPlots(place):
             if user in userClusterMap:
                 for d in userVector:
                     for db in userVector[d]:
-                        for h in [datetime.datetime.fromtimestamp(ep).hour for ep in userVector[d][db]]:
+                        for h in [(datetime.datetime.fromtimestamp(ep).hour-6)%24 for ep in userVector[d][db]]:
                             if h not in scatterData[userClusterMap[user]]: scatterData[userClusterMap[user]][h]=0
                             scatterData[userClusterMap[user]][h]+=1
-        for cluster, clusterInfo in scatterData.iteritems(): plt.scatter(clusterInfo.keys(), clusterInfo.values(), color=clusterMap[cluster], label=cluster)
+        total = float(sum([k for cluster, clusterInfo in scatterData.iteritems() for k, v in clusterInfo.iteritems() for i in range(v)]))
+        for cluster, clusterInfo in scatterData.iteritems(): 
+            if cluster in validClusters: 
+                if type=='normal':
+                    data = [k for k, v in clusterInfo.iteritems() for i in range(v)]
+                    mean, std = np.mean(data), np.std(data)
+                    if std!=0: plotNorm(sum(data)/total, mean, std, color=clusterMap[cluster])
+                elif type=='scatter': plt.scatter(clusterInfo.keys(), clusterInfo.values(), color=clusterMap[cluster], label=cluster)
         plt.title('%s (%s)'%(location['name'],location['location'])),plt.legend()
 #        plt.show()
         plt.xlim(xmin=0,xmax=24)
         plt.savefig(fileName), plt.clf()
-    for clustering in iteraterUserClusterings(place):
-        for location in locationToUserMapIterator(place): 
-            print clustering[0], location['location']
-            fileName=placesImagesFolder%place['name']+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
-            FileIO.createDirectoryForFile(fileName)
-            scatterPlot(clustering, location, fileName)
+#    for clustering in iteraterUserClusterings(place):
+    for location in locationToUserMapIterator(place, minCheckins=place['minLocationCheckinsForScatterPlots']): 
+        print clustering[0], location['location']
+        fileName=placesImagesFolder%place['name']+'%s/'%type+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
+        FileIO.createDirectoryForFile(fileName)
+        scatterPlot(clustering, location, fileName)
 
 def writeUserClusterKMLs(place):
     clustering = getBestUserClustering(place)
@@ -240,12 +249,12 @@ def getUserClusterDetails(place):
         print clusterId, details
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckins': 0, 'minimunUsersInUserCluster': 5}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForScatterPlots': 200, 'maxLocationCheckinsForScatterPlots': (), 'minimunUsersInUserCluster': 5, 'minLocationCheckins': 0}
 
-#writeLocationToUserMap(place)
-#writeUserClusters(place)
+writeLocationToUserMap(place)
+writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
-writeLocationClusters(place)
+#writeLocationClusters(place)
 
 #getUserClusterDetails(place)
 
@@ -255,5 +264,6 @@ writeLocationClusters(place)
 #getLocationsCheckinDistribution(place)
 
 #getLocationDistributionPlots(place)
-#getLocationScatterPlots(place)
+#getLocationPlots(place)
+#getLocationPlots(place, type='normal')
 #writeUserClusterKMLs(place)
