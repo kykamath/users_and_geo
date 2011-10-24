@@ -115,6 +115,7 @@ def writeLocationClusters(place):
     resultsForVaryingK = []
     for k in range(3,30):
         try:
+            print 'Clustering with k=%s'%k
             clusters = KMeansClustering(locationVectorsToCluster, k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, algorithmSource='biopython')
             error=clusters['error']
             for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
