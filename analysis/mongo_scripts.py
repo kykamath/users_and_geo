@@ -9,7 +9,7 @@ import dateutil.parser
 from settings import checkinsFile, venuesFile,\
     minUniqueUsersCheckedInTheLocation
 from mongo_settings import checkinsCollection, venuesCollection,\
-    locationsCollection, locationToLocationCollection, geoDb
+    locationsCollection, locationToLocationCollection, geoDb, venuesMetaDataCollection
 from library.geo import getLidFromLocation, getLocationFromLid,\
     getHaversineDistance
 from analysis.mr_analysis import locationIterator, locationGraphIterator,\
@@ -39,13 +39,15 @@ def addVenuesToDB():
 #            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
-def addTagInfoToVenuesDB():
+def addVenuesMetaToDB():
     i = 0
     for data in open(venuesFile):
         data = data.strip().split('\t')
-        print data
-        i+=1
-        if i==10: break;
+#        print data[10].replace('\\', ''), data[11].replace('\\', '')
+        try:
+            venuesMetaDataCollection.insert({'_id': getLidFromLocation([float(data[2]), float(data[3])]), 'c': data[10].replace('\\', ''), 't':data[11].replace('\\', '') })
+        except Exception as e: print i, 'Exception while processing:', data; i+=1
+
         
 def addLocationCheckinDistributionToDB():
     i = 0
@@ -71,4 +73,4 @@ if __name__ == '__main__':
 ##    addUserCheckinDistributionToDB()
 #    addLocationCheckinDistributionToDB()
 #    addLocationToLocationDistanceToDB()
-    addTagInfoToVenuesDB()
+    addVenuesMetaToDB()

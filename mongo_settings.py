@@ -36,6 +36,15 @@ checkinsCollection.create_index([ ('l', GEO2D), ('u', ASCENDING), ('t', ASCENDIN
 venuesCollection = geoDb.venues
 venuesCollection.create_index([ ('l', GEO2D), ('lid', ASCENDING), ('tp', ASCENDING), ('tc', ASCENDING)])
 
+'''
+{
+'_id': lid,
+'c': Categories,
+'t': Tags
+}
+'''
+venuesMetaDataCollection = geoDb.venues_meta
+
 #'''
 #{
 #'_id': user id, 
