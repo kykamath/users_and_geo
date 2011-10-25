@@ -39,6 +39,14 @@ def addVenuesToDB():
 #            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
+def addTagInfoToVenuesDB():
+    i = 0
+    for data in open(venuesFile):
+        data = data.strip().split('\t')
+        print data
+        i+=1
+        if i==10: break;
+        
 def addLocationCheckinDistributionToDB():
     i = 0
     for data in locationIterator(fullRecord=True):
@@ -62,4 +70,5 @@ if __name__ == '__main__':
 #    addVenuesToDB()
 ##    addUserCheckinDistributionToDB()
 #    addLocationCheckinDistributionToDB()
-    addLocationToLocationDistanceToDB()
+#    addLocationToLocationDistanceToDB()
+    addTagInfoToVenuesDB()

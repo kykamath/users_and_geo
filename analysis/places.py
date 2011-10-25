@@ -9,6 +9,7 @@ sys.path.append('../')
 from library.vector import Vector
 from library.classes import GeneralMethods
 from library.plotting import getDataDistribution, plotNorm
+from library.stats import getWeitzmanOVL
 from analysis import SpotsKML
 from library.clustering import KMeansClustering
 from library.plotting import getDataDistribution
@@ -267,30 +268,45 @@ def locationClusterMeansIterator(place):
                 data = [k for k, v in clusterInfo.iteritems() for i in range(v)]
                 locationData.append((cluster, np.mean(data), np.std(data)))
         yield {'combined': [np.mean(allData), np.std(allData)], 'clusters': locationData}
-                
+
+def plotClusterDistributionInLocations(place):
+    clusterCount, distribution = getDataDistribution([len(location['clusters']) for location in locationClusterMeansIterator(place)])
+    plt.plot(clusterCount, distribution)
+    plt.show()
+def plotClusterOverlapInLocations(place):
+    for location in locationClusterMeansIterator(place):
+        if len(location['clusters'])>=2:
+            for cluster1, cluster2 in combinations(location['clusters'], 2):
+                mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
+#                print cluster1, cluster2
+                print mu1, mu2, sd1, sd2, getWeitzmanOVL(mu1, mu2, sd1, sd2)
     
 def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 200, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
 #writeLocationToUserMap(place)
 #writeUserClusters(place)
+#getUserClusterDetails(place)
+
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
+
 #writeUserClusterKMLs(place)
 
-#getUserClusterDetails(place)
-for i in locationClusterMeansIterator(place): print i
+#getLocationsCheckinDistribution(place)
+#getLocationDistributionPlots(place)
+#getLocationPlots(place)
+#getLocationPlots(place, type='normal')
+
+#plotClusterDistributionInLocations(place)
+plotClusterOverlapInLocations(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
 
-#getLocationsCheckinDistribution(place)
 
-#getLocationDistributionPlots(place)
-#getLocationPlots(place)
-#getLocationPlots(place, type='normal')
