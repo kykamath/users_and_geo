@@ -287,8 +287,8 @@ def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
 writeLocationToUserMap(place)
 #writeUserClusters(place)
