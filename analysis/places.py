@@ -14,7 +14,7 @@ from analysis import SpotsKML
 from library.clustering import KMeansClustering
 from library.plotting import getDataDistribution
 from library.file_io import FileIO
-from mongo_settings import venuesCollection
+from mongo_settings import venuesCollection, venuesMetaDataCollection
 from analysis.mr_analysis import locationIterator,\
     filteredLocationToUserAndTimeMapIterator
 from library.geo import isWithinBoundingBox, getLocationFromLid,\
@@ -39,9 +39,11 @@ def writeLocationToUserMap(place):
     for location in filteredLocationToUserAndTimeMapIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, inputFile=locationToUserAndExactTimeMapFile):
         lid=getLocationFromLid(location['location'])
         if isWithinBoundingBox(lid, boundary): 
+            location['categories'] = ''; location['tags'] = ''; location['name']=''
             title = venuesCollection.find_one({'lid':location['location']})
             if title: location['name'] = unicode(title['n']).encode("utf-8")
-            else: location['name']=''
+            meta = venuesMetaDataCollection.find_one({'lid':location['location']})
+            if meta: location['categories'] = unicode(meta['c']).encode("utf-8"); location['tags'] = unicode(meta['t']).encode("utf-8")
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
             if location['noOfCheckins']>place['minLocationCheckins']: FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
@@ -285,10 +287,10 @@ def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
-#writeLocationToUserMap(place)
+writeLocationToUserMap(place)
 #writeUserClusters(place)
 #getUserClusterDetails(place)
 
@@ -304,7 +306,7 @@ place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5,
 #getLocationPlots(place, type='normal')
 
 #plotClusterDistributionInLocations(place)
-plotClusterOverlapInLocations(place)
+#plotClusterOverlapInLocations(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
