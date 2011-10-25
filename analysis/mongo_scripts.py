@@ -44,9 +44,9 @@ def addVenuesMetaToDB():
     for data in open(venuesFile):
         data = data.strip().split('\t')
 #        print data[10].replace('\\', ''), data[11].replace('\\', '')
-#        try:
-        venuesMetaDataCollection.insert({'_id': getLidFromLocation([float(data[2]), float(data[3])]), 'c': data[10].replace('\\', ''), 't':data[11].replace('\\', '') })
-#        except Exception as e: print i, 'Exception while processing:', data; i+=1
+        try:
+            venuesMetaDataCollection.insert({'_id': getLidFromLocation([float(data[2]), float(data[3])]), 'c': data[10].replace('\\', ''), 't':data[11].replace('\\', '') })
+        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
         
 def addLocationCheckinDistributionToDB():
