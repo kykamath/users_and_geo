@@ -42,7 +42,7 @@ def writeLocationToUserMap(place):
             location['categories'] = ''; location['tags'] = ''; location['name']=''
             title = venuesCollection.find_one({'lid':location['location']})
             if title: location['name'] = unicode(title['n']).encode("utf-8")
-            meta = venuesMetaDataCollection.find_one({'lid':location['location']})
+            meta = venuesMetaDataCollection.find_one({'_id':location['location']})
             if meta: location['categories'] = unicode(meta['c']).encode("utf-8"); location['tags'] = unicode(meta['t']).encode("utf-8")
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
@@ -287,8 +287,8 @@ def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
 writeLocationToUserMap(place)
 #writeUserClusters(place)
@@ -296,6 +296,7 @@ writeLocationToUserMap(place)
 
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
+
 
 
 #writeUserClusterKMLs(place)
@@ -311,4 +312,7 @@ writeLocationToUserMap(place)
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
 
+#for l in locationToUserMapIterator(place):
+##    print l.keys()
+#    print l['name'], l['categories'], l['tags'] 
 
