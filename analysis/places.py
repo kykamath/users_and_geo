@@ -290,7 +290,7 @@ def getUserClusterDetails(place):
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 #writeUserClusters(place)
 #getUserClusterDetails(place)
 
@@ -312,7 +312,7 @@ writeLocationToUserMap(place)
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
 
-#for l in locationToUserMapIterator(place):
-##    print l.keys()
-#    print l['categories'], l['tags'] 
+for l in locationToUserMapIterator(place):
+#    print l.keys()
+    if unicode(l['categories']).encode('utf-8')!='untagged' :print unicode(l['name']).encode('utf-8') , ' *** ', unicode(l['categories']).encode('utf-8')
 
