@@ -32,7 +32,7 @@ from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,
     placesImagesFolder, locationToUserAndExactTimeMapFile,\
     austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder,\
     placesLocationWithClusterInfoFile, placesUserClustersFile,\
-    placesLocationClustersFile
+    placesLocationClustersFile, dallas_tx_boundary
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -347,13 +347,14 @@ def iterateLocationsByOVLAndClustersType(place, type):
 
 def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
-        print clusterId, len(details['users']), [(t[1], '%0.2f'%t[2]) for t in details['locations'][:10] if t[2]>0.2]
+        print clusterId, len(details['users']), [(t[1], '%0.2f'%t[2]) for t in details['locations'][:5]]
 
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
-         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
+#         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
+place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5 }
 
-#writeLocationToUserMap(place)
+writeLocationToUserMap(place)
 writeUserClusters(place)
 getUserClusterDetails(place)
 
