@@ -75,7 +75,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(4, 20):
+    for k in range(4, 100):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
@@ -102,6 +102,10 @@ def getUserClusteringDetails(place, clustering):
     for (clusterId, users), (clusterId, features) in zip(clustering[2]['clusters'].iteritems(), clustering[2]['bestFeatures'].iteritems()):
         if len(users)>place.get('minimunUsersInUserCluster', 0): clusterDetails[clusterId] = {'users': users, 'locations': [(lid, locationNameMap[lid], score) for lid, score in features]}
     return clusterDetails
+def plotErrors(place):
+    dataX = [clustering[1] for clustering in iteraterUserClusterings(place)]
+    plt.plot(dataX)
+    plt.show()
 
 def writeLocationsWithClusterInfoFile(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
@@ -352,11 +356,12 @@ def getUserClusterDetails(place):
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 #place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
 #         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
-place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5 }
+place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5, 'minimunUsersInUserCluster': 20}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 writeUserClusters(place)
-getUserClusterDetails(place)
+#plotErrors(place)
+#getUserClusterDetails(place)
 
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
