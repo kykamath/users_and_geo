@@ -243,20 +243,48 @@ def writeUserClusterKMLs(place):
 #            FileIO.createDirectoryForFile(outputKMLFile)
 #            kml.write(outputKMLFile)
             
+def locationClusterMeansIterator(place):
+    clustering = getBestUserClustering(place)
+    validClusters = getUserClusteringDetails(place, clustering).keys()
+    for location in locationToUserMapIterator(place, minCheckins=place['minLocationCheckinsForPlots']): 
+        userClusterMap = {}
+        for clusterId, users in clustering[2]['clusters'].iteritems():
+            for user in users: 
+                if user in location['users']: userClusterMap[user]=clusterId
+        scatterData = defaultdict(dict)
+        clusterMap = clustering[3]
+        for user, userVector in location['users'].iteritems():
+            if user in userClusterMap:
+                for d in userVector:
+                    for db in userVector[d]:
+                        for h in [(datetime.datetime.fromtimestamp(ep).hour-6)%24 for ep in userVector[d][db]]:
+                            if h not in scatterData[userClusterMap[user]]: scatterData[userClusterMap[user]][h]=0
+                            scatterData[userClusterMap[user]][h]+=1
+        allData = [k for cluster, clusterInfo in scatterData.iteritems() for k, v in clusterInfo.iteritems() for i in range(v)]
+        locationData = []
+        for cluster, clusterInfo in scatterData.iteritems(): 
+            if cluster in validClusters: 
+                data = [k for k, v in clusterInfo.iteritems() for i in range(v)]
+                locationData.append((cluster, np.mean(data), np.std(data)))
+        yield {'combined': [np.mean(allData), np.std(allData)], 'clusters': locationData}
+                
     
 def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': 100, 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
+place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': 100, 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
 #writeLocationToUserMap(place)
 #writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
-getUserClusterDetails(place)
+#writeUserClusterKMLs(place)
+
+#getUserClusterDetails(place)
+for i in locationClusterMeansIterator(place): print i
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
@@ -265,5 +293,4 @@ getUserClusterDetails(place)
 
 #getLocationDistributionPlots(place)
 #getLocationPlots(place)
-getLocationPlots(place, type='normal')
-#writeUserClusterKMLs(place)
+#getLocationPlots(place, type='normal')
