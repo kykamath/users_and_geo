@@ -192,20 +192,20 @@ def getLocationPlots(place, type='scatter'):
                         for h in [(datetime.datetime.fromtimestamp(ep).hour-6)%24 for ep in userVector[d][db]]:
                             if h not in scatterData[userClusterMap[user]]: scatterData[userClusterMap[user]][h]=0
                             scatterData[userClusterMap[user]][h]+=1
-        total = float(sum([k for cluster, clusterInfo in scatterData.iteritems() for k, v in clusterInfo.iteritems() for i in range(v)]))
+#        total = float(sum([k for cluster, clusterInfo in scatterData.iteritems() for k, v in clusterInfo.iteritems() for i in range(v)]))
         for cluster, clusterInfo in scatterData.iteritems(): 
             if cluster in validClusters: 
                 if type=='normal':
                     data = [k for k, v in clusterInfo.iteritems() for i in range(v)]
                     mean, std = np.mean(data), np.std(data)
-                    if std!=0: plotNorm(sum(data)/total, mean, std, color=clusterMap[cluster])
+                    if std!=0: plotNorm(sum(data), mean, std, color=clusterMap[cluster])
                 elif type=='scatter': plt.scatter(clusterInfo.keys(), clusterInfo.values(), color=clusterMap[cluster], label=cluster)
         plt.title('%s (%s)'%(location['name'],location['location'])),plt.legend()
 #        plt.show()
         plt.xlim(xmin=0,xmax=24)
         plt.savefig(fileName), plt.clf()
 #    for clustering in iteraterUserClusterings(place):
-    for location in locationToUserMapIterator(place, minCheckins=place['minLocationCheckinsForScatterPlots']): 
+    for location in locationToUserMapIterator(place, minCheckins=place['minLocationCheckinsForPlots']): 
         print clustering[0], location['location']
         fileName=placesImagesFolder%place['name']+'%s/'%type+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
         FileIO.createDirectoryForFile(fileName)
@@ -249,14 +249,14 @@ def getUserClusterDetails(place):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
     
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForScatterPlots': 200, 'maxLocationCheckinsForScatterPlots': (), 'minimunUsersInUserCluster': 5, 'minLocationCheckins': 0}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': 100, 'minimunUsersInUserCluster': 20, 'minLocationCheckins': 0}
 
 #writeLocationToUserMap(place)
-writeUserClusters(place)
+#writeUserClusters(place)
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
 
-#getUserClusterDetails(place)
+getUserClusterDetails(place)
 
 #print len(list(locationToUserMapIterator(place)))
 #print len(list(locationToUserMapIterator(place,minCheckins=100)))
@@ -265,5 +265,5 @@ writeUserClusters(place)
 
 #getLocationDistributionPlots(place)
 #getLocationPlots(place)
-#getLocationPlots(place, type='normal')
+getLocationPlots(place, type='normal')
 #writeUserClusterKMLs(place)
