@@ -59,7 +59,7 @@ def writeLocationToUserMap(place):
             if meta: location['categories'] = unicode(meta['c']).encode("utf-8"); location['tags'] = unicode(meta['t']).encode("utf-8")
             for user in location['users'].keys()[:]: location['users'][str(user)]=location['users'][user]; del location['users'][user]
             location['noOfCheckins']=sum([len(epochs) for user, userVector in location['users'].iteritems() for day, dayVector in userVector.iteritems() for db, epochs in dayVector.iteritems()])
-            if location['noOfCheckins']>place['minLocationCheckins']: FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
+            if location['noOfCheckins']>place.get('minLocationCheckins',0): FileIO.writeToFileAsJson(location, placesLocationToUserMapFile%name)
 def locationToUserMapIterator(place, minCheckins=0, maxCheckins=()): 
     for location in FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name']):
         if location['noOfCheckins']<maxCheckins and location['noOfCheckins']>=minCheckins: yield location
