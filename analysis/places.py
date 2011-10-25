@@ -79,13 +79,14 @@ def writeUserClusters(place):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
-            error=clusters['error']
+#            error=clusters['error']
+            error=None
             for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
             for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
             if error: resultsForVaryingK.append((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
             else: resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s; %s'%(k, e); pass
-    FileIO.writeToFileAsJson(min(resultsForVaryingK, key=itemgetter(1)), placesUserClustersFile%place['name'])
+    FileIO.writeToFileAsJson(max(resultsForVaryingK, key=itemgetter(1)), placesUserClustersFile%place['name'])
     for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def getBestUserClustering(place, idOnly=False): 
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
@@ -347,15 +348,15 @@ def iterateLocationsByOVLAndClustersType(place, type):
 
 def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
-        print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
+        print clusterId, len(details['users']), [(t[1], '%0.2f'%t[2]) for t in details['locations'][:10] if t[2]>0.2]
 
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
          'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
 
-writeLocationToUserMap(place)
+#writeLocationToUserMap(place)
 writeUserClusters(place)
-getUserClusterDetails(place)
+#getUserClusterDetails(place)
 
 #writeLocationsWithClusterInfoFile(place)
 #writeLocationClusters(place)
