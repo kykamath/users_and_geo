@@ -12,7 +12,7 @@ Created on Oct 21, 2011
 
 @author: kykamath
 '''
-import sys, datetime, random
+import sys, datetime, random, math
 sys.path.append('../')
 from library.vector import Vector
 from library.classes import GeneralMethods
@@ -89,7 +89,7 @@ def locationToUserMapIterator(place, minCheckins=0, maxCheckins=()):
 #    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def writeUserClusters(place):
     numberOfTopFeatures = 10000
-    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
+#    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
     for lid in locationToUserMap:
@@ -98,7 +98,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(1,100):
+    for k in range(100,200):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
@@ -366,6 +366,32 @@ def plotClusterOverlapInLocations(place):
             else: plt.scatter([lengthOfCluster], [np.mean(locationOVLValues)], color='b')
     plt.show()
 
+def plotClusterOverlapByLocationCheckins(place):
+    dataX, dataY = [], []
+    for location in locationClusterMeansIterator(place):
+        locationMeanDifferences = []
+        if len(location['clusters'])>=2:
+            for cluster1, cluster2 in combinations(location['clusters'], 2):
+                mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
+                locationMeanDifferences.append(getWeitzmanOVL(mu1, mu2, sd1, sd2)[0])
+        dataY.append(np.mean(locationMeanDifferences))
+        dataX.append(location['details']['noOfCheckins'])
+    plt.scatter(dataX, dataY)
+    plt.show()
+
+def plotClusterMeanDifferenceByLocationCheckins(place):
+    dataX, dataY = [], []
+    for location in locationClusterMeansIterator(place):
+        locationMeanDifferences = []
+        if len(location['clusters'])>=2:
+            for cluster1, cluster2 in combinations(location['clusters'], 2):
+                mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
+                locationMeanDifferences.append(np.abs(mu1-mu2))
+        dataY.append(np.mean(locationMeanDifferences))
+        dataX.append(location['details']['noOfCheckins'])
+    plt.scatter(dataX, dataY)
+    plt.show()
+
 def iterateLocationsByOVLAndClustersType(place, type):
     dataX, dataY = [], []
     for location in locationClusterMeansIterator(place):
@@ -391,10 +417,10 @@ def getUserClusterDetails(place):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
 
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'k': 83,'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
          'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
 #place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':103, 'minUserCheckins':5, 'minimunUsersInUserCluster': 15, 'lowClusters': 2, 'highClusters': 6, 'lowOVL': 0.1, 'highOVL':0.4,
-#         'minLocationCheckinsForPlots': 200}
+#         'minLocationCheckinsForPlots': 50}
 
 #writeLocationToUserMap(place)
 writeUserClusters(place)
@@ -415,6 +441,9 @@ writeUserClusters(place)
 #plotNoOfClusersPerLocationDistribution(place)
 #plotOverlapDistribution(place)
 #plotClusterOverlapInLocations(place)
+#plotClusterOverlapByLocationCheckins(place)
+#plotClusterMeanDifferenceByLocationCheckins(place)
+
 
 #for l in iterateLocationsByOVLAndClustersType(place, CLUSTERS_OVL_TYPE_HIGH_LOW):
 #    print unicode(l['details']['name']).encode('utf-8'), ' *** ', l['details']['categories'], ' *** ', l['details']['tags']
