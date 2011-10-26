@@ -12,7 +12,7 @@ Created on Oct 21, 2011
 
 @author: kykamath
 '''
-import sys, datetime
+import sys, datetime, random
 sys.path.append('../')
 from library.vector import Vector
 from library.classes import GeneralMethods
@@ -89,7 +89,7 @@ def locationToUserMapIterator(place, minCheckins=0, maxCheckins=()):
 #    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def writeUserClusters(place):
     numberOfTopFeatures = 10000
-#    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
+    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
     for lid in locationToUserMap:
@@ -127,13 +127,18 @@ def getUserClusteringDetails(place, clustering):
     for (clusterId, users), (clusterId, features) in zip(clustering[2]['clusters'].iteritems(), clustering[2]['bestFeatures'].iteritems()):
         if len(users)>place.get('minimunUsersInUserCluster', 0): clusterDetails[clusterId] = {'users': users, 'locations': [(lid, locationNameMap[lid], score) for lid, score in features]}
     return clusterDetails
-def plotErrors(place):
-    errors, noOfClusters = [], []
-    for clustering in iteraterUserClusterings(place): errors.append(clustering[1]), noOfClusters.append(len(getUserClusteringDetails(place, clustering)))
-    plt.subplot(2,1,1); plt.plot(errors); plt.ylabel('error')
-    plt.subplot(2,1,2); plt.plot(noOfClusters); plt.ylabel('no. of clusters')
-    print 'k =', noOfClusters.index(max(noOfClusters))+1
+def plotCurvesToSelectk(place):
+    errors, noOfClustersMap = [], {}
+    for clustering in iteraterUserClusterings(place): 
+        k = clustering[0]
+        if k>1: errors.append(clustering[1]); noOfClustersMap[k] = [len(details['users']) for clusterId, details in getUserClusteringDetails(place, clustering).iteritems()]
+    plt.subplot(3,1,1); plt.plot(errors); plt.ylabel('error')
+    plt.subplot(3,1,2); plt.plot([len(i) for i in noOfClustersMap.values()]); plt.ylabel('no. of clusters')
+    plt.subplot(3,1,3); plt.plot([np.std(i) for i in noOfClustersMap.values()]); plt.ylabel('no. of clusters')
+    print max([(k, len(i)) for k, i in noOfClustersMap.iteritems()], key=itemgetter(1))
+#    print 'k =', noOfClusters.index(max(noOfClusters))+1, '\tNo.of. clusters =', max(noOfClusters)
     plt.show()
+    
 
 def writeLocationsWithClusterInfoFile(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationWithClusterInfoFile%place['name'])
@@ -223,7 +228,7 @@ def getLocationDistributionPlots(place):
             FileIO.createDirectoryForFile(fileName)
             getPerLocationDistributionPlots(clustering, location, fileName)
 
-def getLocationPlots(place, type='scatter'):
+def getLocationPlots(place, clusterOVLType, type='scatter'):
     clustering = getUserClustering(place, place.get('k'))
     validClusters = getUserClusteringDetails(place, clustering).keys()
     def scatterPlot(clustering, location, fileName):
@@ -247,6 +252,7 @@ def getLocationPlots(place, type='scatter'):
                     data = [k for k, v in clusterInfo.iteritems() for i in range(v)]
                     mean, std = np.mean(data), np.std(data)
                     if std!=0: plotNorm(sum(data), mean, std, color=clusterMap[cluster])
+                    else: plotNorm(sum(data), mean, random.uniform(0.1, 0.5), color=clusterMap[cluster])
                 elif type=='scatter': plt.scatter(clusterInfo.keys(), clusterInfo.values(), color=clusterMap[cluster], label=cluster)
         plt.title('%s (%s)'%(location['name'],location['location'])),plt.legend()
 #        plt.show()
@@ -254,6 +260,8 @@ def getLocationPlots(place, type='scatter'):
         plt.savefig(fileName), plt.clf()
 #    for clustering in iteraterUserClusterings(place):
     for location in locationToUserMapIterator(place, minCheckins=place['minLocationCheckinsForPlots']): 
+#    for location in iterateLocationsByOVLAndClustersType(place, clusterOVLType): 
+#        location = location['details']
         print clustering[0], location['location']
         fileName=placesImagesFolder%place['name']+'%s/'%type+str(clustering[0])+'/'+ location['location'].replace(' ', '_').replace('.', '+')+'.png'
         FileIO.createDirectoryForFile(fileName)
@@ -383,13 +391,14 @@ def getUserClusterDetails(place):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
 
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
-#         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
-place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':78, 'minUserCheckins':5, 'minimunUsersInUserCluster': 20}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
+         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
+#place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':103, 'minUserCheckins':5, 'minimunUsersInUserCluster': 15, 'lowClusters': 2, 'highClusters': 6, 'lowOVL': 0.1, 'highOVL':0.4,
+#         'minLocationCheckinsForPlots': 200}
 
 #writeLocationToUserMap(place)
 writeUserClusters(place)
-#plotErrors(place)
+#plotCurvesToSelectk(place)
 #getUserClusterDetails(place)
 
 #writeLocationsWithClusterInfoFile(place)
@@ -402,7 +411,7 @@ writeUserClusters(place)
 #getLocationsCheckinDistribution(place)
 #getLocationDistributionPlots(place)
 #getLocationPlots(place)
-#getLocationPlots(place, type='normal')
+#getLocationPlots(place, CLUSTERS_OVL_TYPE_LOW_HIGH, type='normal')
 
 #plotNoOfClusersPerLocationDistribution(place)
 #plotOverlapDistribution(place)
