@@ -89,6 +89,7 @@ def locationToUserMapIterator(place, minCheckins=0, maxCheckins=()):
 #    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def writeUserClusters(place):
     numberOfTopFeatures = 10000
+#    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
     userVectors = defaultdict(dict)
     locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
     for lid in locationToUserMap:
@@ -97,7 +98,7 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(100,200):
+    for k in range(1,200):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
@@ -107,17 +108,19 @@ def writeUserClusters(place):
             if error: resultsForVaryingK.append((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
             else: resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s; %s'%(k, e); pass
-#    FileIO.writeToFileAsJson(min(resultsForVaryingK, key=itemgetter(1)), placesUserClustersFile%place['name'])
     for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
-def getBestUserClustering(place, idOnly=False): 
-    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
-        if idOnly: return data[0]
-        return data
+#def getBestUserClustering(place, idOnly=False): 
+#    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
+#        if idOnly: return data[0]
+#        return data
 def iteraterUserClusterings(place): 
-    i = 0
-    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
-        if i!=0: yield data; 
-        i+=1
+#    i = 0
+    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): yield data
+#        if i!=0: yield data; 
+#        i+=1
+def getUserClustering(place, k):
+    for clustering in iteraterUserClusterings(place):
+        if k==clustering[0]: return clustering
 def getUserClusteringDetails(place, clustering):
     locationNameMap = dict((location['location'], location['name'])for location in locationToUserMapIterator(place))
     clusterDetails = defaultdict(list)
@@ -125,8 +128,11 @@ def getUserClusteringDetails(place, clustering):
         if len(users)>place.get('minimunUsersInUserCluster', 0): clusterDetails[clusterId] = {'users': users, 'locations': [(lid, locationNameMap[lid], score) for lid, score in features]}
     return clusterDetails
 def plotErrors(place):
-    dataX = [clustering[1] for clustering in iteraterUserClusterings(place)]
-    plt.plot(dataX)
+    errors, noOfClusters = [], []
+    for clustering in iteraterUserClusterings(place): errors.append(clustering[1]), noOfClusters.append(len(getUserClusteringDetails(place, clustering)))
+    plt.subplot(2,1,1); plt.plot(errors); plt.ylabel('error')
+    plt.subplot(2,1,2); plt.plot(noOfClusters); plt.ylabel('no. of clusters')
+    print 'k =', noOfClusters.index(max(noOfClusters))+1
     plt.show()
 
 def writeLocationsWithClusterInfoFile(place):
@@ -151,7 +157,7 @@ def getLocationWithClusterDetails(place, clusterId):
         
 def writeLocationClusters(place):
     GeneralMethods.runCommand('rm -rf %s'%placesLocationClustersFile%place['name'])
-    clusterId = getBestUserClustering(place, idOnly=True)
+    clusterId = place.get('k')
     locations = getLocationWithClusterDetails(place, clusterId)
     locationVectorsToCluster = [(location, dict((clusterId, len(epochs)) for clusterId, epochs in checkins['checkins'].iteritems())) for location, checkins in locations.values()[0].iteritems()]
     resultsForVaryingK = []
@@ -218,7 +224,7 @@ def getLocationDistributionPlots(place):
             getPerLocationDistributionPlots(clustering, location, fileName)
 
 def getLocationPlots(place, type='scatter'):
-    clustering = getBestUserClustering(place)
+    clustering = getUserClustering(place, place.get('k'))
     validClusters = getUserClusteringDetails(place, clustering).keys()
     def scatterPlot(clustering, location, fileName):
         userClusterMap = {}
@@ -254,7 +260,7 @@ def getLocationPlots(place, type='scatter'):
         scatterPlot(clustering, location, fileName)
 
 def writeUserClusterKMLs(place):
-    clustering = getBestUserClustering(place)
+    clustering = getUserClustering(place, place.get('k'))
     colorMap = clustering[3]
     for clusterId, details in sorted(getUserClusteringDetails(place, clustering).iteritems(), key=lambda k: int(k[0])):
         kml = SpotsKML()
@@ -286,7 +292,7 @@ def writeUserClusterKMLs(place):
 #            kml.write(outputKMLFile)
             
 def locationClusterMeansIterator(place):
-    clustering = getBestUserClustering(place)
+    clustering = getUserClustering(place, place.get('k'))
     validClusters = getUserClusteringDetails(place, clustering).keys()
     locationDetailsMap = dict((l['location'], l) for l in locationToUserMapIterator(place))
     for location in locationToUserMapIterator(place, minCheckins=place.get('minLocationCheckinsForPlots',0)): 
@@ -372,13 +378,14 @@ def iterateLocationsByOVLAndClustersType(place, type):
             if locationType==type: yield location
 
 def getUserClusterDetails(place):
-    for clusterId, details in sorted(getUserClusteringDetails(place, getBestUserClustering(place)).iteritems(), key=lambda k: int(k[0])):
+    clustering = getUserClustering(place, place.get('k'))
+    for clusterId, details in sorted(getUserClusteringDetails(place, clustering).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
 
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
 #place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
 #         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
-place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5, 'minimunUsersInUserCluster': 20}
+place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':78, 'minUserCheckins':5, 'minimunUsersInUserCluster': 20}
 
 #writeLocationToUserMap(place)
 writeUserClusters(place)
