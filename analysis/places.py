@@ -301,7 +301,7 @@ def getLocationPlotsByOVLAndMeanDifference(place):
                 if std!=0: plotNorm(sum(data)/total, mean, std, color=clusterMap[cluster])
                 else: plotNorm(sum(data)/total, mean, random.uniform(0.1, 0.5), color=clusterMap[cluster])
 #                elif type=='scatter': plt.scatter(clusterInfo.keys(), clusterInfo.values(), color=clusterMap[cluster], label=cluster)
-        plt.title('%s (%s)'%(location['name'],location['location'])),plt.legend()
+        plt.title('%s (%s, %s, %s)'%(location['name'],location['location'], location['categories'], location['tags'])),plt.legend()
 #        plt.show()
         plt.xlim(xmin=0,xmax=24)
         plt.savefig(fileName), plt.clf()
@@ -374,21 +374,21 @@ def locationClusterMeansIterator(place):
 
 def iterateLocationsByOVLAndMeanDifference(place):        
     for location in locationClusterMeansIterator(place):
-        locationMeanDifferences, locationOverlaps = [], []
+        locationMeanDifferences = []
         if len(location['clusters'])>=2:
             for cluster1, cluster2 in combinations(location['clusters'], 2):
                 mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
                 val = np.abs(mu1-mu2)
                 locationMeanDifferences.append(val)
-                val = getWeitzmanOVL(mu1, mu2, sd1, sd2)[0]
-                locationOverlaps.append(val)
+#                val = getWeitzmanOVL(mu1, mu2, sd1, sd2)[0]
+#                locationOverlaps.append(val)
         locationMeanDifferences = [x for x in locationMeanDifferences if not np.isnan(x)]
-        locationOverlaps = [y for y in locationOverlaps if not np.isnan(y)]
+#        locationOverlaps = [y for y in locationOverlaps if not np.isnan(y)]
         md = np.mean(locationMeanDifferences); ovl=len(location['clusters'])# ovl = np.mean(locationOverlaps)
-        if ovl<=3 and md<=2: yield (location, LOW_OVL_LOW_MEAN_DIFF)
-        elif ovl<=3 and md>6: yield (location, LOW_OVL_HIGH_MEAN_DIFF)
-        elif ovl>8 and md<=2: yield (location, HIGH_OVL_LOW_MEAN_DIFF)
-        elif ovl>8 and md>6: yield (location, HIGH_OVL_HIGH_MEAN_DIFF)
+        if ovl<=place['lowClusters'] and md<=place['lowMD']: yield (location, LOW_OVL_LOW_MEAN_DIFF)
+        elif ovl<=place['lowClusters'] and md>place['highMD']: yield (location, LOW_OVL_HIGH_MEAN_DIFF)
+        elif ovl>place['highClusters'] and md<=place['lowMD']: yield (location, HIGH_OVL_LOW_MEAN_DIFF)
+        elif ovl>place['highClusters'] and md>place['highMD']: yield (location, HIGH_OVL_HIGH_MEAN_DIFF)
 
 def plotNoOfClusersPerLocationDistribution(place):
     data = [len(location['clusters']) for location in locationClusterMeansIterator(place)]
@@ -460,12 +460,13 @@ def plotClusterMeanDifferenceByLocationCheckins(place):
 def pltClusterOverlapHistogram(place):
     dataY = []
     for location in locationClusterMeansIterator(place):
-        locationOverlaps = []
-        if len(location['clusters'])>=2:
-            for cluster1, cluster2 in combinations(location['clusters'], 2):
-                mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
-                locationOverlaps.append(getWeitzmanOVL(mu1, mu2, sd1, sd2)[0])
-        dataY.append(np.mean(locationOverlaps))
+#        locationOverlaps = []
+#        if len(location['clusters'])>=2:
+#            for cluster1, cluster2 in combinations(location['clusters'], 2):
+#                mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
+#                locationOverlaps.append(getWeitzmanOVL(mu1, mu2, sd1, sd2)[0])
+#        dataY.append(np.mean(locationOverlaps))
+        dataY.append(len(location['clusters']))
     plt.hist(dataY, range=(min(dataY), max(dataY)))
     plt.show()
 
@@ -490,8 +491,8 @@ def pltClusterMeanDifferenceByOverlap(place):
                 mu1, mu2, sd1, sd2 = cluster1[1], cluster2[1], cluster1[2], cluster2[2]
                 val = np.abs(mu1-mu2)
                 locationMeanDifferences.append(val)
-                val = getWeitzmanOVL(mu1, mu2, sd1, sd2)[0]
-                locationOverlaps.append(val)
+#                val = getWeitzmanOVL(mu1, mu2, sd1, sd2)[0]
+#                locationOverlaps.append(val)
         dataY.append(np.mean(locationMeanDifferences))
 #        dataX.append(np.mean(locationOverlaps))
         dataX.append(len(location['clusters']))
@@ -539,10 +540,11 @@ def getUserClusterDetails(place):
 #place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':103, 'minUserCheckins':5, 'minimunUsersInUserCluster': 15, 'lowClusters': 2, 'highClusters': 6, 'lowOVL': 0.1, 'highOVL':0.4,
 #         'minLocationCheckinsForPlots': 50}
 
-place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5 }
+place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5, 'k': 194, 'minimunUsersInUserCluster': 20, 'lowClusters': 3, 'highClusters': 8, 'lowMD': 2, 'highMD':5,
+         'minLocationCheckinsForPlots': 50}
 
 #writeLocationToUserMap(place)
-writeUserClusters(place)
+#writeUserClusters(place)
 #plotCurvesToSelectk(place)
 #getUserClusterDetails(place)
 
@@ -568,4 +570,9 @@ writeUserClusters(place)
 #pltClusterOverlapHistogram(place)
 #pltClusterMeanDifferenceHistogram(place)
 #pltClusterMeanDifferenceByOverlap(place)
+
+text = ['cafe', 'coffee']
+for location, type in iterateLocationsByOVLAndMeanDifference(place): 
+        location = location['details']
+        print location['categories'], location['tags']
 
