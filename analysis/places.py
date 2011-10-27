@@ -104,17 +104,19 @@ def writeUserClusters(place):
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
     resultsForVaryingK = []
-    for k in range(2,100):
+    for k in range(2,200):
         try:
             print 'Clustering with k=%s'%k
             clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
             error=clusters['error']
             for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
             for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
-            if error: resultsForVaryingK.append((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
+            if error: 
+                resultsForVaryingK.append((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
+                FileIO.writeToFileAsJson((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])), placesUserClustersFile%place['name'])
             else: resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s; %s'%(k, e); pass
-    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
+#    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 #def getBestUserClustering(place, idOnly=False): 
 #    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
 #        if idOnly: return data[0]
