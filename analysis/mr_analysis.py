@@ -108,9 +108,9 @@ if __name__ == '__main__':
 #    runMRJob(MRUserToLocationMap, userToLocationMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRUserToLocationAndTimeMap, userToLocationAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 #    runMRJob(MRLocationToUserAndTimeMap, locationToUserAndTimeMapFile, jobconf={'mapred.reduce.tasks':5})
-    runMRJob(MRLocationToUserAndExactTimeMap, locationToUserAndExactTimeMapFile, jobconf={'mapred.reduce.tasks':5})
+#    runMRJob(MRLocationToUserAndExactTimeMap, locationToUserAndExactTimeMapFile, jobconf={'mapred.reduce.tasks':5})
 #    Plots
-#    plotDistribution(userDistributionFile)
+    plotDistribution(userDistributionFile)
 #    plotDistribution(locationDistributionFile)
 #    plotDistribution(locationByUserDistributionFile)
 #    plotLocationGraphEdgeDistribution()

@@ -1,0 +1,21 @@
+Modeling:
+	1. Steps to create a city:
+		=> Add locations - With visitation probability distribution, estimated from some cities.
+						The probability decides how many people are going to visit a location.
+						Ex: Airport has a higher probability than a bar.
+						   Also with periodicity of visit probability distribution.
+						Ex: A bar is visited 2-3 times a week. Airport is visited once every 
+						10 weeks.
+							Also day timeSpecific probability distribution.
+						Ex: Cafe sees more people in the evening than in the afternoon.
+		=> Add users - With location specific probability. This is determined by the cluster
+						a user belongs to.
+						Ex. Moms go to Walmart in the morning, students go in the evenings.
+		=> Assign users to locations: Number of locations is based on parameters estimation, and
+						the probability of adding a particular location is dependent on the 
+						locations probability. 
+Estimate parameters:
+
+Experiments:
+	1. Types of location selection: Random, Prefix methods
+	2. Location vectors: 
