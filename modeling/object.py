@@ -8,8 +8,10 @@ class User:
         self.locations = []
 
 class Location:
-    pass
+    def __init__(self):
+        self.totalClicks = None
 
 class Advertiser:
     def __init__(self):
-        self.interestedLocations
+        self.budget = None
+        self.interestedLocations = []
