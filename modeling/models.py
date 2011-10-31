@@ -25,6 +25,7 @@ class Model:
             for bin in range(conf['noOfBinsPerDay']):
                 for area in self.areas: self.process((day, bin), area)
                 print 'x'
+
     def process(self, (day, bin), area):
         for user in area.users:
             selectedLocation=GeneralMethods.weightedChoice([l.visitingProbability for l in user.locations])
