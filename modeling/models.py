@@ -11,6 +11,7 @@ from collections import defaultdict
 from library.classes import GeneralMethods
 from library.plotting import getDataDistribution
 from library.file_io import FileIO
+from scipy.stats import bernoulli
 
 class Model:
     def __init__(self, **conf):
@@ -35,11 +36,12 @@ class Model:
     def process(self, (day, bin), area):
         day, bin = str(day), str(bin)
         for user in area.users:
-            selectedLocation=GeneralMethods.weightedChoice([l.visitingProbability for l in user.locations])
-            locationId = user.locations[selectedLocation].id
-            if day not in self.locationsCheckinsMap[locationId]['checkins']: self.locationsCheckinsMap[locationId]['checkins'][day] = {}
-            if bin not in self.locationsCheckinsMap[locationId]['checkins'][day]: self.locationsCheckinsMap[locationId]['checkins'][day][bin] = []
-            self.locationsCheckinsMap[locationId]['checkins'][day][bin].append(user.id)
+            if bernoulli.rvs(user.checkinginProbability):
+                selectedLocation=GeneralMethods.weightedChoice([l.visitingProbability*l.binProbability[1][int(bin)] for l in user.locations])
+                locationId = user.locations[selectedLocation].id
+                if day not in self.locationsCheckinsMap[locationId]['checkins']: self.locationsCheckinsMap[locationId]['checkins'][day] = {}
+                if bin not in self.locationsCheckinsMap[locationId]['checkins'][day]: self.locationsCheckinsMap[locationId]['checkins'][day][bin] = []
+                self.locationsCheckinsMap[locationId]['checkins'][day][bin].append(user.id)
     def getSimulationFile(self): 
         file = self.conf['simulationDataFolder']+'%s/%s_%s_%s'%(self.modelType, self.conf['noOfDaysOfSimulation'], self.conf['noOfBinsPerDay'], self.conf['noOfAreas'])
         FileIO.createDirectoryForFile(file)
@@ -50,7 +52,6 @@ class Model:
     def loadSimulationData(self):
         for data in FileIO.iterateJsonFromFile(self.simulationFile):
             if data['type']==ObjectTypes.LOCATION: self.locationsCheckinsMap[data['object']['id']]=data
-        
                 
 if __name__ == '__main__':
     Model(**conf).run()

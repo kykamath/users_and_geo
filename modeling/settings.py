@@ -5,11 +5,11 @@ Created on Oct 30, 2011
 '''
 conf = dict(
             noOfBinsPerDay = 24,
-            noOfDaysOfSimulation = 1,
+            noOfDaysOfSimulation = 10,
             noOfAreas = 1,
             simulationDataFolder = './simulation_data/',
             plotsFolder = '/data/geo/model/plots/',
-
+            
             areaLatitudeRange = [0,1000],
             areaLongitudeRange = [0,1000],
             areaLatStd = 10,

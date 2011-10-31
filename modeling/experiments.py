@@ -21,7 +21,9 @@ def drawAllCheckinPlotsByVisitingClasses(model, **conf):
             for day, binData in location['checkins'].iteritems():
                 for bin, checkins in binData.iteritems():
                     checkinsByBins[int(bin)]+=len(checkins)
-            plt.plot(checkinsByBins.keys(), checkinsByBins.values())
+#            plt.plot(checkinsByBins.keys(), checkinsByBins.values())
+            plt.hist([k for k, v in checkinsByBins.iteritems() for i in range(v)], conf['noOfBinsPerDay'], normed=True)
+            plt.title(str(locationObject.visitingProbability))
             plt.savefig(plotsFile)
             plt.clf()
 if __name__ == '__main__':
