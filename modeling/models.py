@@ -4,35 +4,53 @@ Created on Oct 30, 2011
 @author: kykamath
 '''
 from settings import conf
-from modeling.object import Area
+from modeling.object import Area, ObjectTypes
 import random
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from library.classes import GeneralMethods
+from library.plotting import getDataDistribution
+from library.file_io import FileIO
 
 class Model:
-    def __init__(self, noOfAreas, **conf):
+    def __init__(self, **conf):
         self.areas = []
         self.conf = conf
-        self.locationsCheckinsMap = defaultdict(dict)
-        for area in range(noOfAreas):
-            area = Area.getArea(random.randrange(*conf['areaLatitudeRange']), random.randrange(*conf['areaLongitudeRange']), **conf)
-            self.areas.append(area)
-#            area.plot()
-#        plt.show()
+        self.locationsCheckinsMap = {}
+        self.modelType = 'basic'
+        self.simulationFile = self.getSimulationFile()
     def run(self):
+        self.initializeAreas()
         for day in range(conf['noOfDaysOfSimulation']):
             for bin in range(conf['noOfBinsPerDay']):
-                for area in self.areas: self.process((day, bin), area)
-                print 'x'
-
+                for area in self.areas: 
+                    print 'Processing: day=%s, bin=%s, area=%s'%(day, bin, area.id)
+                    self.process((day, bin), area)
+        self.writeSimulationData()
+    def initializeAreas(self):
+        for area in range(self.conf['noOfAreas']):
+            area = Area.getArea(random.randrange(*self.conf['areaLatitudeRange']), random.randrange(*self.conf['areaLongitudeRange']), **self.conf)
+            for location in area.getAllLocations(): self.locationsCheckinsMap[location.id] = {'checkins': defaultdict(dict), 'object': location.__dict__, 'type': ObjectTypes.LOCATION} 
+            self.areas.append(area)
     def process(self, (day, bin), area):
+        day, bin = str(day), str(bin)
         for user in area.users:
             selectedLocation=GeneralMethods.weightedChoice([l.visitingProbability for l in user.locations])
             locationId = user.locations[selectedLocation].id
-            if day not in self.locationsCheckinsMap[locationId]: self.locationsCheckinsMap[locationId][day] = {}
-            if bin not in self.locationsCheckinsMap[locationId][day]: self.locationsCheckinsMap[locationId][day][bin] = []
-            self.locationsCheckinsMap[locationId][day][bin].append(user.id)
+            if day not in self.locationsCheckinsMap[locationId]['checkins']: self.locationsCheckinsMap[locationId]['checkins'][day] = {}
+            if bin not in self.locationsCheckinsMap[locationId]['checkins'][day]: self.locationsCheckinsMap[locationId]['checkins'][day][bin] = []
+            self.locationsCheckinsMap[locationId]['checkins'][day][bin].append(user.id)
+    def getSimulationFile(self): 
+        file = self.conf['simulationDataFolder']+'%s/%s_%s_%s'%(self.modelType, self.conf['noOfDaysOfSimulation'], self.conf['noOfBinsPerDay'], self.conf['noOfAreas'])
+        FileIO.createDirectoryForFile(file)
+        return file
+    def writeSimulationData(self):
+        GeneralMethods.runCommand('rm -rf %s'%self.simulationFile)
+        for location, data in self.locationsCheckinsMap.iteritems(): FileIO.writeToFileAsJson(data, self.simulationFile)
+    def loadSimulationData(self):
+        for data in FileIO.iterateJsonFromFile(self.simulationFile):
+            if data['type']==ObjectTypes.LOCATION: self.locationsCheckinsMap[data['object']['id']]=data
+        
                 
 if __name__ == '__main__':
-    Model(1, **conf).run()
+    Model(**conf).run()

@@ -4,17 +4,22 @@ Created on Oct 30, 2011
 @author: kykamath
 '''
 conf = dict(
+            noOfBinsPerDay = 24,
+            noOfDaysOfSimulation = 1,
+            noOfAreas = 1,
+            simulationDataFolder = './simulation_data/',
+            plotsFolder = '/data/geo/model/plots/',
+
             areaLatitudeRange = [0,1000],
             areaLongitudeRange = [0,1000],
             areaLatStd = 10,
             areaLonStd = 10,
-            noOfLocationsPerArea = 100,
-            noOfUsersPerArea = 1000,
+            noOfLocationsPerArea = 1000,
+            noOfUsersPerArea = 10000,
             
-            noOfBinsPerDay = 24,
-            noOfDaysOfSimulation = 10,
+            locationClassesBasedOnVisitingProbability = dict(high=[0.75, 1.0], medium=[0.25, 0.75], low=[0.0, 0.25]),
             
             noOfClustersPerArea = 5,
-            clusterSizeMean = 10,
-            clusterSizeStd = 2,
+            demographySizeMean = 10,
+            demographySizeStd = 2,
             )
