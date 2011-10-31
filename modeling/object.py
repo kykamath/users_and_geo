@@ -27,15 +27,15 @@ class UserCluster:
         return cluster
 
 class Location:
-    def __init__(self, lat, lon):
-        self.id = '%0.3f, %0.3f'%(lat, lon)
+    def __init__(self, lat, lon, area):
+        self.id = '%s_%0.3f_%0.3f'%(area.id, lat, lon)
         self.lat, self.lon = lat, lon
 #        self.totalClicks = None
         self.visitingProbability = random.random()
 
 class Area:
     def __init__(self, areaLat, areaLon):
-        self.id = '%0.3f, %0.3f'%(areaLat, areaLon)
+        self.id = '%0.3f_%0.3f'%(areaLat, areaLon)
         self.areaLat, self.areaLon = areaLat, areaLon
         self.locations = []
         self.users = []
@@ -47,7 +47,7 @@ class Area:
     def getArea(areaLat, areaLon, **conf):
         area = Area(areaLat, areaLon)
         mean = [areaLat, areaLon]; cov = [[conf['areaLatStd'],0], [0, conf['areaLonStd']]]
-        for lat, lon in zip(*np.random.multivariate_normal(mean,cov,conf['noOfLocationsPerArea']).T): area.locations.append(Location(lat, lon))
+        for lat, lon in zip(*np.random.multivariate_normal(mean,cov,conf['noOfLocationsPerArea']).T): area.locations.append(Location(lat, lon, area))
         for clusterId in range(conf['noOfClustersPerArea']): area.clusters.append(UserCluster.getClusterWithRandomLocations(area, clusterId, conf['clusterSizeMean'], conf['clusterSizeStd']))
         for userId in range(conf['noOfUsersPerArea']): area.users.append(User(area, userId, random.choice(area.clusters)))
         return area
