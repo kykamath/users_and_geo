@@ -33,7 +33,6 @@ class Model:
             if day not in self.locationsCheckinsMap[locationId]: self.locationsCheckinsMap[locationId][day] = {}
             if bin not in self.locationsCheckinsMap[locationId][day]: self.locationsCheckinsMap[locationId][day][bin] = []
             self.locationsCheckinsMap[locationId][day][bin].append(user.id)
-        
-            
+                
 if __name__ == '__main__':
     Model(1, **conf).run()
