@@ -9,6 +9,7 @@ from collections import defaultdict
 from library.file_io import FileIO
 import matplotlib.pyplot as plt
 from modeling.object import Location
+from library.plotting import smooth
 
 def drawAllCheckinPlotsByVisitingClasses(model, **conf):
     plotsFolder = conf['plotsFolder']+'byVisitingClasses/'
@@ -21,11 +22,13 @@ def drawAllCheckinPlotsByVisitingClasses(model, **conf):
             for day, binData in location['checkins'].iteritems():
                 for bin, checkins in binData.iteritems():
                     checkinsByBins[int(bin)]+=len(checkins)
-#            plt.plot(checkinsByBins.keys(), checkinsByBins.values())
-            plt.hist([k for k, v in checkinsByBins.iteritems() for i in range(v)], conf['noOfBinsPerDay'], normed=True)
+#            print len(checkinsByBins.keys()), len(smooth(checkinsByBins.values(), 1)[:48])
+            plt.plot(checkinsByBins.keys(), smooth(checkinsByBins.values(), 1))
+#            plt.hist([k for k, v in checkinsByBins.iteritems() for i in range(v)], conf['noOfBinsPerDay'], normed=True)
             plt.title(str(locationObject.visitingProbability))
             plt.savefig(plotsFile)
             plt.clf()
+
 if __name__ == '__main__':
     model = Model(**conf)
     model.loadSimulationData()

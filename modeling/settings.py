@@ -4,8 +4,8 @@ Created on Oct 30, 2011
 @author: kykamath
 '''
 conf = dict(
-            noOfBinsPerDay = 24,
-            noOfDaysOfSimulation = 10,
+            noOfBinsPerDay = 48,
+            noOfDaysOfSimulation = 1,
             noOfAreas = 1,
             simulationDataFolder = './simulation_data/',
             plotsFolder = '/data/geo/model/plots/',

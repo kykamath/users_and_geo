@@ -25,17 +25,20 @@ class User:
         self.id = '%s_%s'%(area.id, userId)
         self.demography = demography
         self.locations = demography.locations
+        self.locationVisitingProbability = demography.locationVisitingProbability
         self.checkinginProbability = demography.userCheckinginProbability
 
 class Demography:
     def __init__(self, area, demographyId):
         self.id = '%s_%s'%(area.id, demographyId)
         self.locations = []
-        self.userCheckinginProbability = random.uniform(0.5,1.0)
+        self.locationVisitingProbability = {}
+        self.userCheckinginProbability = random.uniform(1.0,1.0)
     @staticmethod
-    def getDemographyWithRandomLocations(area, demographyId, demographySizeMean, demographySizeStd):
+    def getDemographyWithRandomLocations(area, demographyId, **conf):
         demography = Demography(area, demographyId)
-        demography.locations = random.sample(area.getAllLocations(), int(random.gauss(demographySizeMean, demographySizeStd)))
+        demography.locations = random.sample(area.getAllLocations(), int(random.gauss(conf['demographySizeMean'], conf['demographySizeStd'])))
+        for location in demography.locations: demography.locationVisitingProbability[location.id] = LocationBin.getGaussianProbabilities(random.choice(range(conf['noOfBinsPerDay'])), conf['noOfBinsPerDay'])
         return demography
 
 class LocationBin:
@@ -46,20 +49,28 @@ class LocationBin:
 #            l = [0]*self.noOfBins
 #            l[i] = 1
 #            self.probabilities.append([i, LocationBin.assignProbabilities(l)])
-        for i in range(noOfBins):
-            probability = []
-            for j in range(noOfBins):
-                probability.append(random.uniform(0.0, 0.10))
-                if j>=i-2 and j<=i+2: probability[j] = norm.pdf(j, loc=i, scale=2)*4
-            self.probabilities.append([i, probability])
+#        gaussianBoundary = int(noOfBins*0.10)
+        for bin in range(noOfBins):
+#            probability = []
+#            for j in range(noOfBins):
+#                probability.append(random.uniform(0.2, 0.50))
+#                if j>=i-gaussianBoundary and j<=i+gaussianBoundary: probability[j] = norm.pdf(j, loc=i, scale=2)*4
+            self.probabilities.append([bin, LocationBin.getGaussianProbabilities(bin, noOfBins)])
         self.probabilities.append([noOfBins, [random.uniform(0.6, 1.0) for i in range(noOfBins)]])
     @staticmethod
-    def assignProbabilities(bins):
-        assignedProbabilities = []
-        for b in bins:
-            if b==1: assignedProbabilities.append(random.uniform(0.75,1))
-            else: assignedProbabilities.append(random.uniform(0.0, 0.25))
-        return assignedProbabilities
+    def getGaussianProbabilities(bin, noOfBins):
+        probability = []
+        for j in range(noOfBins):
+            probability.append(random.uniform(0.2, 0.50))
+            if j>=bin-2 and j<=bin+2: probability[j] = norm.pdf(j, loc=bin, scale=2)*4
+        return probability
+#    @staticmethod
+#    def assignProbabilities(bins):
+#        assignedProbabilities = []
+#        for b in bins:
+#            if b==1: assignedProbabilities.append(random.uniform(0.75,1))
+#            else: assignedProbabilities.append(random.uniform(0.0, 0.25))
+#        return assignedProbabilities
 
 class Location:
     def __init__(self, lat=None, lon=None, area=None, locationBin=None):
@@ -101,7 +112,7 @@ class Area:
         for lat, lon in zip(*np.random.multivariate_normal(mean,cov,conf['noOfLocationsPerArea']).T): 
             location = Location(lat, lon, area, locationBin)
             area.locations[Location.getLocationClassBasedOnVisitingProbability(location)].append(location)
-        for demographyId in range(conf['noOfClustersPerArea']): area.demographies.append(Demography.getDemographyWithRandomLocations(area, demographyId, conf['demographySizeMean'], conf['demographySizeStd']))
+        for demographyId in range(conf['noOfClustersPerArea']): area.demographies.append(Demography.getDemographyWithRandomLocations(area, demographyId, **conf))
         for userId in range(conf['noOfUsersPerArea']): area.users.append(User(area, userId, random.choice(area.demographies)))
         return area
 

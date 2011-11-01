@@ -18,6 +18,7 @@ class Model:
         self.areas = []
         self.conf = conf
         self.locationsCheckinsMap = {}
+        self.userMap = {}
         self.modelType = 'basic'
         self.simulationFile = self.getSimulationFile()
     def run(self):
@@ -37,7 +38,7 @@ class Model:
         day, bin = str(day), str(bin)
         for user in area.users:
             if bernoulli.rvs(user.checkinginProbability):
-                selectedLocation=GeneralMethods.weightedChoice([l.visitingProbability*l.binProbability[1][int(bin)] for l in user.locations])
+                selectedLocation=GeneralMethods.weightedChoice([l.visitingProbability*l.binProbability[1][int(bin)]*user.locationVisitingProbability[l.id][int(bin)] for l in user.locations])
                 locationId = user.locations[selectedLocation].id
                 if day not in self.locationsCheckinsMap[locationId]['checkins']: self.locationsCheckinsMap[locationId]['checkins'][day] = {}
                 if bin not in self.locationsCheckinsMap[locationId]['checkins'][day]: self.locationsCheckinsMap[locationId]['checkins'][day][bin] = []
