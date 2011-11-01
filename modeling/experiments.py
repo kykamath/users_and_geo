@@ -50,13 +50,13 @@ def drawAllCheckinPlotsByVisitingClassesUsingDemography(model, **conf):
 #                for demographyId in demographColorMap:
 #                    plt.scatter([bin], [checkinsByBinsAndDemographies[bin][demographyId]], color=demographColorMap[demographyId])
             for demographyId, data in checkinsByBinsAndDemographies.iteritems():
-                print smooth([data[k] for k in sorted(data)], 4)
+#                print smooth([data[k] for k in sorted(data)], 4)
                 plt.fill_between(sorted(data.keys()), smooth([data[k] for k in sorted(data)], 10)[:len(data)], color=demographColorMap[demographyId], alpha=0.65)
 #               plt.hist([k for k, v in checkinsByBins.iteritems() for i in range(v)], conf['noOfBinsPerDay'], normed=True)
             plt.title(str(locationObject.visitingProbability))
-#            plt.savefig(plotsFile)
-#            plt.clf()
-            plt.show()
+            plt.savefig(plotsFile)
+            plt.clf()
+#            plt.show()
 if __name__ == '__main__':
     model = Model(**conf)
     model.loadSimulationData()
