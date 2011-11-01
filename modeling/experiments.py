@@ -40,19 +40,23 @@ def drawAllCheckinPlotsByVisitingClassesUsingDemography(model, **conf):
             demographColorMap = {}
             for day, binData in location['checkins'].iteritems():
                 for bin, checkins in binData.iteritems():
+                    bin=int(bin)
                     for user in checkins:
                         demographyId = model.userMap[user]['object']['demography_id']
                         demographColorMap[demographyId] = model.userMap[user]['object']['demography_color']
-                        if demographyId not in checkinsByBinsAndDemographies[bin]: checkinsByBinsAndDemographies[bin][demographyId]=0
-                        checkinsByBinsAndDemographies[bin][demographyId]+=1
-            for k, v in checkinsByBinsAndDemographies.iteritems():
-                print k, v
-            for demographyId in demographColorMap:
-                plt.plot(checkinsByBinsAndDemographies.keys(), smooth(checkinsByBinsAndDemographies[].values(), 1))
-#            plt.hist([k for k, v in checkinsByBins.iteritems() for i in range(v)], conf['noOfBinsPerDay'], normed=True)
+                        if bin not in checkinsByBinsAndDemographies[demographyId]: checkinsByBinsAndDemographies[demographyId][bin]=0
+                        checkinsByBinsAndDemographies[demographyId][bin]+=1
+#            for bin in checkinsByBinsAndDemographies:
+#                for demographyId in demographColorMap:
+#                    plt.scatter([bin], [checkinsByBinsAndDemographies[bin][demographyId]], color=demographColorMap[demographyId])
+            for demographyId, data in checkinsByBinsAndDemographies.iteritems():
+                print smooth([data[k] for k in sorted(data)], 4)
+                plt.fill_between(sorted(data.keys()), smooth([data[k] for k in sorted(data)], 10)[:len(data)], color=demographColorMap[demographyId], alpha=0.65)
+#               plt.hist([k for k, v in checkinsByBins.iteritems() for i in range(v)], conf['noOfBinsPerDay'], normed=True)
             plt.title(str(locationObject.visitingProbability))
-            plt.savefig(plotsFile)
-            plt.clf()
+#            plt.savefig(plotsFile)
+#            plt.clf()
+            plt.show()
 if __name__ == '__main__':
     model = Model(**conf)
     model.loadSimulationData()
