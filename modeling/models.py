@@ -34,6 +34,8 @@ class Model:
             area = Area.getArea(random.randrange(*self.conf['areaLatitudeRange']), random.randrange(*self.conf['areaLongitudeRange']), **self.conf)
             for location in area.getAllLocations(): self.locationsCheckinsMap[location.id] = {'checkins': defaultdict(dict), 'object': location.__dict__, 'type': ObjectTypes.LOCATION} 
             self.areas.append(area)
+        for area in self.areas:
+            for user in area.users: self.userMap[user.id] = {'object': {'id': user.id, 'demography_id': user.demography.id, 'demography_color': user.demography.color}, 'type': ObjectTypes.USER}
     def process(self, (day, bin), area):
         day, bin = str(day), str(bin)
         for user in area.users:
@@ -50,9 +52,13 @@ class Model:
     def writeSimulationData(self):
         GeneralMethods.runCommand('rm -rf %s'%self.simulationFile)
         for location, data in self.locationsCheckinsMap.iteritems(): FileIO.writeToFileAsJson(data, self.simulationFile)
+        for user, data in self.userMap.iteritems(): FileIO.writeToFileAsJson(data, self.simulationFile)
+#        for area in self.areas:
+#            for user in area.users: FileIO.writeToFileAsJson({'object': {'id': user.id, 'demography_id': user.demography.id}, 'type': ObjectTypes.USER}, self.simulationFile)
     def loadSimulationData(self):
         for data in FileIO.iterateJsonFromFile(self.simulationFile):
             if data['type']==ObjectTypes.LOCATION: self.locationsCheckinsMap[data['object']['id']]=data
+            if data['type']==ObjectTypes.USER: self.userMap[data['object']['id']]=data
                 
 if __name__ == '__main__':
     Model(**conf).run()

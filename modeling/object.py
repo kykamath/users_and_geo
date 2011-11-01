@@ -25,8 +25,8 @@ class User:
         self.id = '%s_%s'%(area.id, userId)
         self.demography = demography
         self.locations = demography.locations
-        self.locationVisitingProbability = demography.locationVisitingProbability
         self.checkinginProbability = demography.userCheckinginProbability
+        self.locationVisitingProbability = demography.locationVisitingProbability
 
 class Demography:
     def __init__(self, area, demographyId):
@@ -34,6 +34,7 @@ class Demography:
         self.locations = []
         self.locationVisitingProbability = {}
         self.userCheckinginProbability = random.uniform(1.0,1.0)
+        self.color = GeneralMethods.getRandomColor()
     @staticmethod
     def getDemographyWithRandomLocations(area, demographyId, **conf):
         demography = Demography(area, demographyId)

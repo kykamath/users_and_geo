@@ -4,7 +4,7 @@ Created on Oct 30, 2011
 @author: kykamath
 '''
 conf = dict(
-            noOfBinsPerDay = 48,
+            noOfBinsPerDay = 3,
             noOfDaysOfSimulation = 1,
             noOfAreas = 1,
             simulationDataFolder = './simulation_data/',
