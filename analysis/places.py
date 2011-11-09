@@ -33,7 +33,8 @@ from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,
     placesImagesFolder, locationToUserAndExactTimeMapFile,\
     austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder,\
     placesLocationWithClusterInfoFile, placesUserClustersFile,\
-    placesLocationClustersFile, dallas_tx_boundary, north_ca_boundary
+    placesLocationClustersFile, dallas_tx_boundary, north_ca_boundary,\
+    placesTabsFolder
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
@@ -70,29 +71,6 @@ def locationToUserMapIterator(place, minCheckins=0, maxCheckins=()):
     for location in FileIO.iterateJsonFromFile(placesLocationToUserMapFile%place['name']):
         if location['noOfCheckins']<maxCheckins and location['noOfCheckins']>=minCheckins: yield location
   
-#def writeUserClusters(place):
-#    numberOfTopFeatures = 10000
-#    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
-#    userVectors = defaultdict(dict)
-#    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
-#    for lid in locationToUserMap:
-#        for user in locationToUserMap[lid]['users']: 
-#            userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
-#    for user in userVectors.keys()[:]: 
-#        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
-#    resultsForVaryingK = []
-#    for k in range(4, 100):
-#        try:
-#            print 'Clustering with k=%s'%k
-#            clusters = KMeansClustering(userVectors.iteritems(), k, documentsAsDict=True).cluster(normalise=True, assignAndReturnDetails=True, repeats=5, numberOfTopFeatures=numberOfTopFeatures, algorithmSource='biopython')
-#            error=clusters['error']
-#            for clusterId, features in clusters['bestFeatures'].items()[:]: clusters['bestFeatures'][str(clusterId)]=[(lid.replace('_', ' '), score)for lid, score in features]; del clusters['bestFeatures'][clusterId]
-#            for clusterId, users in clusters['clusters'].items()[:]: clusters['clusters'][str(clusterId)]=users; del clusters['clusters'][clusterId]
-#            if error: resultsForVaryingK.append((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
-#            else: resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
-#        except Exception as e: print '*********** Exception while clustering k = %s; %s'%(k, e); pass
-#    FileIO.writeToFileAsJson(min(resultsForVaryingK, key=itemgetter(1)), placesUserClustersFile%place['name'])
-#    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 def writeUserClusters(place):
     numberOfTopFeatures = 10000
 #    GeneralMethods.runCommand('rm -rf %s'%placesUserClustersFile%place['name'])
@@ -121,6 +99,22 @@ def writeUserClusters(place):
 #    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
 #        if idOnly: return data[0]
 #        return data
+
+def writeTabFile(place):
+    def writeTabLineToFile(data, file): FileIO.writeToFile('\t'.join(data), file)
+    userVectors = defaultdict(dict)
+    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
+    for lid in locationToUserMap:
+        for user in locationToUserMap[lid]['users']: 
+            userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+    for user in userVectors.keys()[:]: 
+        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
+    lids = sorted(locationToUserMap.keys())
+    file = '%s/%s.tab'%(placesTabsFolder, place['name'])
+    writeTabLineToFile(lids, file)
+    writeTabLineToFile(['c']*len(lids), file)
+    for user in userVectors.keys()[:]: writeTabLineToFile(['%0.3f'%userVectors[user].get(lid, 0.0) for lid in lids], file)
+
 def iteraterUserClusterings(place): 
 #    i = 0
     for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): yield data
@@ -532,19 +526,20 @@ def getUserClusterDetails(place):
     for clusterId, details in sorted(getUserClusteringDetails(place, clustering).iteritems(), key=lambda k: int(k[0])):
         print clusterId, len(details['users']), [t[1] for t in details['locations'][:5]]
 
-#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':10, 'minLocationCheckins': 0}
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5, 'minLocationCheckins': 0}
 
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'k': 83,'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
-#         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'k': 83,'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
+         'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
 #103
 #place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':103, 'minUserCheckins':5, 'minimunUsersInUserCluster': 15, 'lowClusters': 2, 'highClusters': 6, 'lowOVL': 0.1, 'highOVL':0.4,
 #         'minLocationCheckinsForPlots': 50}
 
-place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5, 'k': 194, 'minimunUsersInUserCluster': 20, 'lowClusters': 3, 'highClusters': 8, 'lowMD': 2, 'highMD':5,
-         'minLocationCheckinsForPlots': 50}
+#place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5, 'k': 194, 'minimunUsersInUserCluster': 20, 'lowClusters': 3, 'highClusters': 8, 'lowMD': 2, 'highMD':5,
+#         'minLocationCheckinsForPlots': 50}
 
 #writeLocationToUserMap(place)
 #writeUserClusters(place)
+writeTabFile(place)
 #plotCurvesToSelectk(place)
 #getUserClusterDetails(place)
 
@@ -571,8 +566,8 @@ place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5,
 #pltClusterMeanDifferenceHistogram(place)
 #pltClusterMeanDifferenceByOverlap(place)
 
-text = ['cafe', 'coffee']
-for location, type in iterateLocationsByOVLAndMeanDifference(place): 
-        location = location['details']
-        print location['categories'], location['tags']
+#text = ['cafe', 'coffee']
+#for location, type in iterateLocationsByOVLAndMeanDifference(place): 
+#        location = location['details']
+#        print location['categories'], location['tags']
 
