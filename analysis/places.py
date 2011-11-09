@@ -40,6 +40,7 @@ from itertools import groupby, combinations
 from operator import itemgetter
 import numpy as np
 import matplotlib.pyplot as plt
+from library.weka import Clustering
 
 CLUSTERS_OVL_TYPE_LOW_LOW = 'low_low'
 CLUSTERS_OVL_TYPE_LOW_HIGH = 'low_high' 
@@ -94,26 +95,40 @@ def writeUserClusters(place):
                 FileIO.writeToFileAsJson((k, error, clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])), placesUserClustersFile%place['name'])
             else: resultsForVaryingK.append((k, meanClusteringDistance(clusters['bestFeatures'].itervalues()), clusters, dict((clusterId, GeneralMethods.getRandomColor()) for clusterId in clusters['clusters'])))
         except Exception as e: print '*********** Exception while clustering k = %s; %s'%(k, e); pass
+
+def writeUserClustersUsingWeka(place):
+    userVectors = defaultdict(dict)
+    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
+    for lid in locationToUserMap:
+        for user in locationToUserMap[lid]['users']: 
+            userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+    for user in userVectors.keys()[:]: 
+        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
+    clusterAssignments = Clustering.cluster(Clustering.EM, userVectors, '-N 200')
+    dataDistribution = defaultdict(int)
+    for k, v in clusterAssignments.iteritems(): dataDistribution[v]+=1
+    print len(dataDistribution), sorted(dataDistribution.iteritems(), key=itemgetter(1), reverse=True)
+
 #    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 #def getBestUserClustering(place, idOnly=False): 
 #    for data in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']): 
 #        if idOnly: return data[0]
 #        return data
 
-def writeTabFile(place):
-    def writeTabLineToFile(data, file): FileIO.writeToFile('\t'.join(data), file)
-    userVectors = defaultdict(dict)
-    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
-    for lid in locationToUserMap:
-        for user in locationToUserMap[lid]['users']: 
-            userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
-    for user in userVectors.keys()[:]: 
-        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
-    lids = sorted(locationToUserMap.keys())
-    file = '%s/%s.tab'%(placesTabsFolder, place['name'])
-    writeTabLineToFile(lids, file)
-    writeTabLineToFile(['c']*len(lids), file)
-    for user in userVectors.keys()[:]: writeTabLineToFile(['%0.3f'%userVectors[user].get(lid, 0.0) for lid in lids], file)
+#def writeTabFile(place):
+#    def writeTabLineToFile(data, file): FileIO.writeToFile('\t'.join(data), file)
+#    userVectors = defaultdict(dict)
+#    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
+#    for lid in locationToUserMap:
+#        for user in locationToUserMap[lid]['users']: 
+#            userVectors[user][lid]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+#    for user in userVectors.keys()[:]: 
+#        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
+#    lids = sorted(locationToUserMap.keys())
+#    file = '%s/%s.tab'%(placesTabsFolder, place['name'])
+#    writeTabLineToFile(lids, file)
+#    writeTabLineToFile(['c']*len(lids), file)
+#    for user in userVectors.keys()[:]: writeTabLineToFile(['%0.3f'%userVectors[user].get(lid, 0.0) for lid in lids], file)
 
 def iteraterUserClusterings(place): 
 #    i = 0
@@ -530,7 +545,7 @@ def getUserClusterDetails(place):
 
 place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'k': 83,'minUserCheckins':5, 'minLocationCheckinsForPlots': 50, 'maxLocationCheckinsForPlots': (), 'minimunUsersInUserCluster': 20, 
          'minLocationCheckins': 0, 'lowClusters': 6, 'highClusters': 12, 'lowOVL': 0.15, 'highOVL':0.4}
-#103
+
 #place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'k':103, 'minUserCheckins':5, 'minimunUsersInUserCluster': 15, 'lowClusters': 2, 'highClusters': 6, 'lowOVL': 0.1, 'highOVL':0.4,
 #         'minLocationCheckinsForPlots': 50}
 
@@ -539,7 +554,7 @@ place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'k': 83,'minUserChec
 
 #writeLocationToUserMap(place)
 #writeUserClusters(place)
-writeTabFile(place)
+writeUserClustersUsingWeka(place)
 #plotCurvesToSelectk(place)
 #getUserClusterDetails(place)
 
