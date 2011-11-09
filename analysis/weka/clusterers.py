@@ -10,8 +10,12 @@ from java.io import BufferedReader, FileReader
 from weka.clusterers import ClusterEvaluation
 from weka.clusterers import EM, SimpleKMeans
 from weka.core import Instances
+from weka import ARFF
 
-def cluster(algorithm, filename, options = ''):
+def cluster(algorithm, data, options = ''):
+    filename = ARFF.writeARFFForClustering(data, 'data')
+    print filename
+    exit()
     reader = BufferedReader(FileReader(filename))
     data = Instances(reader)
     reader.close()
@@ -22,4 +26,10 @@ def cluster(algorithm, filename, options = ''):
     for instance in data.enumerateInstances(): returnData.append(cl.clusterInstance(instance))
     return returnData
 
-print set(cluster(SimpleKMeans, '/Applications/Weka/weka-3-6-6/data/iris.arff', '-N 5'))
+data = {1: {'a':10, 'b': 15},
+        2: {'c':10},
+        3: {'a':10, 'b': 15}}
+
+#print set(cluster(SimpleKMeans, '/Applications/Weka/weka-3-6-6/data/iris.arff', '-N 5'))
+print set(cluster(SimpleKMeans, data, '-N 5'))
+
