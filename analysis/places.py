@@ -34,13 +34,13 @@ from settings import brazos_valley_boundary, minUniqueUsersCheckedInTheLocation,
     austin_tx_boundary, placesKMLsFolder, placesAnalysisFolder,\
     placesLocationWithClusterInfoFile, placesUserClustersFile,\
     placesLocationClustersFile, dallas_tx_boundary, north_ca_boundary,\
-    placesTabsFolder
+    placesTabsFolder, placesARFFFolder
 from collections import defaultdict
 from itertools import groupby, combinations
 from operator import itemgetter
 import numpy as np
 import matplotlib.pyplot as plt
-from library.weka import Clustering
+from library.weka import Clustering, ARFF
 
 CLUSTERS_OVL_TYPE_LOW_LOW = 'low_low'
 CLUSTERS_OVL_TYPE_LOW_HIGH = 'low_high' 
@@ -108,6 +108,20 @@ def writeUserClustersUsingWeka(place):
     dataDistribution = defaultdict(int)
     for k, v in clusterAssignments.iteritems(): dataDistribution[v]+=1
     print len(dataDistribution), sorted(dataDistribution.iteritems(), key=itemgetter(1), reverse=True)
+
+def getARFFFileName(place): return '%s/place.arff'%(placesARFFFolder%place['name'])
+def writeARFFFile(place):
+    userVectors = defaultdict(dict)
+    locationToUserMap = dict((l['location'], l) for l in locationToUserMapIterator(place, minCheckins=50))
+    for lid in locationToUserMap:
+        for user in locationToUserMap[lid]['users']: 
+            userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
+    for user in userVectors.keys()[:]: 
+        if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
+    arffFile=ARFF.writeARFFForClustering(userVectors, place['name'])
+    outputFileName = getARFFFileName(place)
+    FileIO.createDirectoryForFile(outputFileName)
+    GeneralMethods.runCommand('mv %s %s'%(arffFile, outputFileName))
 
 #    for data in resultsForVaryingK: FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
 #def getBestUserClustering(place, idOnly=False): 
@@ -553,8 +567,9 @@ place = {'name':'austin_tx', 'boundary':austin_tx_boundary, 'k': 83,'minUserChec
 #         'minLocationCheckinsForPlots': 50}
 
 #writeLocationToUserMap(place)
+writeARFFFile(place)
 #writeUserClusters(place)
-writeUserClustersUsingWeka(place)
+#writeUserClustersUsingWeka(place)
 #plotCurvesToSelectk(place)
 #getUserClusterDetails(place)
 

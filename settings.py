@@ -46,6 +46,7 @@ placesUserClustersFile = placesFolder+'%s/userClusters'
 placesLocationClustersFile = placesFolder+'%s/locationClusters'
 placesImagesFolder = '/data/geo/places/%s/images/'
 placesTabsFolder = '/data/geo/places/tabs/'
+placesARFFFolder = '/data/geo/places/%s/arff/'
 placesKMLsFolder = '/data/geo/places/%s/kmls/'
 placesAnalysisFolder = '/data/geo/places/%s/analysis/'
 
