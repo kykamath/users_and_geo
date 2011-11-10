@@ -104,7 +104,7 @@ def writeUserClustersUsingWeka(place):
             userVectors[user][lid.replace(' ', '_')]=sum(len(locationToUserMap[lid]['users'][user][d][db]) for d in locationToUserMap[lid]['users'][user] for db in locationToUserMap[lid]['users'][user][d])
     for user in userVectors.keys()[:]: 
         if sum(userVectors[user].itervalues())<place['minUserCheckins']: del userVectors[user]
-    clusterAssignments = Clustering.cluster(Clustering.EM, userVectors, '-N 300')
+    clusterAssignments = Clustering.cluster(Clustering.EM, userVectors, '-N -1')
     dataDistribution = defaultdict(int)
     for k, v in clusterAssignments.iteritems(): dataDistribution[v]+=1
     print len(dataDistribution), sorted(dataDistribution.iteritems(), key=itemgetter(1), reverse=True)
