@@ -16,7 +16,7 @@ from settings import brazos_valley_boundary, placesLocationToUserMapFile,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
     locationToUserAndExactTimeMapFile, placesARFFFile, placesUserClustersFile,\
     placesUserClusterFeaturesFile, austin_tx_boundary, placesAnalysisFolder,\
-    dallas_tx_boundary
+    dallas_tx_boundary, north_ca_boundary
 from library.weka import Clustering, ARFF
 from operator import itemgetter
 from library.clustering import getTopFeaturesForClass
@@ -96,12 +96,13 @@ def analyzeClusters(place, noOfFeatures=10):
             kml.addLocationPointsWithTitles([(getLocationFromLid(f[0].replace('_', ' ')), f[2]) for f in features[:noOfFeatures]], color=color)
             FileIO.createDirectoryForFile(outputKMLFile)
             kml.write(outputKMLFile)
-#    writeTopFeaturesForCluster()
+    writeTopFeaturesForCluster()
     writeClusterKML()
 
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5}
 #place = {'name':'austin_tx', 'boundary':austin_tx_boundary,'minUserCheckins':5}
-place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5}
+#place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5}
+place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5}
 
 writeLocationToUserMap(place)
 writeARFFFile(place)
