@@ -4,6 +4,7 @@ Created on Nov 10, 2011
 @author: kykamath
 '''
 import sys
+from analysis import SpotsKML
 sys.path.append('../')
 from collections import defaultdict
 from library.classes import GeneralMethods
@@ -14,7 +15,8 @@ from library.file_io import FileIO
 from settings import brazos_valley_boundary, placesLocationToUserMapFile,\
     minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation,\
     locationToUserAndExactTimeMapFile, placesARFFFile, placesUserClustersFile,\
-    placesUserClusterFeaturesFile
+    placesUserClusterFeaturesFile, austin_tx_boundary, placesAnalysisFolder,\
+    dallas_tx_boundary
 from library.weka import Clustering, ARFF
 from operator import itemgetter
 from library.clustering import getTopFeaturesForClass
@@ -64,13 +66,45 @@ def writeUserClustersFile(place):
     for data in userVectors.iteritems(): FileIO.writeToFileAsJson(data, placesUserClustersFile%place['name'])
     
 def writeTopClusterFeatures(place):
+    locationNames = {}
+    def getLocationName(lid): 
+        if lid not in locationNames:
+            locationObject = venuesCollection.find_one({'lid':lid})
+            if locationObject: locationNames[lid] = unicode(locationObject['n']).encode("utf-8")
+            else: locationNames[lid] = ''
+        return locationNames[lid]
     GeneralMethods.runCommand('rm -rf %s'%placesUserClusterFeaturesFile%place['name'])
     documents = [userVector.values() for user, userVector in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name'])]
-    for data in getTopFeaturesForClass(documents, 1000): FileIO.writeToFileAsJson(data, placesUserClusterFeaturesFile%place['name'])
+    for data in getTopFeaturesForClass(documents, 1000): 
+        clusterId, features = data
+        modifiedFeatures = []
+        for feature in features: modifiedFeatures.append(list(feature) + [getLocationName(feature[0].replace('_', ' '))])
+        FileIO.writeToFileAsJson([clusterId, GeneralMethods.getRandomColor(), modifiedFeatures], placesUserClusterFeaturesFile%place['name'])
 
-place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5}
+def analyzeClusters(place, noOfFeatures=10):
+    def writeTopFeaturesForCluster():
+        clustersFileName = '%s/topFeaturesForCluster'%placesAnalysisFolder%place['name']
+        GeneralMethods.runCommand('rm -rf %s'%clustersFileName)
+        for data in FileIO.iterateJsonFromFile(placesUserClusterFeaturesFile%place['name']):
+            clusterId, color, features = data
+            FileIO.writeToFileAsJson([clusterId, [f[2] for f in features[:noOfFeatures]]], clustersFileName)
+    def writeClusterKML():
+        kml = SpotsKML()
+        outputKMLFile='%s/clusters.kml'%placesAnalysisFolder%place['name']
+        for data in FileIO.iterateJsonFromFile(placesUserClusterFeaturesFile%place['name']):
+            clusterId, color, features = data
+            kml.addLocationPointsWithTitles([(getLocationFromLid(f[0].replace('_', ' ')), f[2]) for f in features[:noOfFeatures]], color=color)
+            FileIO.createDirectoryForFile(outputKMLFile)
+            kml.write(outputKMLFile)
+#    writeTopFeaturesForCluster()
+    writeClusterKML()
 
-#writeLocationToUserMap(place)
-#writeARFFFile(place)
-#writeUserClustersFile(place)
+#place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5}
+#place = {'name':'austin_tx', 'boundary':austin_tx_boundary,'minUserCheckins':5}
+place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5}
+
+writeLocationToUserMap(place)
+writeARFFFile(place)
+writeUserClustersFile(place)
 writeTopClusterFeatures(place)
+analyzeClusters(place)

@@ -13,8 +13,8 @@ Created on Oct 21, 2011
 @author: kykamath
 '''
 import sys, datetime, random, math
-from scipy.stats.stats import pearsonr
 sys.path.append('../')
+from scipy.stats.stats import pearsonr
 from library.vector import Vector
 from library.classes import GeneralMethods
 from library.plotting import getDataDistribution, plotNorm, getLatexForString
