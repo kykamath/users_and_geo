@@ -4,8 +4,8 @@ Created on Nov 10, 2011
 @author: kykamath
 '''
 import sys
-from analysis import SpotsKML
 sys.path.append('../')
+from analysis import SpotsKML
 from collections import defaultdict
 from library.classes import GeneralMethods
 from analysis.mr_analysis import filteredLocationToUserAndTimeMapIterator
