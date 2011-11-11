@@ -3,7 +3,7 @@ Created on Nov 10, 2011
 
 @author: kykamath
 '''
-import sys
+import sys, datetime
 sys.path.append('../')
 from analysis import SpotsKML
 from collections import defaultdict
@@ -99,13 +99,31 @@ def analyzeClusters(place, noOfFeatures=10):
     writeTopFeaturesForCluster()
     writeClusterKML()
 
+def plotNormalGraphsForClusters(place):
+    userToClusterMap = dict((cluster[0],cluster[1]['clusterId']) for cluster in FileIO.iterateJsonFromFile(placesUserClustersFile%place['name']))
+    clusterColorMap = dict((cluster[0],cluster[1]) for cluster in FileIO.iterateJsonFromFile(placesUserClusterFeaturesFile%place['name']))
+    for location in locationToUserMapIterator(place, minCheckins=place.get('minLocationCheckinsForPlots',200)): 
+        clusterIdHourDist = {}
+        for clusterId, hour in [(userToClusterMap[user], (datetime.datetime.fromtimestamp(epoch).hour-6)%24) for user, userVector in location['users'].iteritems() 
+               if user in userToClusterMap for day, dayVector in location['users'][user].iteritems() 
+               for db, epochs in location['users'][user][day].iteritems() for epoch in epochs]:
+                    if clusterId not in clusterIdHourDist: clusterIdHourDist[clusterId]=defaultdict(int)
+                    clusterIdHourDist[clusterId][hour]+=1
+        for i in clusterIdHourDist.iteritems():
+            print i
+        exit()
+#                        print epochs
+#            if user in userToClusterMap: print userToClusterMap[user], userVector
+#            else: print 'dsfsd'
+            
 #place = {'name':'brazos', 'boundary':brazos_valley_boundary, 'minUserCheckins':5}
-#place = {'name':'austin_tx', 'boundary':austin_tx_boundary,'minUserCheckins':5}
+place = {'name':'austin_tx', 'boundary':austin_tx_boundary,'minUserCheckins':5}
 #place = {'name': 'dallas_tx', 'boundary': dallas_tx_boundary, 'minUserCheckins':5}
-place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5}
+#place = {'name': 'north_ca', 'boundary': north_ca_boundary, 'minUserCheckins':5}
 
-writeLocationToUserMap(place)
-writeARFFFile(place)
-writeUserClustersFile(place)
-writeTopClusterFeatures(place)
-analyzeClusters(place)
+#writeLocationToUserMap(place)
+#writeARFFFile(place)
+#writeUserClustersFile(place)
+#writeTopClusterFeatures(place)
+#analyzeClusters(place)
+plotNormalGraphsForClusters(place)
