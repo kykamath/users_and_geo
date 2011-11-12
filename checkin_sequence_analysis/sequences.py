@@ -14,12 +14,12 @@ from settings import minLocationsTheUserHasCheckedin,\
 
 def writeCheckinSequenceGraphFile():   
     userSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
+    count, total = 1, len(userSet)
     for user in userSet:
-        print user
+        print user, count, total
         checkins = [(c['_id'], c['lid'], time.mktime(c['t'].timetuple())) for c in checkinsCollection.find({'u': user})]
         for i in GeneralMethods.getElementsInWindow(checkins, 2): FileIO.writeToFileAsJson([user, i], checkinSequenceGraphFile)
-        print checkinSequenceGraphFile
-        exit()
+        count+=1
 #for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True):
 #    print userVector
 
