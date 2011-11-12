@@ -4,10 +4,11 @@ Created on Oct 3, 2011
 @author: kykamath
 '''
 import sys
+from library.file_io import FileIO
 sys.path.append('../')
 import dateutil.parser
 from settings import checkinsFile, venuesFile,\
-    minUniqueUsersCheckedInTheLocation
+    minUniqueUsersCheckedInTheLocation, checkinSequenceGraphLocationsFile
 from mongo_settings import checkinsCollection, venuesCollection,\
     locationsCollection, locationToLocationCollection, geoDb, venuesMetaDataCollection
 from library.geo import getLidFromLocation, getLocationFromLid,\
@@ -38,6 +39,10 @@ def addVenuesToDB():
 #        try:
 #            usersCollection.insert({'_id': data['user'], 'tc': data['count'] })
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
+
+def addCheckinSequenceToDB():
+    for i in FileIO.iterateJsonFromFile(checkinSequenceGraphLocationsFile):
+        print i.keys()
 
 def addVenuesMetaToDB():
     i = 0
@@ -73,4 +78,5 @@ if __name__ == '__main__':
 ##    addUserCheckinDistributionToDB()
 #    addLocationCheckinDistributionToDB()
 #    addLocationToLocationDistanceToDB()
-    addVenuesMetaToDB()
+#    addVenuesMetaToDB()
+    addCheckinSequenceToDB()

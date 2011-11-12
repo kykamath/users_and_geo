@@ -26,7 +26,7 @@ class MRBuildCheckinSequenceAdjacencyList(ModifiedMRJob):
             if type==NODE: 
                 if checkinObject['cid'] not in observedCheckinIds: observedCheckinIds.add(checkinObject['cid']), checkinIds.append(checkinObject)
             else: edges[type].append(checkinObject)
-        if len(checkinIds)>=200: yield key, {'checkins': sortCheckinLists(checkinIds), 'edges': edges}
+        if len(checkinIds)>=200: yield key, {'lid': key, 'checkins': sortCheckinLists(checkinIds), 'edges': edges}
 
 if __name__ == '__main__':
     MRBuildCheckinSequenceAdjacencyList.run()

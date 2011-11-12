@@ -20,7 +20,6 @@ def writeCheckinSequenceGraphFile():
         checkins = [(c['_id'], c['lid'], time.mktime(c['t'].timetuple())) for c in checkinsCollection.find({'u': user})]
         for i in GeneralMethods.getElementsInWindow(checkins, 2): FileIO.writeToFileAsJson([user, i], checkinSequenceGraphFile)
         count+=1
-#for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True):
-#    print userVector
 
-writeCheckinSequenceGraphFile()
+if __name__ == '__main__':
+    writeCheckinSequenceGraphFile()
