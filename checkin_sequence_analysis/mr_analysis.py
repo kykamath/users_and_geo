@@ -4,8 +4,8 @@ Created on Nov 12, 2011
 @author: kykamath
 '''
 import sys
-from checkin_sequence_analysis.mr_buildSequenceAdjacencyList import MRBuildCheckinSequenceAdjacencyList
 sys.path.append('../')
+from checkin_sequence_analysis.mr_buildSequenceAdjacencyList import MRBuildCheckinSequenceAdjacencyList
 from settings import checkinSequenceGraphHdfsPath,\
     checkinSequenceGraphLocationsFile
 from library.file_io import FileIO
