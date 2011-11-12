@@ -22,3 +22,5 @@ def writeCheckinSequenceGraphFile():
         exit()
 #for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True):
 #    print userVector
+
+writeCheckinSequenceGraphFile()
