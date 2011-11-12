@@ -8,6 +8,7 @@ venuesFile = '/mnt/chevron/kykamath/data/geo/venues.txt'
 validLocationAndUserFile = '/mnt/chevron/kykamath/data/geo/validLocationAndUserFile.txt'
 checkinsHdfsPath = 'hdfs:///user/kykamath/geo/checkin_data.txt'
 validLocationAndUserHdfsPath = 'hdfs:///user/kykamath/geo/validLocationAndUser.txt'
+checkinsHdfsPath = 'hdfs:///user/kykamath/geo/checkin_data.txt'
 
 #Analysis
 analysisFolder = '/mnt/chevron/kykamath/data/geo/analysis/'
@@ -74,5 +75,8 @@ graphNodesDistanceInMiles = 25
 itemsetsMergeThreshold = 0.5
 
 #Sequences
+checkinSequenceGraphHdfsPath = 'hdfs:///user/kykamath/geo/checkinSequenceGraph'
+
 checkinSequencesFolder = '/mnt/chevron/kykamath/data/geo/sequences/'
 checkinSequenceGraphFile = checkinSequencesFolder+'checkinSequenceGraph'
+checkinSequenceGraphLocationsFile = checkinSequencesFolder+'checkinSequenceGraphLocations'
