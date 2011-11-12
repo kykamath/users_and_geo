@@ -14,9 +14,9 @@ from settings import minLocationsTheUserHasCheckedin,\
 userSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
 for user in userSet:
     print user
-    checkins = [(c['_id'], c['lid'], c['t'], time.mktime(c['t'].timetuple())) for c in checkinsCollection.find({'u': user})]
-    for i in GeneralMethods.getElementsInWindow(checkins, 1):
-        print i
+    checkins = [(c['_id'], c['lid'], time.mktime(c['t'].timetuple())) for c in checkinsCollection.find({'u': user})]
+    for i in GeneralMethods.getElementsInWindow(checkins, 2):
+        print [user, i]
     exit()
 #for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True):
 #    print userVector
