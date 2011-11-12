@@ -72,3 +72,7 @@ radiusInMiles = 17
 graphNodesMinEdgeWeight = 5 
 graphNodesDistanceInMiles = 25
 itemsetsMergeThreshold = 0.5
+
+#Sequences
+checkinSequencesFolder = '/mnt/chevron/kykamath/data/sequences/'
+checkinSequenceGraphFile = checkinSequencesFolder+'checkinSequenceGraph'
