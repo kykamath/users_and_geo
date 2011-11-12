@@ -74,5 +74,5 @@ graphNodesDistanceInMiles = 25
 itemsetsMergeThreshold = 0.5
 
 #Sequences
-checkinSequencesFolder = '/mnt/chevron/kykamath/data/sequences/'
+checkinSequencesFolder = '/mnt/chevron/kykamath/data/geo/sequences/'
 checkinSequenceGraphFile = checkinSequencesFolder+'checkinSequenceGraph'
