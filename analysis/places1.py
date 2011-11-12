@@ -40,8 +40,6 @@ def getLocationType(location):
         elif locationInfo[classId]>=classHigh: type = 'high'
         label+='_%s-%s_'%(classId, type)
     return label
-        
-    
 
 class GenerateDataFiles:
     @staticmethod
