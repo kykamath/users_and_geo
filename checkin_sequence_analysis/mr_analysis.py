@@ -15,4 +15,4 @@ def runMRJob(mrJobClass, outputFileName, args='-r hadoop'.split(), **kwargs):
     for l in mrJob.runJob(inputFileList=[checkinSequenceGraphHdfsPath], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
 if __name__ == '__main__':
-    runMRJob(MRBuildCheckinSequenceAdjacencyList, checkinSequenceGraphLocationsFile)
+    runMRJob(MRBuildCheckinSequenceAdjacencyList, checkinSequenceGraphLocationsFile, jobconf={'mapred.reduce.tasks':25})
