@@ -10,7 +10,8 @@ import dateutil.parser
 from settings import checkinsFile, venuesFile,\
     minUniqueUsersCheckedInTheLocation, checkinSequenceGraphLocationsFile
 from mongo_settings import checkinsCollection, venuesCollection,\
-    locationsCollection, locationToLocationCollection, geoDb, venuesMetaDataCollection
+    locationsCollection, locationToLocationCollection, geoDb, venuesMetaDataCollection,\
+    checkinSequenceLocationsCollection
 from library.geo import getLidFromLocation, getLocationFromLid,\
     getHaversineDistance
 from analysis.mr_analysis import locationIterator, locationGraphIterator,\
@@ -41,8 +42,11 @@ def addVenuesToDB():
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
 def addCheckinSequenceToDB():
+    count = 0
     for i in FileIO.iterateJsonFromFile(checkinSequenceGraphLocationsFile):
-        print i.keys()
+        print count, len(i['checkins'])
+        count+=1
+        checkinSequenceLocationsCollection.insert({'_id': i['lid'], 'e': i['edges'], 'c': i['checkins']})
 
 def addVenuesMetaToDB():
     i = 0

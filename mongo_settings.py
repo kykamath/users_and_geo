@@ -74,3 +74,12 @@ locationsCollection.create_index([ ('l', GEO2D), ('tc', ASCENDING)])
 locationToLocationCollection = geoDb.location_to_location
 locationsCollection.create_index('u')
 locationsCollection.create_index('d')
+'''
+{
+'_id': lid,
+'e': edges,
+'c': checkins
+}
+'''
+checkinSequenceLocationsCollection = geoDb.checkin_sequence_location
+checkinSequenceLocationsCollection.ensure_index('_id')
