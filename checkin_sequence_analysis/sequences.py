@@ -44,11 +44,12 @@ def createLocationFile(regex):
 def getLocationClustersFromCheckins(checkins, users):
     print len(checkins), users.keys()
 
-def getNeigboringLocationClusters(regex, checkinsType = INCOMING_EDGE):
+def getNeigboringLocationClusters(regex, edgeType = INCOMING_EDGE):
     inputFileName = checkinSequenceLocationRegexFolder+regex
     for data in FileIO.iterateJsonFromFile(inputFileName):
         data['users']
-        print data.keys()
+        for edge in data['edges'][edgeType]:
+            print data['lid'], edge
 #        print type(data['edges'][checkinsType]), 
         exit()
 
