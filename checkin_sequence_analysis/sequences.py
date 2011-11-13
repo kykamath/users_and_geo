@@ -40,7 +40,6 @@ def createLocationFile(regex):
         location['lid'] = location['_id']; del location['_id']
         location['name'] = location['n']; del location['n']
         FileIO.writeToFileAsJson(location, fileName)
-        exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
