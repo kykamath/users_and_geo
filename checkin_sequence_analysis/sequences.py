@@ -32,7 +32,7 @@ def createLocationFile():
         print location.keys()
         lid = location['_id']
 #        print location['e'].keys()
-        users = set([edge[0]['u'] for edge in location['e'][type] for type in [OUTGOING_EDGE, INCOMING_EDGE]])
+        users = set([edge[0]['u'] for type in [OUTGOING_EDGE, INCOMING_EDGE] for edge in location['e'][type]])
         print len(users)
         exit()
 
