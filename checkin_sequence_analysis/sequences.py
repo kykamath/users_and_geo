@@ -37,7 +37,8 @@ def createLocationFile():
         users = set([edge[0]['u'] for type in [OUTGOING_EDGE, INCOMING_EDGE] for edge in location['e'][type]])
         for user in users: 
             if user not in userCheckins: userCheckins[user] = getCheckinsForUser(user)
-        print user
+        location['users'] = userCheckins
+        print location.keys()
         exit()
 
 if __name__ == '__main__':
