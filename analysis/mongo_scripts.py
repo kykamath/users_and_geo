@@ -87,6 +87,3 @@ if __name__ == '__main__':
 #    addLocationToLocationDistanceToDB()
 #    addVenuesMetaToDB()
     addCheckinSequenceToDB()
-    for i in checkinSequenceLocationsCollection.find({'n':{'$regex':'mcdonald'}}):
-    #for i in checkinSequenceLocationsCollection.find():
-        print unicode(i['n']).encode('utf-8')

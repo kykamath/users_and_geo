@@ -7,7 +7,8 @@ import sys, time
 sys.path.append('../')
 from library.classes import GeneralMethods
 from library.file_io import FileIO
-from mongo_settings import checkinsCollection
+from mongo_settings import checkinsCollection,\
+    checkinSequenceLocationsCollection
 from analysis.mr_analysis import filteredUserIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile
@@ -21,5 +22,12 @@ def writeCheckinSequenceGraphFile():
         for i in GeneralMethods.getElementsInWindow(checkins, 2): FileIO.writeToFileAsJson([user, i], checkinSequenceGraphFile)
         count+=1
 
+def createLocationFile():
+    for location in checkinSequenceLocationsCollection.find({'n':{'$regex':'mcdonald'}}):
+    #for i in checkinSequenceLocationsCollection.find():
+        print location['lid'], unicode(location['n']).encode('utf-8')
+        
+
 if __name__ == '__main__':
-    writeCheckinSequenceGraphFile()
+#    writeCheckinSequenceGraphFile()
+    createLocationFile()
