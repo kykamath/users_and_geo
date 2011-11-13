@@ -25,8 +25,12 @@ def writeCheckinSequenceGraphFile():
 def createLocationFile():
     for location in checkinSequenceLocationsCollection.find({'n':{'$regex':'mcdonald'}}):
     #for i in checkinSequenceLocationsCollection.find():
-        print location['_id'], unicode(location['n']).encode('utf-8')
+#        print location['_id'], unicode(location['n']).encode('utf-8')
+        print location.keys()
+        lid = location['_id']
+#        for 
         
+        exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
