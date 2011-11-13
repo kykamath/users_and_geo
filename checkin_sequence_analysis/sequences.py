@@ -41,6 +41,15 @@ def createLocationFile(regex):
         location['name'] = location['n']; del location['n']
         FileIO.writeToFileAsJson(location, fileName)
 
+def getLocationClustersFromCheckins(checkins, users):
+    print len(checkins), users.keys()
+
+def getNeigboringLocationClusters(regex, type = INCOMING_EDGE):
+    inputFileName = checkinSequenceLocationRegexFolder+regex
+    for data in FileIO.iterateJsonFromFile(inputFileName):
+        print data.keys()
+
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
-    createLocationFile(regex='cafe')
+#    createLocationFile(regex='cafe')
+    getNeigboringLocationClusters('cafe')
