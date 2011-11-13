@@ -47,7 +47,7 @@ def getLocationClustersFromCheckins(checkins, users):
 def getNeigboringLocationClusters(regex, type = INCOMING_EDGE):
     inputFileName = checkinSequenceLocationRegexFolder+regex
     for data in FileIO.iterateJsonFromFile(inputFileName):
-        print data.keys()
+        print type(data['edges'][type]), list(data['edges'][type])
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
