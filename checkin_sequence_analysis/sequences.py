@@ -38,6 +38,10 @@ def createLocationFile():
         for user in users: 
             if user not in userCheckins: userCheckins[user] = getCheckinsForUser(user)
         location['users'] = userCheckins
+        location['edges'] = location['e']
+        location['checkins'] = location['c']
+        location['lid'] = location['_id']
+        location['name'] = location['n']
         print location.keys()
         exit()
 
