@@ -13,6 +13,7 @@ from analysis.mr_analysis import filteredUserIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile,\
     checkinSequenceLocationRegexFolder
+from operator import itemgetter
 
 OUTGOING_EDGE = 'out'
 INCOMING_EDGE = 'in'
@@ -50,7 +51,8 @@ class NeighboringClusters():
     def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
         for checkin in checkins:
             userCheckins = users[str(checkin['u'])]
-            print checkin, len(checkin)
+            assert userCheckins == sorted(userCheckins, key=itemgetter(0))
+            print checkin, len(userCheckins)
             exit()
         exit()
 #        print len(checkins), users.keys()
