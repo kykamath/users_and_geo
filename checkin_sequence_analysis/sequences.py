@@ -43,4 +43,4 @@ def createLocationFile(regex):
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
-    createLocationFile(regex='mcdonald')
+    createLocationFile(regex='cafe')
