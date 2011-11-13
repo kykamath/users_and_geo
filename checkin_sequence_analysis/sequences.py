@@ -33,7 +33,7 @@ def createLocationFile(regex):
         userCheckins = {}
         users = set([edge[0]['u'] for type in [OUTGOING_EDGE, INCOMING_EDGE] for edge in location['e'][type]])
         for user in users: 
-            if user not in userCheckins: userCheckins[user] = getCheckinsForUser(user)
+            if user not in userCheckins: userCheckins[str(user)] = getCheckinsForUser(user)
         location['users'] = userCheckins
         location['edges'] = location['e']; del location['e']
         location['checkins'] = location['c']; del location['c']
