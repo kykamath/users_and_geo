@@ -50,6 +50,7 @@ class NeighboringClusters():
     def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
         for checkin in checkins:
             print checkin, users[str(checkin['u'])]
+            exit()
         exit()
 #        print len(checkins), users.keys()
     @staticmethod
