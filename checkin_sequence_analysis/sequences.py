@@ -31,7 +31,7 @@ def createLocationFile():
 #        print location['_id'], unicode(location['n']).encode('utf-8')
         print location.keys()
         lid = location['_id']
-        print location['_id']['e'].keys()
+        print location['e'].keys()
 #        for edge in location['_id']['e'][OUTGOING_EDGE]:
 #            print edge
         
