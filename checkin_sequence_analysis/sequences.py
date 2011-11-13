@@ -26,18 +26,18 @@ def writeCheckinSequenceGraphFile():
         count+=1
 
 def createLocationFile():
-    def getUser(user):
-        for checkin in checkinsCollection.find({'u':user}):
-            print checkin['_id'], checkin['lid'], time.mktime(checkin['t'].timetuple())
-        exit()
+    def getCheckinsForUser(user): return [[checkin['_id'], checkin['lid'], time.mktime(checkin['t'].timetuple())] for checkin in checkinsCollection.find({'u':user})]
     for location in checkinSequenceLocationsCollection.find({'n':{'$regex':'mcdonald'}}):
     #for i in checkinSequenceLocationsCollection.find():
 #        print location['_id'], unicode(location['n']).encode('utf-8')
         print location.keys()
         lid = location['_id']
 #        print location['e'].keys()
+        userCheckins = {}
         users = set([edge[0]['u'] for type in [OUTGOING_EDGE, INCOMING_EDGE] for edge in location['e'][type]])
-        for user in users: getUser(user)
+        for user in users: 
+            if user not in userCheckins: userCheckins[user] = getCheckinsForUser(user)
+        print user
         exit()
 
 if __name__ == '__main__':
