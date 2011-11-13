@@ -11,7 +11,8 @@ from mongo_settings import checkinsCollection,\
     checkinSequenceLocationsCollection
 from analysis.mr_analysis import filteredUserIterator
 from settings import minLocationsTheUserHasCheckedin,\
-    minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile
+    minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile,\
+    checkinSequenceLocationRegexFolder
 
 OUTGOING_EDGE = 'out'
 INCOMING_EDGE = 'in'
@@ -25,14 +26,10 @@ def writeCheckinSequenceGraphFile():
         for i in GeneralMethods.getElementsInWindow(checkins, 2): FileIO.writeToFileAsJson([user, i], checkinSequenceGraphFile)
         count+=1
 
-def createLocationFile():
+def createLocationFile(regex):
     def getCheckinsForUser(user): return [[checkin['_id'], checkin['lid'], time.mktime(checkin['t'].timetuple())] for checkin in checkinsCollection.find({'u':user})]
-    for location in checkinSequenceLocationsCollection.find({'n':{'$regex':'mcdonald'}}):
-    #for i in checkinSequenceLocationsCollection.find():
-#        print location['_id'], unicode(location['n']).encode('utf-8')
-        print location.keys()
-        lid = location['_id']
-#        print location['e'].keys()
+    fileName = checkinSequenceLocationRegexFolder+regex
+    for location in checkinSequenceLocationsCollection.find({'n':{'$regex':regex}}):
         userCheckins = {}
         users = set([edge[0]['u'] for type in [OUTGOING_EDGE, INCOMING_EDGE] for edge in location['e'][type]])
         for user in users: 
@@ -42,9 +39,9 @@ def createLocationFile():
         location['checkins'] = location['c']; del location['c']
         location['lid'] = location['_id']; del location['_id']
         location['name'] = location['n']; del location['n']
-        print location.keys()
+        FileIO.writeToFileAsJson(location, fileName)
         exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
-    createLocationFile()
+    createLocationFile(regex='mcdonald')
