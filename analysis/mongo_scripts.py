@@ -42,11 +42,14 @@ def addVenuesToDB():
 #        except Exception as e: print i, 'Exception while processing:', data; i+=1
 
 def addCheckinSequenceToDB():
-    count = 0
+    count = 1
     for i in FileIO.iterateJsonFromFile(checkinSequenceGraphLocationsFile):
+        title = ''
+        lidInfo = venuesCollection.find_one({'lid': i['lid']}, ['n'])
+        if lidInfo: title = lidInfo['n']
         print count, len(i['checkins'])
         count+=1
-        checkinSequenceLocationsCollection.insert({'_id': i['lid'], 'e': i['edges'], 'c': i['checkins']})
+        checkinSequenceLocationsCollection.insert({'_id': i['lid'], 'e': i['edges'], 'c': i['checkins'], 'n': title})
 
 def addVenuesMetaToDB():
     i = 0

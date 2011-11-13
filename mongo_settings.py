@@ -79,7 +79,9 @@ locationsCollection.create_index('d')
 '_id': lid,
 'e': edges,
 'c': checkins
+'n': name
 }
 '''
 checkinSequenceLocationsCollection = geoDb.checkin_sequence_location
 checkinSequenceLocationsCollection.ensure_index('_id')
+checkinSequenceLocationsCollection.ensure_index('n')
