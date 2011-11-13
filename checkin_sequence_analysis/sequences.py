@@ -41,22 +41,31 @@ def createLocationFile(regex):
         location['name'] = location['n']; del location['n']
         FileIO.writeToFileAsJson(location, fileName)
 
-def getLocationClustersFromCheckins(checkins, users):
-    print len(checkins), users.keys()
-
-def getNeigboringLocationClusters(regex, edgeType = INCOMING_EDGE):
-    inputFileName = checkinSequenceLocationRegexFolder+regex
-    checkinSelectionIndex = {INCOMING_EDGE:0, OUTGOING_EDGE:1}[edgeType]
-    for data in FileIO.iterateJsonFromFile(inputFileName):
-        data['users']
-        if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
-        getLocationClustersFromCheckins(checkins, data['users'])
-#        for c in checkins:
-#            print data['lid'], c
-#        print type(data['edges'][checkinsType]), 
+class NeighboringClusters():
+    class UserVectorSelection:
+        @staticmethod
+        def latestNCheckins(checkinId, user, users, n=1, **kwargs):
+            print checkinId, users[user]
+    @staticmethod
+    def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
+        for checkin in checkins:
+            print checkin
         exit()
+#        print len(checkins), users.keys()
+    @staticmethod
+    def getNeigboringLocationClusters(regex, edgeType = INCOMING_EDGE):
+        inputFileName = checkinSequenceLocationRegexFolder+regex
+        checkinSelectionIndex = {INCOMING_EDGE:0, OUTGOING_EDGE:1}[edgeType]
+        for data in FileIO.iterateJsonFromFile(inputFileName):
+            data['users']
+            if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
+            NeighboringClusters.getLocationClustersFromCheckins(checkins, data['users'])
+    #        for c in checkins:
+    #            print data['lid'], c
+    #        print type(data['edges'][checkinsType]), 
+            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
-    getNeigboringLocationClusters('cafe')
+    NeighboringClusters.getNeigboringLocationClusters('cafe')
