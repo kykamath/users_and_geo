@@ -13,6 +13,9 @@ from analysis.mr_analysis import filteredUserIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile
 
+OUTGOING_EDGE = 'out'
+INCOMING_EDGE = 'in'
+
 def writeCheckinSequenceGraphFile():   
     userSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
     count, total = 1, len(userSet)
@@ -28,7 +31,8 @@ def createLocationFile():
 #        print location['_id'], unicode(location['n']).encode('utf-8')
         print location.keys()
         lid = location['_id']
-#        for 
+        for edge in location['_id']['e'][OUTGOING_EDGE]:
+            print edge
         
         exit()
 
