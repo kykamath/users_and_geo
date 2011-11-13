@@ -27,7 +27,7 @@ def writeCheckinSequenceGraphFile():
 
 def createLocationFile():
     def getUser(user):
-        for checkin in checkinsCollection.find(user):
+        for checkin in checkinsCollection.find({'u':user}):
             print checkin
         exit()
     for location in checkinSequenceLocationsCollection.find({'n':{'$regex':'mcdonald'}}):
