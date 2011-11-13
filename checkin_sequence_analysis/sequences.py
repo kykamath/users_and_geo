@@ -50,8 +50,9 @@ def getNeigboringLocationClusters(regex, edgeType = INCOMING_EDGE):
     for data in FileIO.iterateJsonFromFile(inputFileName):
         data['users']
         if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
-        for c in checkins:
-            print data['lid'], c
+        getLocationClustersFromCheckins(checkins, data['users'])
+#        for c in checkins:
+#            print data['lid'], c
 #        print type(data['edges'][checkinsType]), 
         exit()
 
