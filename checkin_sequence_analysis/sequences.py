@@ -149,12 +149,25 @@ class NeighboringLocationsAnalysis():
             analysis['clusters'] = getListWithLocationNames(analysis['clusters'])
             analyzedData['locations'][data['lid']] = analysis
         FileIO.writeToFileAsJson(analyzedData, outputFileName)
+    @staticmethod
+    def generateData():
+        for i in range(1,7):
+            regex = 'mcdonald'
+            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+    @staticmethod
+    def analyzeData():
+        regex = 'cafe'
+        neighborLocationExtractionMethod = NeighborLocationsSelection.N_PREVIOUS_LOCATIONS
+        inputFile = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
+        for line in FileIO.iterateJsonFromFile(inputFile):
+            print line['parameters']
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
-    for i in [1,2,4,5,6]:
-        NeighboringLocationsAnalysis.analyze('cafe', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
-        NeighboringLocationsAnalysis.analyze('cafe', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
-#    NeighboringLocationsAnalysis.analyzeLocation('cafe')
-#    NeighboringLocationsAnalysis.analyzeLocation('cafe', OUTGOING_EDGE)
+    
+    NeighboringLocationsAnalysis.generateData()
+#    NeighboringLocationsAnalysis.analyzeData()
+    
+
