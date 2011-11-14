@@ -187,7 +187,7 @@ class NeighboringLocationsAnalysis():
             data = line['locations']['41.895 -87.623']
             print line['parameters']['checkinsWindow']
             for l, _ in data['clusters'][:5]:
-                for i in l: print i[0] 
+                print [i[0] for i in l]
             print '\n\n\n ********** \n\n\n'
 #            exit()
 
