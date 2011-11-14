@@ -77,12 +77,9 @@ class NeighboringClusters():
             if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
             clusters = NeighboringClusters.getLocationClustersFromCheckins(data['lid'], checkins, data['users'], UserVectorSelection.latestNCheckins)
             print data['lid'], clusters[:5]
-    #        for c in checkins:
-    #            print data['lid'], c
-    #        print type(data['edges'][checkinsType]), 
-#            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
     NeighboringClusters.getNeigboringLocationClusters('cafe')
+    NeighboringClusters.getNeigboringLocationClusters('cafe', OUTGOING_EDGE)
