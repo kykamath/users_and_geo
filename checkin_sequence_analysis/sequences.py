@@ -153,7 +153,7 @@ class NeighboringLocationsAnalysis():
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
-    
-    NeighboringLocationsAnalysis.analyze('cafe', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=3)
+    NeighboringLocationsAnalysis.analyze('mcdonald', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=3)
+    NeighboringLocationsAnalysis.analyze('mcdonald', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=3)
 #    NeighboringLocationsAnalysis.analyzeLocation('cafe')
 #    NeighboringLocationsAnalysis.analyzeLocation('cafe', OUTGOING_EDGE)
