@@ -53,33 +53,82 @@ def createLocationFile(regex):
         location['name'] = location['n']; del location['n']
         FileIO.writeToFileAsJson(location, fileName)
 
-class UserVectorSelection:
+class NeighborLocationsSelection:
+    ''' This class should return a history of user checkins correponding to a particular user.
+    For example: given a user and his checkin at starbucks, this method shoould return his previous 5 checkins
+    before this.
+    '''
     @staticmethod
-    def latestNCheckins(checkin, users, numberOfCheckins=1, **kwargs):
+    def nPreviousLocations(checkin, users, numberOfCheckins=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
         index = userCheckins.index(checkin['cid'])
-        if index+1>=numberOfCheckins: return users[str(checkin['u'])][index-numberOfCheckins+1:index+1]
-        else: return users[str(checkin['u'])][:index+1]
-class NeighboringClusters():
+        if index>=numberOfCheckins: return users[str(checkin['u'])][index-numberOfCheckins:index]
+        else: return users[str(checkin['u'])][:index]
     @staticmethod
-    def getLocationClustersFromCheckins(currentLid, checkins, users, userVectorSelectionMethod):
+    def nFutureLocations(checkin, users, numberOfCheckins=1, **kwargs):
+        userCheckins = [c[0] for c in users[str(checkin['u'])]]
+        index = userCheckins.index(checkin['cid'])
+        return users[str(checkin['u'])][index+1:index+numberOfCheckins+1]
+#    @staticmethod
+#    def nCheckinsInFuture(checkin, users, numberOfCheckins=1, **kwargs):
+#        userCheckins = [c[0] for c in users[str(checkin['u'])]]
+#        index = userCheckins.index(checkin['cid'])
+#        return users[str(checkin['u'])][:index+numberOfCheckins]
+class NeighboringClusters():
+    ''' Neighbor locations clusters  are the clusters of locations that come to a particular place or
+    go from a particular place. For example: starbucks get clusters of people from IT and moms.
+    
+    Neigbor Relation Graph:  A graph with locations as vertices and edges showing that same user visited,
+    both the locations. Clustering this graph will give us classes of different users.
+    '''
+    @staticmethod
+    def _filterCheckins(checkins, lid):
+        ''' 
+            This method preforms the following actions:
+                i) Removes duplicateCheckins
+                ii) Removes checkins that are from a lid (input parameter)
+            checkin = [checkinid, lid, time]
+            checkins = [[checkin1, checkin2], [checkin1, checkin2, checkin3]]
+        '''
+        observedCheckins, checkinsToReturn = set(), []
+        for cIns in checkins:
+            cInsToReturn  = []
+            for c in cIns:
+                if c[0] not in observedCheckins and c[1]!=lid: observedCheckins.add(c[0]), cInsToReturn.append(c)
+            if cInsToReturn: checkinsToReturn.append(cInsToReturn)
+        return checkinsToReturn
+    @staticmethod
+    def getNeigboringLocationClusters(inputLocationObject, neighborLocationsSelectionMethod, **kwargs):
+        neighborLocations = [neighborLocationsSelectionMethod(checkin, inputLocationObject['users'], **kwargs) for checkin in inputLocationObject['checkins']]
+        ''' From these neighbor location we have to select every (location, checkinid) pair only 
+        once to build the neigbor relation graph, that should be clustered. 
+            We should also remove checkins that done at the current location
+        '''
+        neighborLocationCheckins = NeighboringClusters._filterCheckins(neighborLocations, inputLocationObject['lid'])
+        return NeighboringClusters.getClustersUsingGraph(neighborLocationCheckins, **kwargs)
+    @staticmethod
+    def getClustersUsingGraph(checkins, minEdgeWeight = 0, **kwargs):
         graph = nx.Graph()
-        for checkin in checkins:
-            neighboringCheckins = userVectorSelectionMethod(checkin, users)
-            [updateNode(checkin[1], graph) for checkin in neighboringCheckins if checkin[1]!=currentLid]
-            if len(neighboringCheckins)>=2: [updateEdge(u, v, graph) for u, v in combinations(neighboringCheckins, 2) if u!=currentLid and v!=currentLid]
+        for cIns in checkins:
+            [updateNode(c[1], graph) for c in cIns]
+            if len(cIns)>=2: [updateEdge(u[1], v[1], graph) for u, v in combinations(cIns, 2)]
+        for u, v in graph.edges()[:]:
+            if graph.edge[u][v]['w']<minEdgeWeight: graph.remove_edge(u, v) 
         return sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
     @staticmethod
-    def getNeigboringLocationClusters(regex, edgeType = INCOMING_EDGE):
+    def getNeigboringLocationClustersForRegex(regex, neighborLocationExtractionMethod, **kwargs):
         inputFileName = checkinSequenceLocationRegexFolder+regex
-        checkinSelectionIndex = {INCOMING_EDGE:0, OUTGOING_EDGE:1}[edgeType]
         for data in FileIO.iterateJsonFromFile(inputFileName):
-            checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
-            clusters = NeighboringClusters.getLocationClustersFromCheckins(data['lid'], checkins, data['users'], UserVectorSelection.latestNCheckins)
-            print data['lid'], clusters[:5]
+            clusters = NeighboringClusters.getNeigboringLocationClusters(data, neighborLocationExtractionMethod, **kwargs)
+            for cluster in clusters:
+                print cluster
+            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
-    NeighboringClusters.getNeigboringLocationClusters('cafe')
-    NeighboringClusters.getNeigboringLocationClusters('cafe', OUTGOING_EDGE)
+    
+    NeighboringClusters.getNeigboringLocationClustersForRegex('cafe', NeighborLocationsSelection.nPreviousLocations, minEdgeWeight=3, numberOfCheckins=5)
+
+#    NeighboringClusters.getNeigboringLocationClusters('cafe')
+#    NeighboringClusters.getNeigboringLocationClusters('cafe', OUTGOING_EDGE)

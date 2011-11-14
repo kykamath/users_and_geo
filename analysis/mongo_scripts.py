@@ -8,7 +8,8 @@ from library.file_io import FileIO
 sys.path.append('../')
 import dateutil.parser
 from settings import checkinsFile, venuesFile,\
-    minUniqueUsersCheckedInTheLocation, checkinSequenceGraphLocationsFile
+    minUniqueUsersCheckedInTheLocation, checkinSequenceGraphLocationsFile,\
+    lidToNameMapFile
 from mongo_settings import checkinsCollection, venuesCollection,\
     locationsCollection, locationToLocationCollection, geoDb, venuesMetaDataCollection,\
     checkinSequenceLocationsCollection
@@ -79,6 +80,10 @@ def addLocationToLocationDistanceToDB():
 
 def locationToLocationIterator(): return locationToLocationCollection.find()
 
+def writeLidToNameMap():
+    for venue in venuesCollection.find():
+        FileIO.writeToFileAsJson([venue['lid'], venue['n']], lidToNameMapFile)
+
 if __name__ == '__main__':
 #    addCheckinsToDB()
 #    addVenuesToDB()
@@ -86,4 +91,5 @@ if __name__ == '__main__':
 #    addLocationCheckinDistributionToDB()
 #    addLocationToLocationDistanceToDB()
 #    addVenuesMetaToDB()
-    addCheckinSequenceToDB()
+#    addCheckinSequenceToDB()
+    writeLidToNameMap()
