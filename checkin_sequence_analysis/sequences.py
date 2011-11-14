@@ -47,7 +47,8 @@ class UserVectorSelection:
     def latestNCheckins(checkin, users, n=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
         for u in userCheckins: print u
-        print checkin, len(userCheckins)
+        print checkin, userCheckins.index(checkin['cid']), len(userCheckins)
+        exit()
 class NeighboringClusters():
     @staticmethod
     def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
