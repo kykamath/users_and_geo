@@ -46,6 +46,9 @@ class UserVectorSelection:
     @staticmethod
     def latestNCheckins(checkin, users, n=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
+        index = userCheckins.index(checkin['cid'])
+        if index>=n: print userCheckins[userCheckins-n:userCheckins]
+        else: print userCheckins[:userCheckins]
         i = 0
         for u in userCheckins: print i, u; i+=1
         print checkin, userCheckins.index(checkin['cid']), len(userCheckins)
