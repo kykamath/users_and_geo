@@ -186,12 +186,13 @@ class NeighboringLocationsAnalysis():
 #            for location, data in line['locations'].iteritems():
             data = line['locations']['41.895 -87.623']
             print line['parameters']['checkinsWindow'], [l for l, _ in data['clusters'][:5]]
+            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
-    createLocationFile(regex='starbuck')
+#    createLocationFile(regex='starbuck')
     
 #    NeighboringLocationsAnalysis.generateData()
-#    NeighboringLocationsAnalysis.analyzeDataClusters()
+    NeighboringLocationsAnalysis.analyzeDataClusters()
     
 
