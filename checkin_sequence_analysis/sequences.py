@@ -44,16 +44,15 @@ def createLocationFile(regex):
 
 class UserVectorSelection:
     @staticmethod
-    def latestNCheckins(checkinId, user, users, n=1, **kwargs):
-        print checkinId, users[user]
+    def latestNCheckins(checkin, users, n=1, **kwargs):
+        userCheckins = [c[0] for c in users[str(checkin['u'])]]
+        for u in userCheckins: print u
+        print checkin, len(userCheckins)
 class NeighboringClusters():
     @staticmethod
     def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
         for checkin in checkins:
-            userCheckins = users[str(checkin['u'])]
-            for u in userCheckins: print u
-            print checkin, len(userCheckins)
-            exit()
+            userVectorSelectionMethod(checkin, users)
         exit()
 #        print len(checkins), users.keys()
     @staticmethod
