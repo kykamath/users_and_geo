@@ -183,12 +183,13 @@ class NeighboringLocationsAnalysis():
         neighborLocationExtractionMethod = NeighborLocationsSelection.N_LOCATIONS
         inputFile = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
         for line in FileIO.iterateJsonFromFile(inputFile):
-#            for location, data in line['locations'].iteritems():
-            data = line['locations']['41.895 -87.623']
-            print line['parameters']['checkinsWindow']
-            for l, _ in data['clusters'][:5]:
-                print [i[0] for i in l]
-            print '\n\n\n ********** \n\n\n'
+            if line['parameters']['checkinsWindow']==10:
+                for location, data in line['locations'].iteritems():
+    #                data = line['locations']['41.895 -87.623']
+                    if isWithinBoundingBox(getLocationFromLid(location), us_boundary):
+                        for l, _ in data['clusters'][:5]:
+                            print [i[0] for i in l]
+                        print '\n ********** \n'
 #            exit()
 
 if __name__ == '__main__':
