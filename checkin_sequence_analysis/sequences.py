@@ -158,11 +158,11 @@ class NeighboringLocationsAnalysis():
         FileIO.writeToFileAsJson(analyzedData, outputFileName)
     @staticmethod
     def generateData():
-        for i in range(1,7):
-            regex = 'starbuck'
+        for i in range(1,11):
+            regex = 'cafe'
 #            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
 #            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
-            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_LOCATIONS, minEdgeWeightInNRGraph=10, checkinsWindow=i)
     @staticmethod
     def analyzeData():
 #        regex = 'mcdonald'
@@ -195,7 +195,7 @@ if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='starbuck')
     
-#    NeighboringLocationsAnalysis.generateData()
-    NeighboringLocationsAnalysis.analyzeDataClusters()
+    NeighboringLocationsAnalysis.generateData()
+#    NeighboringLocationsAnalysis.analyzeDataClusters()
     
 
