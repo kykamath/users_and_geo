@@ -9,7 +9,7 @@ import os
 from collections import defaultdict
 from operator import itemgetter
 import numpy as np
-from settings import filteredLocationToUserAndTimeMap_20_10
+from settings import filteredLocationToUserAndTimeMap_20_10, lidToNameMapFile
 
 def filteredLocationToUserAndTimeMap_20_10Iterator():
     for data in FileIO.iterateJsonFromFile(filteredLocationToUserAndTimeMap_20_10):
@@ -130,7 +130,16 @@ class Spots():
                     totalAssignments+=1
             accuracyList.append(wrongAssignments/totalAssignments)
         return {'accuracy': np.mean(accuracyList), 'total_locations': len(lidToSpotIdMap), 'total_users': len(userToSpotIdMap)}
-    
+
+class LidToNameMap:
+    map = None
+    @staticmethod
+    def get(lid):
+        if not LidToNameMap.map:
+            LidToNameMap.map = {}
+            for k,v in FileIO.iterateJsonFromFile(lidToNameMapFile): LidToNameMap.map[k]=v
+        return LidToNameMap.map[lid]
     
 if __name__ == '__main__':
-    print len(list(filteredLocationToUserAndTimeMap_20_10Iterator()))
+#    print len(list(filteredLocationToUserAndTimeMap_20_10Iterator()))
+    print LidToNameMap.get('40.730 -73.980')

@@ -8,11 +8,12 @@ sys.path.append('../')
 from library.classes import GeneralMethods
 from library.file_io import FileIO
 from mongo_settings import checkinsCollection,\
-    checkinSequenceLocationsCollection
+    checkinSequenceLocationsCollection, venuesCollection
 from analysis.mr_analysis import filteredUserIterator
 from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile,\
-    checkinSequenceLocationRegexFolder
+    checkinSequenceLocationRegexFolder,\
+    checkinSequenceLocationRegexAnalysisFolder
 from operator import itemgetter
 from itertools import combinations
 import networkx as nx
@@ -58,23 +59,26 @@ class NeighborLocationsSelection:
     For example: given a user and his checkin at starbucks, this method shoould return his previous 5 checkins
     before this.
     '''
+    N_PREVIOUS_LOCATIONS = 'nPreviousLocations'
+    N_FUTURE_LOCATIONS = 'nFutureLocations'
     @staticmethod
-    def nPreviousLocations(checkin, users, numberOfCheckins=1, **kwargs):
+    def nPreviousLocations(checkin, users, checkinsWindow=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
         index = userCheckins.index(checkin['cid'])
-        if index>=numberOfCheckins: return users[str(checkin['u'])][index-numberOfCheckins:index]
+        if index>=checkinsWindow: return users[str(checkin['u'])][index-checkinsWindow:index]
         else: return users[str(checkin['u'])][:index]
     @staticmethod
-    def nFutureLocations(checkin, users, numberOfCheckins=1, **kwargs):
+    def nFutureLocations(checkin, users, checkinsWindow=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
         index = userCheckins.index(checkin['cid'])
-        return users[str(checkin['u'])][index+1:index+numberOfCheckins+1]
-#    @staticmethod
-#    def nCheckinsInFuture(checkin, users, numberOfCheckins=1, **kwargs):
-#        userCheckins = [c[0] for c in users[str(checkin['u'])]]
-#        index = userCheckins.index(checkin['cid'])
-#        return users[str(checkin['u'])][:index+numberOfCheckins]
-class NeighboringClusters():
+        return users[str(checkin['u'])][index+1:index+checkinsWindow+1]
+    @staticmethod
+    def getMethod(id):
+        return {
+                      NeighborLocationsSelection.N_PREVIOUS_LOCATIONS: NeighborLocationsSelection.nPreviousLocations,
+                      NeighborLocationsSelection.N_FUTURE_LOCATIONS: NeighborLocationsSelection.nFutureLocations
+                  }[id]
+class NeighboringLocationsAnalysis():
     ''' Neighbor locations clusters  are the clusters of locations that come to a particular place or
     go from a particular place. For example: starbucks get clusters of people from IT and moms.
     
@@ -98,37 +102,58 @@ class NeighboringClusters():
             if cInsToReturn: checkinsToReturn.append(cInsToReturn)
         return checkinsToReturn
     @staticmethod
-    def getNeigboringLocationClusters(inputLocationObject, neighborLocationsSelectionMethod, **kwargs):
+    def analyzeLocation(inputLocationObject, neighborLocationsSelectionMethod, **kwargs):
         neighborLocations = [neighborLocationsSelectionMethod(checkin, inputLocationObject['users'], **kwargs) for checkin in inputLocationObject['checkins']]
         ''' From these neighbor location we have to select every (location, checkinid) pair only 
         once to build the neigbor relation graph, that should be clustered. 
             We should also remove checkins that done at the current location
         '''
-        neighborLocationCheckins = NeighboringClusters._filterCheckins(neighborLocations, inputLocationObject['lid'])
-        return NeighboringClusters.getClustersUsingGraph(neighborLocationCheckins, **kwargs)
+        analysis = {}
+        neighborLocationCheckins = NeighboringLocationsAnalysis._filterCheckins(neighborLocations, inputLocationObject['lid'])
+        graph = NeighboringLocationsAnalysis.getNeigboringLocationGraph(neighborLocationCheckins, **kwargs)
+        analysis['clusters']=NeighboringLocationsAnalysis.getClustersFromGraph(graph, **kwargs)
+        kwargs['minEdgeWeightInNRGraph'] = ()
+        analysis['neigboringLocations']=NeighboringLocationsAnalysis.getClustersFromGraph(graph, **kwargs)
+        return analysis
     @staticmethod
-    def getClustersUsingGraph(checkins, minEdgeWeight = 0, **kwargs):
+    def getClustersFromGraph(graph, minEdgeWeightInNRGraph = 0, **kwargs):
+        for u, v in graph.edges()[:]:
+            if graph.edge[u][v]['w']<minEdgeWeightInNRGraph: graph.remove_edge(u, v) 
+        return sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
+    @staticmethod
+    def getNeigboringLocationGraph(checkins, **kwargs):
         graph = nx.Graph()
         for cIns in checkins:
             [updateNode(c[1], graph) for c in cIns]
             if len(cIns)>=2: [updateEdge(u[1], v[1], graph) for u, v in combinations(cIns, 2)]
-        for u, v in graph.edges()[:]:
-            if graph.edge[u][v]['w']<minEdgeWeight: graph.remove_edge(u, v) 
-        return sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
+        return graph
     @staticmethod
-    def getNeigboringLocationClustersForRegex(regex, neighborLocationExtractionMethod, **kwargs):
+    def analyze(regex, neighborLocationExtractionMethod, **kwargs):
+        def getListWithLocationNames(locationList):
+            listToReturn = []
+            for cluster, score in locationList:
+                clusterNames = []
+                for c in cluster:
+                    object = venuesCollection.find_one({'lid': c})
+                    if object: clusterNames.append((object['n'], c))
+                    else: clusterNames.append(('', c))
+                listToReturn.append((clusterNames, score))
+            return listToReturn
         inputFileName = checkinSequenceLocationRegexFolder+regex
+        outputFileName = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
+        analyzedData = {'parameters': kwargs, 'locations': {}}
         for data in FileIO.iterateJsonFromFile(inputFileName):
-            clusters = NeighboringClusters.getNeigboringLocationClusters(data, neighborLocationExtractionMethod, **kwargs)
-            for cluster in clusters:
-                print cluster
-            exit()
+            print 'Analyzing:', data['lid']
+            analysis = NeighboringLocationsAnalysis.analyzeLocation(data, NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
+            analysis['neigboringLocations'] = getListWithLocationNames(analysis['neigboringLocations'])
+            analysis['clusters'] = getListWithLocationNames(analysis['clusters'])
+            analyzedData['locations'][data['lid']] = analysis
+        FileIO.writeToFileAsJson(analyzedData, outputFileName)
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
     
-    NeighboringClusters.getNeigboringLocationClustersForRegex('cafe', NeighborLocationsSelection.nPreviousLocations, minEdgeWeight=3, numberOfCheckins=5)
-
-#    NeighboringClusters.getNeigboringLocationClusters('cafe')
-#    NeighboringClusters.getNeigboringLocationClusters('cafe', OUTGOING_EDGE)
+    NeighboringLocationsAnalysis.analyze('cafe', NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=3)
+#    NeighboringLocationsAnalysis.analyzeLocation('cafe')
+#    NeighboringLocationsAnalysis.analyzeLocation('cafe', OUTGOING_EDGE)
