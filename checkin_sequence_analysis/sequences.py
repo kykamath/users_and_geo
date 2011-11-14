@@ -160,7 +160,7 @@ class NeighboringLocationsAnalysis():
     def analyzeData():
 #        regex = 'mcdonald'
         regex = 'cafe'
-        neighborLocationExtractionMethod = NeighborLocationsSelection.N_FUTURE_LOCATIONS
+        neighborLocationExtractionMethod = NeighborLocationsSelection.N_PREVIOUS_LOCATIONS
         inputFile = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
         for line in FileIO.iterateJsonFromFile(inputFile):
 #            for location, data in line['locations'].iteritems():
