@@ -45,6 +45,7 @@ def createLocationFile(regex):
     fileName = checkinSequenceLocationRegexFolder+regex
     for location in checkinSequenceLocationsCollection.find({'n':{'$regex':regex}}):
         userCheckins = {}
+        print location['_id'], location['n']
         users = set([edge[0]['u'] for type in [OUTGOING_EDGE, INCOMING_EDGE] for edge in location['e'][type]])
         for user in users: 
             if user not in userCheckins: userCheckins[str(user)] = getCheckinsForUser(user)
@@ -188,9 +189,9 @@ class NeighboringLocationsAnalysis():
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
-#    createLocationFile(regex='cafe')
+    createLocationFile(regex='starbuck')
     
 #    NeighboringLocationsAnalysis.generateData()
-    NeighboringLocationsAnalysis.analyzeDataClusters()
+#    NeighboringLocationsAnalysis.analyzeDataClusters()
     
 
