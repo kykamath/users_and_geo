@@ -68,23 +68,19 @@ class NeighboringClusters():
             neighboringCheckins = userVectorSelectionMethod(checkin, users)
             [updateNode(checkin[1], graph) for checkin in neighboringCheckins if checkin[1]!=currentLid]
             if len(neighboringCheckins)>=2: [updateEdge(u, v, graph) for u, v in combinations(neighboringCheckins, 2) if u!=currentLid and v!=currentLid]
-        clusters = sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
-        for c in clusters:
-            print c
-        exit()
-#        print len(checkins), users.keys()
+        return sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
     @staticmethod
     def getNeigboringLocationClusters(regex, edgeType = INCOMING_EDGE):
         inputFileName = checkinSequenceLocationRegexFolder+regex
         checkinSelectionIndex = {INCOMING_EDGE:0, OUTGOING_EDGE:1}[edgeType]
         for data in FileIO.iterateJsonFromFile(inputFileName):
             if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
-            print data['lid']
-            NeighboringClusters.getLocationClustersFromCheckins(data['lid'], checkins, data['users'], UserVectorSelection.latestNCheckins)
+            clusters = NeighboringClusters.getLocationClustersFromCheckins(data['lid'], checkins, data['users'], UserVectorSelection.latestNCheckins)
+            print data['lid'], clusters[:5]
     #        for c in checkins:
     #            print data['lid'], c
     #        print type(data['edges'][checkinsType]), 
-            exit()
+#            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
