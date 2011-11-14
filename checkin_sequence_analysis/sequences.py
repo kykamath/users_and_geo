@@ -14,6 +14,7 @@ from settings import minLocationsTheUserHasCheckedin,\
     minUniqueUsersCheckedInTheLocation, checkinSequenceGraphFile,\
     checkinSequenceLocationRegexFolder
 from operator import itemgetter
+import networkx as nx
 
 OUTGOING_EDGE = 'out'
 INCOMING_EDGE = 'in'
@@ -47,17 +48,15 @@ class UserVectorSelection:
     def latestNCheckins(checkin, users, numberOfCheckins=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
         index = userCheckins.index(checkin['cid'])
-        if index>=numberOfCheckins: print index, users[str(checkin['u'])][index-numberOfCheckins:index]
-        else: print index, users[str(checkin['u'])][:index]
-#        i = 0
-#        for u in userCheckins: print i, u; i+=1
-        print checkin, userCheckins.index(checkin['cid']), len(userCheckins)
-#        exit()
+        if index>=numberOfCheckins: return users[str(checkin['u'])][index-numberOfCheckins:index]
+        else: return users[str(checkin['u'])][:index]
 class NeighboringClusters():
     @staticmethod
     def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
         for checkin in checkins:
-            userVectorSelectionMethod(checkin, users, numberOfCheckins=10)
+            neighboringCheckins = userVectorSelectionMethod(checkin, users)
+            for checkin in neighboringCheckins: print checkin
+            pass
         exit()
 #        print len(checkins), users.keys()
     @staticmethod
