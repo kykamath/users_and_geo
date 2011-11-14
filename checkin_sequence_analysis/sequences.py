@@ -5,7 +5,7 @@ Created on Nov 11, 2011
 '''
 import sys, time
 sys.path.append('../')
-from library.geo import isWithinBoundingBox
+from library.geo import isWithinBoundingBox, getLocationFromLid
 from library.classes import GeneralMethods
 from library.file_io import FileIO
 from mongo_settings import checkinsCollection,\
@@ -166,7 +166,7 @@ class NeighboringLocationsAnalysis():
             for location, data in line['locations'].iteritems():
 #            data = line['locations']['40.735 -73.871']
 #            print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
-                if isWithinBoundingBox(location, us_boundary):
+                if isWithinBoundingBox(getLocationFromLid(location), us_boundary):
                     print line['parameters']['checkinsWindow'], location, [l[0][0] for l, _ in data['neigboringLocations'][:5]]
             exit()
 
