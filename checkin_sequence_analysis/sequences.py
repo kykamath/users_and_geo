@@ -163,12 +163,12 @@ class NeighboringLocationsAnalysis():
         neighborLocationExtractionMethod = NeighborLocationsSelection.N_FUTURE_LOCATIONS
         inputFile = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
         for line in FileIO.iterateJsonFromFile(inputFile):
-            for location, data in line['locations'].iteritems():
-#            data = line['locations']['40.735 -73.871']
-#            print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
-                if isWithinBoundingBox(getLocationFromLid(location), us_boundary):
-                    print line['parameters']['checkinsWindow'], location, [l[0][0] for l, _ in data['neigboringLocations'][:5]]
-            exit()
+#            for location, data in line['locations'].iteritems():
+            data = line['locations']['41.895 -87.623']
+            print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
+#                if isWithinBoundingBox(getLocationFromLid(location), us_boundary):
+#                    print line['parameters']['checkinsWindow'], location, [l[0][0] for l, _ in data['neigboringLocations'][:5]]
+#            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
