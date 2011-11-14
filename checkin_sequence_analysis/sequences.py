@@ -159,7 +159,7 @@ class NeighboringLocationsAnalysis():
     @staticmethod
     def generateData():
         for i in range(1,7):
-            regex = 'cafe'
+            regex = 'starbuck'
 #            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
 #            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
             NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
@@ -192,7 +192,7 @@ if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='starbuck')
     
-#    NeighboringLocationsAnalysis.generateData()
-    NeighboringLocationsAnalysis.analyzeDataClusters()
+    NeighboringLocationsAnalysis.generateData()
+#    NeighboringLocationsAnalysis.analyzeDataClusters()
     
 
