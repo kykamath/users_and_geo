@@ -58,17 +58,16 @@ class UserVectorSelection:
     def latestNCheckins(checkin, users, numberOfCheckins=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
         index = userCheckins.index(checkin['cid'])
-        if index>=numberOfCheckins: return users[str(checkin['u'])][index-numberOfCheckins:index]
-        else: return users[str(checkin['u'])][:index]
+        if index+1>=numberOfCheckins: return users[str(checkin['u'])][index-numberOfCheckins+1:index+1]
+        else: return users[str(checkin['u'])][:index+1]
 class NeighboringClusters():
     @staticmethod
-    def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
+    def getLocationClustersFromCheckins(currentLid, checkins, users, userVectorSelectionMethod):
         graph = nx.Graph()
         for checkin in checkins:
             neighboringCheckins = userVectorSelectionMethod(checkin, users)
-            for checkin in neighboringCheckins: updateNode(checkin[1], graph)
-            if len(neighboringCheckins)>=2:
-                for u, v in combinations(neighboringCheckins, 2): updateEdge(u, v, graph)
+            [updateNode(checkin[1], graph) for checkin in neighboringCheckins if checkin[1]!=currentLid]
+            if len(neighboringCheckins)>=2: [updateEdge(u, v, graph) for u, v in combinations(neighboringCheckins, 2) if u!=currentLid and v!=currentLid]
         clusters = sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
         for c in clusters:
             print c
@@ -79,10 +78,9 @@ class NeighboringClusters():
         inputFileName = checkinSequenceLocationRegexFolder+regex
         checkinSelectionIndex = {INCOMING_EDGE:0, OUTGOING_EDGE:1}[edgeType]
         for data in FileIO.iterateJsonFromFile(inputFileName):
-            data['users']
             if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
             print data['lid']
-            NeighboringClusters.getLocationClustersFromCheckins(checkins, data['users'], UserVectorSelection.latestNCheckins)
+            NeighboringClusters.getLocationClustersFromCheckins(data['lid'], checkins, data['users'], UserVectorSelection.latestNCheckins)
     #        for c in checkins:
     #            print data['lid'], c
     #        print type(data['edges'][checkinsType]), 
