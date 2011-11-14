@@ -187,7 +187,7 @@ class NeighboringLocationsAnalysis():
             data = line['locations']['41.895 -87.623']
             print data['clusters'][:5]
             print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['clusters'][:5]]
-            exit()
+#            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
