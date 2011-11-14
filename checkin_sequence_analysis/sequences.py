@@ -195,7 +195,7 @@ if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='starbuck')
     
-    NeighboringLocationsAnalysis.generateData()
-#    NeighboringLocationsAnalysis.analyzeDataClusters()
+#    NeighboringLocationsAnalysis.generateData()
+    NeighboringLocationsAnalysis.analyzeDataClusters()
     
 
