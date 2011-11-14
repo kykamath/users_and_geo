@@ -186,8 +186,8 @@ class NeighboringLocationsAnalysis():
             if line['parameters']['checkinsWindow']==10:
                 for location, data in line['locations'].iteritems():
     #                data = line['locations']['41.895 -87.623']
-                    print venuesCollection.find_one({'lid': location})['n'], '\n'
                     if isWithinBoundingBox(getLocationFromLid(location), us_boundary):
+                        print venuesCollection.find_one({'lid': location})['n'], '\n'
                         for l, _ in data['clusters'][:5]:
                             print [i[0] for i in l]
                         print '\n ********** \n'
