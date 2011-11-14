@@ -143,7 +143,7 @@ class NeighboringLocationsAnalysis():
         outputFileName = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
         analyzedData = {'parameters': kwargs, 'locations': {}}
         for data in FileIO.iterateJsonFromFile(inputFileName):
-            print 'Analyzing:', data['lid']
+            print 'Analyzing:', kwargs['checkinsWindow'], data['lid']
             analysis = NeighboringLocationsAnalysis.analyzeLocation(data, NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
             analysis['neigboringLocations'] = getListWithLocationNames(analysis['neigboringLocations'])
             analysis['clusters'] = getListWithLocationNames(analysis['clusters'])
@@ -154,7 +154,7 @@ if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
     for i in [1,2,4,5,6]:
-        NeighboringLocationsAnalysis.analyze('mcdonald', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
-        NeighboringLocationsAnalysis.analyze('mcdonald', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+        NeighboringLocationsAnalysis.analyze('cafe', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+        NeighboringLocationsAnalysis.analyze('cafe', NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
 #    NeighboringLocationsAnalysis.analyzeLocation('cafe')
 #    NeighboringLocationsAnalysis.analyzeLocation('cafe', OUTGOING_EDGE)
