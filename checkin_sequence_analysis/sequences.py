@@ -165,7 +165,7 @@ class NeighboringLocationsAnalysis():
             for location, data in line['locations'].iteritems():
 #            data = line['locations']['40.735 -73.871']
 #            print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
-                print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
+                print line['parameters']['checkinsWindow'], location, [l[0][0] for l, _ in data['neigboringLocations'][:5]]
             exit()
 
 if __name__ == '__main__':
