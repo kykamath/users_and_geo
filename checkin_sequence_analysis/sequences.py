@@ -22,10 +22,12 @@ INCOMING_EDGE = 'in'
 
 def updateNode(node, graph, w=1): 
     if not graph.has_node(node): graph.add_node(node, {'w':0})
+    if 'w' not in graph.node[node]: graph.node[node]['w']=0
     graph.node[node]['w']+=w
 def updateEdge(u,v, graph, w=1):
     if not graph.has_edge(u, v): graph.add_edge(u,v, {'w':0})
     graph.edge[u][v]['w']+=1
+def nodeScores(nodes, graph): return sum(graph.node[node]['w'] for node in nodes)
 
 def writeCheckinSequenceGraphFile():   
     userSet = set([userVector['user'] for userVector in filteredUserIterator(minLocationsTheUserHasCheckedin, minUniqueUsersCheckedInTheLocation, fullRecord = True)])
@@ -67,8 +69,9 @@ class NeighboringClusters():
             for checkin in neighboringCheckins: updateNode(checkin[1], graph)
             if len(neighboringCheckins)>=2:
                 for u, v in combinations(neighboringCheckins, 2): updateEdge(u, v, graph)
-        for lids in nx.connected_components(graph):
-            print lids
+        clusters = sorted([(lids, nodeScores(lids, graph)) for lids in nx.connected_components(graph)], key=itemgetter(1), reverse=True)
+        for c in clusters:
+            print c
         exit()
 #        print len(checkins), users.keys()
     @staticmethod
