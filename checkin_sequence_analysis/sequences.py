@@ -67,8 +67,8 @@ class NeighboringClusters():
             for checkin in neighboringCheckins: updateNode(checkin[1], graph)
             if len(neighboringCheckins)>=2:
                 for u, v in combinations(neighboringCheckins, 2): updateEdge(u, v, graph)
-        print graph.node
-        print graph.edge
+        for lids in nx.connected_components(graph):
+            print lids
         exit()
 #        print len(checkins), users.keys()
     @staticmethod
