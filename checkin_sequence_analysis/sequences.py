@@ -74,7 +74,7 @@ class NeighboringClusters():
         inputFileName = checkinSequenceLocationRegexFolder+regex
         checkinSelectionIndex = {INCOMING_EDGE:0, OUTGOING_EDGE:1}[edgeType]
         for data in FileIO.iterateJsonFromFile(inputFileName):
-            if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
+            checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
             clusters = NeighboringClusters.getLocationClustersFromCheckins(data['lid'], checkins, data['users'], UserVectorSelection.latestNCheckins)
             print data['lid'], clusters[:5]
 
