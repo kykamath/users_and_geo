@@ -185,7 +185,10 @@ class NeighboringLocationsAnalysis():
         for line in FileIO.iterateJsonFromFile(inputFile):
 #            for location, data in line['locations'].iteritems():
             data = line['locations']['41.895 -87.623']
-            print line['parameters']['checkinsWindow'], [[i[0] for i in l] for l, _ in data['clusters'][:5]]
+            print line['parameters']['checkinsWindow']
+            for l, _ in data['clusters'][:5]:
+                for i in l: print i[0] 
+            print '\n\n\n ********** \n\n\n'
 #            exit()
 
 if __name__ == '__main__':
