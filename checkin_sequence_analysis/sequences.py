@@ -81,6 +81,7 @@ class NeighboringClusters():
         for data in FileIO.iterateJsonFromFile(inputFileName):
             data['users']
             if edgeType==INCOMING_EDGE: checkins = [edge[checkinSelectionIndex] for edge in data['edges'][edgeType] if edge[checkinSelectionIndex]['lid']!=data['lid']]
+            print data['lid']
             NeighboringClusters.getLocationClustersFromCheckins(checkins, data['users'], UserVectorSelection.latestNCheckins)
     #        for c in checkins:
     #            print data['lid'], c
