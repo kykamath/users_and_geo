@@ -62,6 +62,7 @@ class NeighborLocationsSelection:
     '''
     N_PREVIOUS_LOCATIONS = 'nPreviousLocations'
     N_FUTURE_LOCATIONS = 'nFutureLocations'
+    N_LOCATIONS = 'nLocations'
     @staticmethod
     def nPreviousLocations(checkin, users, checkinsWindow=1, **kwargs):
         userCheckins = [c[0] for c in users[str(checkin['u'])]]
@@ -74,10 +75,14 @@ class NeighborLocationsSelection:
         index = userCheckins.index(checkin['cid'])
         return users[str(checkin['u'])][index+1:index+checkinsWindow+1]
     @staticmethod
+    def nLocations(checkin, users, checkinsWindow=1, **kwargs):
+        return NeighborLocationsSelection.nPreviousLocations(checkin, users, checkinsWindow, **kwargs) + NeighborLocationsSelection.nFutureLocations(checkin, users, checkinsWindow, **kwargs)
+    @staticmethod
     def getMethod(id):
         return {
                       NeighborLocationsSelection.N_PREVIOUS_LOCATIONS: NeighborLocationsSelection.nPreviousLocations,
-                      NeighborLocationsSelection.N_FUTURE_LOCATIONS: NeighborLocationsSelection.nFutureLocations
+                      NeighborLocationsSelection.N_FUTURE_LOCATIONS: NeighborLocationsSelection.nFutureLocations,
+                      NeighborLocationsSelection.N_LOCATIONS: NeighborLocationsSelection.nLocations
                   }[id]
 class NeighboringLocationsAnalysis():
     ''' Neighbor locations clusters  are the clusters of locations that come to a particular place or
@@ -153,9 +158,10 @@ class NeighboringLocationsAnalysis():
     @staticmethod
     def generateData():
         for i in range(1,7):
-            regex = 'mcdonald'
-            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
-            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+            regex = 'cafe'
+#            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+#            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
+            NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
     @staticmethod
     def analyzeData():
 #        regex = 'mcdonald'
@@ -184,7 +190,7 @@ if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
     
-#    NeighboringLocationsAnalysis.generateData()
-    NeighboringLocationsAnalysis.analyzeDataClusters()
+    NeighboringLocationsAnalysis.generateData()
+#    NeighboringLocationsAnalysis.analyzeDataClusters()
     
 
