@@ -152,22 +152,27 @@ class NeighboringLocationsAnalysis():
     @staticmethod
     def generateData():
         for i in range(1,7):
-            regex = 'cafe'
+            regex = 'mcdonald'
             NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_PREVIOUS_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
             NeighboringLocationsAnalysis.analyze(regex, NeighborLocationsSelection.N_FUTURE_LOCATIONS, minEdgeWeightInNRGraph=3, checkinsWindow=i)
     @staticmethod
     def analyzeData():
+#        regex = 'mcdonald'
         regex = 'cafe'
-        neighborLocationExtractionMethod = NeighborLocationsSelection.N_PREVIOUS_LOCATIONS
+        neighborLocationExtractionMethod = NeighborLocationsSelection.N_FUTURE_LOCATIONS
         inputFile = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
         for line in FileIO.iterateJsonFromFile(inputFile):
-            print line['parameters']
+            for location, data in line['locations'].iteritems():
+#            data = line['locations']['40.735 -73.871']
+#            print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
+                print line['parameters']['checkinsWindow'], [l[0][0] for l, _ in data['neigboringLocations'][:5]]
+            exit()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='cafe')
     
-    NeighboringLocationsAnalysis.generateData()
-#    NeighboringLocationsAnalysis.analyzeData()
+#    NeighboringLocationsAnalysis.generateData()
+    NeighboringLocationsAnalysis.analyzeData()
     
 
