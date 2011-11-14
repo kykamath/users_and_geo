@@ -49,10 +49,10 @@ class UserVectorSelection:
         index = userCheckins.index(checkin['cid'])
         if index>=n: print userCheckins[userCheckins-n:userCheckins]
         else: print userCheckins[:userCheckins]
-        i = 0
-        for u in userCheckins: print i, u; i+=1
+#        i = 0
+#        for u in userCheckins: print i, u; i+=1
         print checkin, userCheckins.index(checkin['cid']), len(userCheckins)
-        exit()
+#        exit()
 class NeighboringClusters():
     @staticmethod
     def getLocationClustersFromCheckins(checkins, users, userVectorSelectionMethod):
