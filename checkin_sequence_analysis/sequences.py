@@ -209,7 +209,7 @@ class NeigboringLocationsGraph:
             graph = NeigboringLocationsGraph.getLocationGraph(data,  NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
             edges = []
             for u, v in graph.edges_iter(): edges.append([getLocationName(u), getLocationName(v)])
-            for data in edges: FileIO.writeToFile('%s\t%s', outputFileName)
+            for u,v in edges: FileIO.writeToFile('%s\t%s'%(u,v), outputFileName)
 #            analysis = NeighboringLocationsAnalysis.analyzeLocation(data, NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
     @staticmethod
     def getLocationGraph(inputLocationObject, neighborLocationsSelectionMethod, **kwargs):
