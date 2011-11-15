@@ -197,23 +197,19 @@ class NeighboringLocationsAnalysis():
 class NeigboringLocationsGraph:
     @staticmethod
     def writeGraphs(regex, neighborLocationExtractionMethod, **kwargs):
-        def getListWithLocationNames(locationList):
-            listToReturn = []
-            for cluster, score in locationList:
-                clusterNames = []
-                for c in cluster:
-                    object = venuesCollection.find_one({'lid': c})
-                    if object: clusterNames.append((object['n'], c))
-                    else: clusterNames.append(('', c))
-                listToReturn.append((clusterNames, score))
-            return listToReturn
+        def getLocationName(lid):
+            object = venuesCollection.find_one({'lid': lid})
+            if object: return object['n']
+            else: return lid
         inputFileName = checkinSequenceLocationRegexFolder+regex
         outputFileName = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
         for data in FileIO.iterateJsonFromFile(inputFileName):
             outputFileName = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/graph/'+regex+'/'+data['lid']+'_%s'%kwargs['checkinsWindow']
-            print 'Analyzing:', kwargs['checkinsWindow'], data['lid']
+            print 'Analyzing:', kwargs['checkinsWindow'], data['lid'], outputFileName
             graph = NeigboringLocationsGraph.getLocationGraph(data,  NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
-            print graph
+            edges = []
+            for u, v in graph.edges_iter(): edges.append([getLocationName(u), getLocationName(v)])
+            for data in edges: FileIO.writeToFile('%s\t%s', outputFileName)
 #            analysis = NeighboringLocationsAnalysis.analyzeLocation(data, NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
     @staticmethod
     def getLocationGraph(inputLocationObject, neighborLocationsSelectionMethod, **kwargs):
