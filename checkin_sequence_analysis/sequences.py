@@ -220,7 +220,7 @@ class NeigboringLocationsGraph:
     @staticmethod
     def generateData():
         regex = 'starbuck'
-        NeigboringLocationsGraph.writeGraphs(regex, NeighborLocationsSelection.N_LOCATIONS, checkinsWindow=5)
+        NeigboringLocationsGraph.writeGraphs(regex, NeighborLocationsSelection.N_LOCATIONS, checkinsWindow=3)
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
