@@ -193,11 +193,45 @@ class NeighboringLocationsAnalysis():
                         print '\n ********** \n'
 #            exit()
 
+
+class NeigboringLocationsGraph:
+    @staticmethod
+    def writeGraphs(regex, neighborLocationExtractionMethod, **kwargs):
+        def getListWithLocationNames(locationList):
+            listToReturn = []
+            for cluster, score in locationList:
+                clusterNames = []
+                for c in cluster:
+                    object = venuesCollection.find_one({'lid': c})
+                    if object: clusterNames.append((object['n'], c))
+                    else: clusterNames.append(('', c))
+                listToReturn.append((clusterNames, score))
+            return listToReturn
+        inputFileName = checkinSequenceLocationRegexFolder+regex
+        outputFileName = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/'+regex
+        for data in FileIO.iterateJsonFromFile(inputFileName):
+            outputFileName = checkinSequenceLocationRegexAnalysisFolder+neighborLocationExtractionMethod+'/graph/'+regex+'/'+data['lid']+'_%s'%kwargs['checkinsWindow']
+            print 'Analyzing:', kwargs['checkinsWindow'], data['lid']
+            graph = NeigboringLocationsGraph.getLocationGraph(data,  NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
+            print graph
+#            analysis = NeighboringLocationsAnalysis.analyzeLocation(data, NeighborLocationsSelection.getMethod(neighborLocationExtractionMethod), **kwargs)
+    @staticmethod
+    def getLocationGraph(inputLocationObject, neighborLocationsSelectionMethod, **kwargs):
+        neighborLocations = [neighborLocationsSelectionMethod(checkin, inputLocationObject['users'], **kwargs) for checkin in inputLocationObject['checkins']]
+        analysis = {}
+        neighborLocationCheckins = NeighboringLocationsAnalysis._filterCheckins(neighborLocations, inputLocationObject['lid'])
+        return NeighboringLocationsAnalysis.getNeigboringLocationGraph(neighborLocationCheckins, **kwargs)
+    @staticmethod
+    def generateData():
+        regex = 'starbuck'
+        NeigboringLocationsGraph.writeGraphs(regex, NeighborLocationsSelection.N_LOCATIONS, checkinsWindow=5)
+
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='starbuck')
     
-    NeighboringLocationsAnalysis.generateData()
+#    NeighboringLocationsAnalysis.generateData()
 #    NeighboringLocationsAnalysis.analyzeDataClusters()
+    NeigboringLocationsGraph.generateData()
     
 
