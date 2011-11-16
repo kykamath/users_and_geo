@@ -280,7 +280,7 @@ class GeoHotspots:
             for t in checkinTimes: weekDist[weekId(t)]+=1
             for w in weekDist.keys()[:]: 
                 if weekDist[w]<GeoHotspots.minNumberOfCheckinsPerWeek: del weekDist[w]
-            print weekDist
+            print i, len(checkinTimes), weekDist
 #            for t in checkinTimes:
             i+=1
 #            exit()
