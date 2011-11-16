@@ -20,6 +20,7 @@ from settings import minLocationsTheUserHasCheckedin,\
 from operator import itemgetter
 from itertools import combinations
 import networkx as nx
+from collections import defaultdict
 import matplotlib.pyplot as plt
 
 OUTGOING_EDGE = 'out'
@@ -263,19 +264,24 @@ class NeigboringLocationsGraph:
         NeigboringLocationsGraph.writeGraphs(regex, NeighborLocationsSelection.N_LOCATIONS, percentageOfTopEdgesByWeight=0.01, checkinsWindow=2)
         
 class GeoHotspots:
-    minNumberOfCheckins = 1000
+    minNumberOfCheckinsPerLocation = 1000
+    minNumberOfCheckinsPerWeek = 25
     @staticmethod
     def locationsIterator(minNumberOfCheckins):
         for location in checkinSequenceLocationsCollection.find():
             if len(location['c']) >= minNumberOfCheckins: yield location
     @staticmethod
     def analyze():
-        def weekId(d): dateISO = d.isocalendar(); return '%s_%s'%(dateISO[0], dateISO[1])
+        def weekId(checkinTime): dateISO = datetime.datetime.fromtimestamp(checkinTime).isocalendar(); return '%s_%s'%(dateISO[0], dateISO[1])
         i = 1
-        for location in GeoHotspots.locationsIterator(GeoHotspots.minNumberOfCheckins):
+        for location in GeoHotspots.locationsIterator(GeoHotspots.minNumberOfCheckinsPerLocation):
             checkinTimes = [c['t'] for c in location['c']]
+            weekDist = defaultdict(int)
+            for t in checkinTimes: weekDist[weekId(t)]+=1
+            for w in weekDist.keys()[:]: 
+                if weekDist[w]<GeoHotspots.minNumberOfCheckinsPerWeek: del weekDist[w]
+            print weekDist
 #            for t in checkinTimes:
-            print i, len(checkinTimes), weekId(datetime.datetime.fromtimestamp(checkinTimes[0])), weekId(datetime.datetime.fromtimestamp(checkinTimes[-1]))
             i+=1
 #            exit()
 #            for checkin in location['c']:
