@@ -134,14 +134,12 @@ class NeighboringLocationsAnalysis():
         neighborLocationCheckins = NeighboringLocationsAnalysis._filterCheckins(neighborLocations, locationObject['lid'])
         graph = NeighboringLocationsAnalysis.getNeigboringLocationGraph(neighborLocationCheckins, **kwargs)
         graphWithClusters = NeighboringLocationsAnalysis.getGraphWithClusters(graph, **kwargs)
+        for n in graphWithClusters.nodes():
+            graphWithClusters.node[n]['label'] = NeighboringLocationsAnalysis.getLocationName(n)
         gd = Networkx.getDictForGraph(graphWithClusters)
-#        nodes = graphWithClusters.nodes(data=True)
-#        edges = graphWithClusters.edges(data=True)
-#        data = dict(nodes=[[n, graphWithClusters.node[n]] for n in graphWithClusters.nodes()], edges=[[u, v, graphWithClusters.edge[u][v]] for u,v in graphWithClusters.edges()])
-        newGraph = Networkx.getGraphFromDict(gd)
-#        newGraph.add_nodes_from(data['nodes'])
+        outputFileName = 
 #        newGraph.add_nodes_from(data['edges'])
-        plot(newGraph, draw_edge_labels=True, node_color='#A0CBE2',width=4,edge_cmap=plt.cm.Blues,with_labels=False)
+#        plot(newGraph, draw_edge_labels=True, node_color='#A0CBE2',width=4,edge_cmap=plt.cm.Blues,with_labels=False)
 #        for cluster, score in clusters:
 #            newCluster = []
 #            for lid in cluster: newCluster.append((lid, NeighboringLocationsAnalysis.getLocationName(lid)))
@@ -263,13 +261,21 @@ class NeigboringLocationsGraph:
     def generateData():
         regex = 'cafe'
         NeigboringLocationsGraph.writeGraphs(regex, NeighborLocationsSelection.N_LOCATIONS, percentageOfTopEdgesByWeight=0.01, checkinsWindow=2)
+        
+class GeoHotspots:
+    @staticmethod
+    def analyze():
+        for location in checkinSequenceLocationsCollection.find():
+            print location['_id'], location.keys()
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
 #    createLocationFile(regex='starbuck')
     
-    NeighboringLocationsAnalysis.generateData()
+#    NeighboringLocationsAnalysis.generateData()
 #    NeighboringLocationsAnalysis.analyzeDataClusters()
 #    NeigboringLocationsGraph.generateData()
+
+    GeoHotspots.analyze()
     
 
