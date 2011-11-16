@@ -263,11 +263,17 @@ class NeigboringLocationsGraph:
         NeigboringLocationsGraph.writeGraphs(regex, NeighborLocationsSelection.N_LOCATIONS, percentageOfTopEdgesByWeight=0.01, checkinsWindow=2)
         
 class GeoHotspots:
+    minNumberOfCheckins = 1000
+    @staticmethod
+    def locationsIterator(minNumberOfCheckins):
+        for location in checkinSequenceLocationsCollection.find():
+            if len(location['c']) >= minNumberOfCheckins: yield location
+            
     @staticmethod
     def analyze():
         i = 1
-        for location in checkinSequenceLocationsCollection.find():
-            if len(location['c']) >= 1000: print i, len(location['c']); i+=1
+        for location in GeoHotspots.locationsIterator(GeoHotspots.minNumberOfCheckins):
+            if len(location['c']) >= 1000: print i, type(location['c']); i+=1
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
