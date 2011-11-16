@@ -272,6 +272,8 @@ class GeoHotspots:
     def analyze():
         i = 1
         for location in GeoHotspots.locationsIterator(GeoHotspots.minNumberOfCheckins):
+            assert location['c'] == sorted(location['c'], key=lambda c: c['t'])
+            exit()
             for checkin in location['c']:
                 print checkin
                 exit()
