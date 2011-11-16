@@ -137,7 +137,7 @@ class NeighboringLocationsAnalysis():
         for n in graphWithClusters.nodes():
             graphWithClusters.node[n]['label'] = NeighboringLocationsAnalysis.getLocationName(n)
         gd = Networkx.getDictForGraph(graphWithClusters)
-        outputFileName = 
+#        outputFileName = 
 #        newGraph.add_nodes_from(data['edges'])
 #        plot(newGraph, draw_edge_labels=True, node_color='#A0CBE2',width=4,edge_cmap=plt.cm.Blues,with_labels=False)
 #        for cluster, score in clusters:
