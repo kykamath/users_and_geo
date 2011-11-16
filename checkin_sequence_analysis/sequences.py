@@ -265,8 +265,9 @@ class NeigboringLocationsGraph:
 class GeoHotspots:
     @staticmethod
     def analyze():
+        i = 1
         for location in checkinSequenceLocationsCollection.find():
-            print location['_id'], len(location['c'])
+            if len(location['c']) >= 1000: print i, len(location['c']); i+=1
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
