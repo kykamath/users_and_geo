@@ -266,7 +266,7 @@ class GeoHotspots:
     @staticmethod
     def analyze():
         for location in checkinSequenceLocationsCollection.find():
-            print location['_id'], location.keys()
+            print location['_id'], len(location['c'])
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
