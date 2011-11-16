@@ -268,12 +268,14 @@ class GeoHotspots:
     def locationsIterator(minNumberOfCheckins):
         for location in checkinSequenceLocationsCollection.find():
             if len(location['c']) >= minNumberOfCheckins: yield location
-            
     @staticmethod
     def analyze():
         i = 1
         for location in GeoHotspots.locationsIterator(GeoHotspots.minNumberOfCheckins):
-            if len(location['c']) >= 1000: print i, type(location['c']); i+=1
+            for checkin in location['c']:
+                print checkin
+                exit()
+            print i, type(location['c']); i+=1
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
