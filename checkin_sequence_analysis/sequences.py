@@ -3,7 +3,7 @@ Created on Nov 11, 2011
 
 @author: kykamath
 '''
-import sys, time
+import sys, time, datetime
 from library.graphs import plot, Networkx
 from library.plotting import getDataDistribution
 sys.path.append('../')
@@ -270,16 +270,18 @@ class GeoHotspots:
             if len(location['c']) >= minNumberOfCheckins: yield location
     @staticmethod
     def analyze():
+        def weekId(d): dateISO = d.isocalendar(); return '%s_%s'%(dateISO[0], dateISO[1])
         i = 1
         for location in GeoHotspots.locationsIterator(GeoHotspots.minNumberOfCheckins):
             checkinTimes = [c['t'] for c in location['c']]
-            for t in checkinTimes:
-                print t
-                exit()
-            for checkin in location['c']:
-                print checkin
-                exit()
-            print i, type(location['c']); i+=1
+#            for t in checkinTimes:
+            print i, len(checkinTimes), weekId(datetime.datetime.fromtimestamp(checkinTimes[0])), weekId(datetime.datetime.fromtimestamp(checkinTimes[-1]))
+            i+=1
+#            exit()
+#            for checkin in location['c']:
+#                print checkin
+#                exit()
+#            print i, type(location['c']); i+=1
 
 if __name__ == '__main__':
 #    writeCheckinSequenceGraphFile()
