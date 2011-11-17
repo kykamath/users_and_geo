@@ -78,7 +78,8 @@ itemsetsMergeThreshold = 0.5
 
 #Hotspots
 hotspotsFolder = '/mnt/chevron/kykamath/data/geo/hotspots/'
-nyCheckinsFile = hotspotsFolder+'ny'
+regionsCheckinsHdfsPath = 'hdfs:///user/kykamath/geo/hotspots/%s'
+regionsCheckinsFile = hotspotsFolder+'%s'
 
 
 #Sequences
