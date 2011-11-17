@@ -13,16 +13,43 @@ from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsP
 from library.file_io import FileIO
 import matplotlib.pyplot as plt 
 
-def day(d): return datetime.date(d.year, d.month, d.day)
-def weekId(checkinTime): dateISO = datetime.datetime.fromtimestamp(checkinTime).isocalendar(); return '%s_%s'%(dateISO[0], dateISO[1])
+def getDay(d): return datetime.date(d.year, d.month, d.day)
+def getClosestMonday(d): return getDay(d-datetime.timedelta(days=d.weekday()))
+#    try:
+#        return datetime.date(d.year, d.month, d.day-d.weekday())
+#    except ValueError: 
+#        print 'x'
+#        return datetime.date(d.year, d.month-1, d.day-d.weekday()) 
+#    return '%s_%s'%(dateISO[0], dateISO[1])
 
 def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
     for l in mrJob.runJob(inputFileList=[inputFile], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
-def locationIterator(region, minCheckins=200):
+def locationIterator(region, minCheckins=1000):
     for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
         if len(location['checkins'])>minCheckins: yield location
+    
+def basicStats(region):
+    i, total = 0, 0
+    for location in locationIterator(region):
+        print i, len(location['checkins']); i+=1
+        total+=len(location['checkins'])
+    print total
+
+def locationAnalysis(location):
+    dayDist = defaultdict(int)
+    weekDist = defaultdict(int)
+    for checkin in location['checkins']:
+        d = datetime.datetime.fromtimestamp(checkin['t'])
+        dayDist[getDay(d)]+=1
+        weekDist[getClosestMonday(d)]+=1
+    dataX = sorted(weekDist.keys())
+    print len(location['checkins'])
+    plt.plot_date(dataX, [weekDist[d] for d in dataX])
+    plt.show()
+#    print dayDist
+#    exit()    
     
 def analysis(region):
     total, i = 0, 1
@@ -53,12 +80,8 @@ def analysis(region):
 if __name__ == '__main__':
     region='ny'
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
 
-#    i, total = 0, 0
-#    for location in locationIterator(region, 200):
-##        print len(location['checkins'])
-#        print i, len(location['checkins']); i+=1
-#        total+=len(location['checkins'])
-#    print total
+    for location in locationIterator(region):
+        locationAnalysis(location)
