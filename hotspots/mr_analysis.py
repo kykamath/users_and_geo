@@ -6,7 +6,7 @@ Created on Nov 16, 2011
 import sys, datetime
 sys.path.append('../')
 from collections import defaultdict
-from hotspots.mr_llidDistribution import MRLlidDistribution
+from hotspots.mr_hotSpots import MRHotSpots
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     month = 2
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRLlidDistribution, checkinsDistribution, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRHotSpots, checkinsDistribution, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
 
 #    for location in locationIterator(region):
