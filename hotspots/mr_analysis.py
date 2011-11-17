@@ -20,6 +20,10 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     mrJob = mrJobClass(args='-r hadoop'.split())
     for l in mrJob.runJob(inputFileList=[inputFile], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
+def locationIterator(region, minCheckins=200):
+    for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
+        if len(location['checkins'])>minCheckins: return location
+    
 def analysis(region):
     total, i = 0, 1
 #    dataDist = defaultdict(int)
@@ -48,6 +52,12 @@ def analysis(region):
     
 if __name__ == '__main__':
     region='ny'
-    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
-#    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
+
+#    i, total = 0, 0
+#    for l in locationIterator(region, 200):
+#        print i, len(l['checkins'])
+#        total+=len(l['checkins'])
+#    print total
