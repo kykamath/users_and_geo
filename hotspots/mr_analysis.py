@@ -15,6 +15,10 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     mrJob = mrJobClass(args='-r hadoop'.split())
     for l in mrJob.runJob(inputFileList=[inputFile], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
+def analysis(region):
+    for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
+        print location.keys()
+    
 if __name__ == '__main__':
     region='ny'
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
