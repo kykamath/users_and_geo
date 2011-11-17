@@ -28,6 +28,7 @@ for file in tweetFilesIterator():
                 print data['coordinates']
         except:
             print line
+            exit()
     exit()
 #    for i in os.walk(bdeDataFolder%month):
 #        print i
