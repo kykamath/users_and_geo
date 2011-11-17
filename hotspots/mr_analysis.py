@@ -29,9 +29,9 @@ def analysis(region):
                 dataDist[day(datetime.datetime.fromtimestamp(checkin['t']))]+=1
             print i, location['llid'], len(location['checkins']); i+=1
             total+=len(location['checkins'])
-            break
+#            break
     print len(dataDist.keys()), len(dataDist.values())
-    plt.plot_date(dataDist.keys(), dataDist.values(), )
+    plt.plot_date(dataDist.keys(), dataDist.values())
     plt.savefig('dates.png')
     print total
     
