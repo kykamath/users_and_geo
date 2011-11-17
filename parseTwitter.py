@@ -5,6 +5,9 @@ Created on Nov 17, 2011
 '''
 import os, gzip, cjson
 from library.twitter import TweetFiles
+from library.file_io import FileIO
+
+checkinsFile = 'checkins'
 
 def tweetFilesIterator():
     bdeDataFolder = '/mnt/chevron/bde/Data/TweetData/GeoTweets/2011/%s/%s/'
@@ -16,23 +19,14 @@ def tweetFilesIterator():
                     for file in files: yield tweetsDayFolder+file
 
 for file in tweetFilesIterator():
-    print file
     for line in gzip.open(file, 'rb'):
+        print 'Parsing: %s'%file
         try:
-    #    for tweet in TweetFiles.iterateTweetsFromGzip(file):
-    #        tweet = cjson.decode(line)
             data = cjson.decode(line)
             if 'geo' in data and data['geo']!=None:
-    #        if 'text' in data: 
-    #            yield data
                 checkin = {'geo': data['geo']['coordinates'], 'id': data['id'], 'created_at': data['created_at'], 'hashtags': [], 'text': data['text']}
                 for h in data['entities']['hashtags']: checkin['hashtags'].append(h['text'])
-                print checkin
-#                print data['keys']
-#                exit()
+                FileIO.writeToFileAsJson(checkin, checkinsFile)
         except Exception as e:
             print e
-            exit()
     exit()
-#    for i in os.walk(bdeDataFolder%month):
-#        print i
