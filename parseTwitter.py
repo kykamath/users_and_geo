@@ -25,11 +25,11 @@ for file in tweetFilesIterator():
             if 'geo' in data and data['geo']!=None:
     #        if 'text' in data: 
     #            yield data
-                print data['geo']
+                print data['geo'], data['id'], data['created_at'], data['entities']['hashtags'], data['text']
 #                print data['keys']
 #                exit()
-        except:
-            print line
+        except Exception as e:
+            print e
             exit()
     exit()
 #    for i in os.walk(bdeDataFolder%month):
