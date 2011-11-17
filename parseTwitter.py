@@ -3,7 +3,7 @@ Created on Nov 17, 2011
 
 @author: kykamath
 '''
-import os
+import os, gzip
 from library.twitter import TweetFiles
 
 def tweetFilesIterator():
@@ -17,8 +17,8 @@ def tweetFilesIterator():
 
 for file in tweetFilesIterator():
     print file
-    for tweet in TweetFiles.iterateTweetsFromGzip(file):
-        tweet.keys()
+    for line in gzip.open(file, 'rb'):
+        print line
     exit()
 #    for i in os.walk(bdeDataFolder%month):
 #        print i
