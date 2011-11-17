@@ -17,8 +17,9 @@ def tweetFilesIterator():
 
 for file in tweetFilesIterator():
     print file
-    for line in gzip.open(file, 'rb'):
-        tweet = cjson.decode(line)
+#    for line in gzip.open(file, 'rb'):
+    for tweet in TweetFiles.iterateTweetsFromGzip(file):
+#        tweet = cjson.decode(line)
         print tweet.keys()
     exit()
 #    for i in os.walk(bdeDataFolder%month):
