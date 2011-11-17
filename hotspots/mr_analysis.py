@@ -27,7 +27,8 @@ def analysis(region):
             print i, location['llid'], len(location['checkins']); i+=1
             total+=len(location['checkins'])
             break
-    plt.plot_date(dataDist, dataDist.values())
+    print len(dataDist.keys()), len(dataDist.values())
+    plt.plot_date(dataDist.keys(), dataDist.values())
     plt.savefig('dates.png')
     print total
     
