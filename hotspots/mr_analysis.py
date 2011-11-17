@@ -53,11 +53,11 @@ def analysis(region):
 if __name__ == '__main__':
     region='ny'
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
 
-#    i, total = 0, 0
-#    for l in locationIterator(region, 200):
-#        print i, len(l['checkins'])
-#        total+=len(l['checkins'])
-#    print total
+    i, total = 0, 0
+    for l in locationIterator(region, 200):
+        print i, len(l['checkins'])
+        total+=len(l['checkins'])
+    print total
