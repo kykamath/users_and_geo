@@ -21,8 +21,9 @@ for file in tweetFilesIterator():
 #    for tweet in TweetFiles.iterateTweetsFromGzip(file):
 #        tweet = cjson.decode(line)
         data = cjson.decode(line)
-#        if 'text' in data: yield data
-        print data.keys()
+        if 'text' in data: 
+#            yield data
+            print data.keys()
     exit()
 #    for i in os.walk(bdeDataFolder%month):
 #        print i
