@@ -6,6 +6,8 @@ Created on Nov 17, 2011
 import os, gzip, cjson
 from library.twitter import TweetFiles
 from library.file_io import FileIO
+from library.geo import isWithinBoundingBox
+from settings import us_boundary
 
 checkinsFile = 'checkins/%s'
 
@@ -25,7 +27,10 @@ for outputFile, file in tweetFilesIterator():
         try:
             data = cjson.decode(line)
             if 'geo' in data and data['geo']!=None:
-                checkin = {'geo': data['geo']['coordinates'], 'user': {'id': data['user']['id'], 'l': data['user']['location']}, 'id': data['id'], 't': data['created_at'], 'h': [], 'tx': data['text']}
-                for h in data['entities']['hashtags']: checkin['h'].append(h['text'])
-                FileIO.writeToFileAsJson(checkin, outputFile)
+                if isWithinBoundingBox(data['geo']['coordinates'], us_boundary):
+                    checkin = {'geo': data['geo']['coordinates'], 'user': {'id': data['user']['id'], 'l': data['user']['location']}, 'id': data['id'], 't': data['created_at'], 'h': [], 'tx': data['text']}
+                    for h in data['entities']['hashtags']: checkin['h'].append(h['text'])
+                    print checkin
+#                FileIO.writeToFileAsJson(checkin, outputFile)
         except Exception as e: print e
+    exit()
