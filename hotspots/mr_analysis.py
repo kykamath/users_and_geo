@@ -7,7 +7,8 @@ import sys
 sys.path.append('../')
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
-from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath
+from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
+    regionsLlidsFile
 from library.file_io import FileIO
 
 def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r hadoop'.split(), **kwargs):
@@ -17,4 +18,4 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
 if __name__ == '__main__':
     region='ny'
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRBuildLlidObjects, regionsCheckinsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
