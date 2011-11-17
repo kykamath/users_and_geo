@@ -19,14 +19,12 @@ def tweetFilesIterator():
                     for file in files: yield tweetsDayFolder+file
 
 for file in tweetFilesIterator():
+    print 'Parsing: %s'%file
     for line in gzip.open(file, 'rb'):
-        print 'Parsing: %s'%file
         try:
             data = cjson.decode(line)
             if 'geo' in data and data['geo']!=None:
                 checkin = {'geo': data['geo']['coordinates'], 'id': data['id'], 'created_at': data['created_at'], 'hashtags': [], 'text': data['text']}
                 for h in data['entities']['hashtags']: checkin['hashtags'].append(h['text'])
                 FileIO.writeToFileAsJson(checkin, checkinsFile)
-        except Exception as e:
-            print e
-    exit()
+        except Exception as e: print e
