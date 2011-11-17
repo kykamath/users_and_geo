@@ -3,7 +3,7 @@ Created on Nov 17, 2011
 
 @author: kykamath
 '''
-import os, gzip
+import os, gzip, cjson
 from library.twitter import TweetFiles
 
 def tweetFilesIterator():
@@ -18,7 +18,8 @@ def tweetFilesIterator():
 for file in tweetFilesIterator():
     print file
     for line in gzip.open(file, 'rb'):
-        print line
+        tweet = cjson.decode(line)
+        print tweet.keys()
     exit()
 #    for i in os.walk(bdeDataFolder%month):
 #        print i
