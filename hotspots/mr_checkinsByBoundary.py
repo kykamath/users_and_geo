@@ -4,7 +4,7 @@ Created on Nov 16, 2011
 @author: kykamath
 '''
 from library.mrjobwrapper import ModifiedMRJob
-from library.geo import parseData, getLidFromLocation, isWithinBoundingBox
+from library.geo import parseData, getLidFromLocation, isWithinBoundingBox, getLatticeLid
 import time
 
 #boundary = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
@@ -18,6 +18,7 @@ class MRCheckinsByBoundary(ModifiedMRJob):
             del data['_id']
             data['t'] = time.mktime(data['t'].timetuple())
             data['lid'] = getLidFromLocation(data['l'])
+            data['llid'] = getLatticeLid(data['l'])
             yield data, 1
     def reducer(self, key, _): yield 1, key
 
