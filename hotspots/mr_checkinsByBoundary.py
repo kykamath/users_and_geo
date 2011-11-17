@@ -14,10 +14,11 @@ class MRCheckinsByBoundary(ModifiedMRJob):
     DEFAULT_INPUT_PROTOCOL='raw_value'
     def mapper(self, key, line):
         data = parseData(line)
-        del data['_id']
-        data['t'] = time.mktime(data['t'].timetuple())
-        data['lid'] = getLidFromLocation(data['l'])
-        if data and isWithinBoundingBox(data['l'], boundary): yield data, 1
+        if data and isWithinBoundingBox(data['l'], boundary): 
+            del data['_id']
+            data['t'] = time.mktime(data['t'].timetuple())
+            data['lid'] = getLidFromLocation(data['l'])
+            yield data, 1
     def reducer(self, key, _): yield 1, key
 
 if __name__ == '__main__':
