@@ -23,7 +23,9 @@ for file in tweetFilesIterator():
         data = cjson.decode(line)
 #        if 'text' in data: 
 #            yield data
-        print data['coordinates']
+        if data['coordinates'] == None:
+            print line
+            exit()
     exit()
 #    for i in os.walk(bdeDataFolder%month):
 #        print i
