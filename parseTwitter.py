@@ -30,7 +30,6 @@ for outputFile, file in tweetFilesIterator():
                 if isWithinBoundingBox(data['geo']['coordinates'], us_boundary):
                     checkin = {'geo': data['geo']['coordinates'], 'user': {'id': data['user']['id'], 'l': data['user']['location']}, 'id': data['id'], 't': data['created_at'], 'h': [], 'tx': data['text']}
                     for h in data['entities']['hashtags']: checkin['h'].append(h['text'])
-                    print checkin
-#                FileIO.writeToFileAsJson(checkin, outputFile)
+#                    print checkin
+                FileIO.writeToFileAsJson(checkin, outputFile)
         except Exception as e: print e
-    exit()
