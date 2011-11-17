@@ -18,7 +18,7 @@ class MRCheckinsByBoundary(ModifiedMRJob):
             del data['_id']
             data['t'] = time.mktime(data['t'].timetuple())
             data['lid'] = getLidFromLocation(data['l'])
-            data['llid'] = getLatticeLid(data['l'])
+            data['llid'] = getLatticeLid(data['l'], accuracy=0.015)
             yield data, 1
     def reducer(self, key, _): yield 1, key
 
