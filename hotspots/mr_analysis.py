@@ -17,7 +17,7 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     
 def analysis(region):
     for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
-        print location.keys()
+        print location['llid'], len(location['checkins'])
     
 if __name__ == '__main__':
     region='ny'
