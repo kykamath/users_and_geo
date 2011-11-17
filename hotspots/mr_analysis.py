@@ -4,10 +4,10 @@ Created on Nov 16, 2011
 @author: kykamath
 '''
 import sys, datetime
-from hotspots.mr_test import MRTest
 sys.path.append('../')
 from collections import defaultdict
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
+from hotspots.mr_test import MRTest
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
     regionsLlidsFile
