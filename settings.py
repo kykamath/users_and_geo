@@ -84,7 +84,7 @@ regionsLlidsFile = hotspotsFolder + 'llids/%s'
 
 #Twitter
 twitterAnalysisFolder = '/mnt/chevron/kykamath/data/geo/twitter/analysis/'
-checkinsFileInHDFS = 'hdfs:///user/kykamath/checkins_%s.gz'
+twitterCheckinsFileInHDFS = 'hdfs:///user/kykamath/geo/twitter/%s.gz'
 checkinsDistribution = twitterAnalysisFolder+'checkinsDistribution'
 #Sequences
 checkinSequenceGraphHdfsPath = 'hdfs:///user/kykamath/geo/checkinSequenceGraph'

@@ -10,7 +10,7 @@ from hotspots.mr_llidDistribution import MRLlidDistribution
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
-    regionsLlidsFile, checkinsFileInHDFS, checkinsDistribution
+    regionsLlidsFile, checkinsDistribution, twitterCheckinsFileInHDFS
 from library.file_io import FileIO
 import matplotlib.pyplot as plt 
 
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     month = 2
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRLlidDistribution, checkinsDistribution, inputFile=checkinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRLlidDistribution, checkinsDistribution, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
 
 #    for location in locationIterator(region):
