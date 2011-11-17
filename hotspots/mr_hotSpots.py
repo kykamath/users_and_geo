@@ -12,7 +12,7 @@ from collections import defaultdict
 #boundary = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 #boundary = [[40.491, -74.356], [41.181, -72.612]] # NY
 
-MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 1
+MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
 
 
 def getCheckinObject(line):
