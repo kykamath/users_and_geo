@@ -62,6 +62,7 @@ austin_tx_boundary = [[30.097613,-97.971954], [30.486551,-97.535248]]
 dallas_tx_boundary = [[32.735307,-96.862335], [32.886507,-96.723633]]
 north_ca_boundary = [[37.068328,-122.640381], [37.924701,-122.178955]]
 world_boundary = [[-90,-180], [90, 180]]
+ny_boundary = [[40.491, -74.356], [41.181, -72.612]]
 
 #Experiments
 minLocationsTheUserHasCheckedin = 20
@@ -74,6 +75,11 @@ radiusInMiles = 17
 graphNodesMinEdgeWeight = 5 
 graphNodesDistanceInMiles = 25
 itemsetsMergeThreshold = 0.5
+
+#Hotspots
+hotspotsFolder = '/mnt/chevron/kykamath/data/geo/hotspots/'
+nyCheckinsFile = hotspotsFolder+'ny'
+
 
 #Sequences
 checkinSequenceGraphHdfsPath = 'hdfs:///user/kykamath/geo/checkinSequenceGraph'
