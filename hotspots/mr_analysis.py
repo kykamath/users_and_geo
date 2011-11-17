@@ -7,10 +7,10 @@ import sys, datetime
 sys.path.append('../')
 from collections import defaultdict
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
-from hotspots.mr_test import MRTest
+from hotspots.mr_test import MRLlidDistribution
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
-    regionsLlidsFile
+    regionsLlidsFile, checkinsFileInHDFS, checkinsDistribution
 from library.file_io import FileIO
 import matplotlib.pyplot as plt 
 
@@ -80,10 +80,11 @@ def analysis(region):
     
 if __name__ == '__main__':
     region='ny'
+    month = 2
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRLlidDistribution, checkinsDistribution, inputFile=checkinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
-    runMRJob(MRTest, 'abcd', inputFile='hdfs:///user/kykamath/checkins_2.gz')
 
 #    for location in locationIterator(region):
 #        locationAnalysis(location)
