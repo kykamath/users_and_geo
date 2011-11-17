@@ -24,7 +24,7 @@ for file in tweetFilesIterator():
         try:
             data = cjson.decode(line)
             if 'geo' in data and data['geo']!=None:
-                checkin = {'geo': data['geo']['coordinates'], 'id': data['id'], 'created_at': data['created_at'], 'hashtags': [], 'text': data['text']}
-                for h in data['entities']['hashtags']: checkin['hashtags'].append(h['text'])
+                checkin = {'geo': data['geo']['coordinates'], 'user': {'id': data['user']['id'], 'l': data['user']['location']}, 'id': data['id'], 't': data['created_at'], 'h': [], 'tx': data['text']}
+                for h in data['entities']['hashtags']: checkin['h'].append(h['text'])
                 FileIO.writeToFileAsJson(checkin, checkinsFile)
         except Exception as e: print e
