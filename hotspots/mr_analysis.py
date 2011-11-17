@@ -16,10 +16,11 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     for l in mrJob.runJob(inputFileList=[inputFile], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
 def analysis(region):
-    total = 0
+    total, i = 0, 1
     for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
-        print location['llid']
-        total+=len(location['checkins'])
+        if len(location['checkins'])>200:
+            print i, location['llid']; i+=1
+            total+=len(location['checkins'])
     print total
     
 if __name__ == '__main__':
