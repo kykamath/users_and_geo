@@ -13,7 +13,7 @@ from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsP
 from library.file_io import FileIO
 import matplotlib.pyplot as plt 
 
-def dayString(d): return '%s_%s_%s'%(d.year, d.month, d.day)
+def day(d): return datetime.date(d.year, d.month, d.day)
 
 def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
@@ -26,12 +26,12 @@ def analysis(region):
         if len(location['checkins'])>200:
             for checkin in location['checkins']:
 #                print datetime.datetime.fromtimestamp(checkin['t']).day()
-                dataDist[dayString(datetime.datetime.fromtimestamp(checkin['t']))]+=1
+                dataDist[day(datetime.datetime.fromtimestamp(checkin['t']))]+=1
             print i, location['llid'], len(location['checkins']); i+=1
             total+=len(location['checkins'])
             break
     print len(dataDist.keys()), len(dataDist.values())
-    plt.plot(dataDist.keys(), dataDist.values(), )
+    plt.plot_date(dataDist.keys(), dataDist.values(), )
     plt.savefig('dates.png')
     print total
     
