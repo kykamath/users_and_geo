@@ -22,9 +22,9 @@ for file in tweetFilesIterator():
     #    for tweet in TweetFiles.iterateTweetsFromGzip(file):
     #        tweet = cjson.decode(line)
             data = cjson.decode(line)
+            if 'coordinates' in data and data['coordinates']!=None:
     #        if 'text' in data: 
     #            yield data
-            if data['coordinates'] != None:
                 print data['coordinates']
         except:
             print line
