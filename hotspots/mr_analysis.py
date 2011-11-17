@@ -6,8 +6,8 @@ Created on Nov 16, 2011
 import sys, datetime
 sys.path.append('../')
 from collections import defaultdict
+from hotspots.mr_llidDistribution import MRLlidDistribution
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
-from hotspots.mr_test import MRLlidDistribution
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
     regionsLlidsFile, checkinsFileInHDFS, checkinsDistribution
