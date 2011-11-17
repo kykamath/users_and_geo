@@ -5,15 +5,16 @@ Created on Nov 16, 2011
 '''
 from library.twitter import getDateTimeObjectFromTweetTimestamp
 from library.mrjobwrapper import ModifiedMRJob
-from library.geo import parseData, getLidFromLocation, isWithinBoundingBox, getLatticeLid
+from library.geo import parseData, getLidFromLocation, isWithinBoundingBox, getLatticeLid,\
+    getLocationFromLid
 import cjson, time, datetime
 from collections import defaultdict
 
 #boundary = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
-#boundary = [[40.491, -74.356], [41.181, -72.612]] # NY
+#MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 1
 
+boundary = [[40.491, -74.356], [41.181, -72.612]] # NY
 MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
-
 
 def getCheckinObject(line):
     data = cjson.decode(line)
@@ -42,7 +43,9 @@ class MRHotSpots(ModifiedMRJob):
     def filter_latticeObjects(self, key, values):
         latticeObject = list(values)[0]
         total = len(latticeObject['c'])
-        if total>=MINIMUM_NO_OF_CHECKINS_PER_LOCATION: yield key, latticeObject
+        if total>=MINIMUM_NO_OF_CHECKINS_PER_LOCATION and \
+            isWithinBoundingBox(getLocationFromLid(latticeObject['llid'].replace('_', ' ')), boundary): 
+            yield key, latticeObject
     
     def split_checkins_in_latticeObject_by_day(self, key, latticeObject):
         checkins = latticeObject['c']
@@ -64,7 +67,8 @@ class MRHotSpots(ModifiedMRJob):
     def getJobsToLatticeDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_day, None)]
     
     def steps(self):
-        return self.getJobsToLatticeDailyCheckinDistribution()
+#        return self.getJobsToLatticeDailyCheckinDistribution()
+        return self.getJobsToGetFilteredLatticeObjects()
 
 if __name__ == '__main__':
     MRHotSpots.run()
