@@ -3,13 +3,15 @@ Created on Nov 16, 2011
 
 @author: kykamath
 '''
-import sys
+import sys, datetime
 sys.path.append('../')
+from collections import defaultdict
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
     regionsLlidsFile
 from library.file_io import FileIO
+import matplotlib.pyplot as plt 
 
 def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
@@ -17,10 +19,16 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     
 def analysis(region):
     total, i = 0, 1
+    dataDist = defaultdict(int)
     for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
         if len(location['checkins'])>200:
+            for checkin in location['checkins']:
+                dataDist[datetime.datetime.fromtimestamp(checkin['t'])]+=1
             print i, location['llid'], len(location['checkins']); i+=1
             total+=len(location['checkins'])
+            break
+    plt.plot_date(dataDist, dataDist.values())
+    plt.savefig('dates.png')
     print total
     
 if __name__ == '__main__':
