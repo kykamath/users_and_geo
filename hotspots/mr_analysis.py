@@ -19,7 +19,7 @@ def analysis(region):
     total, i = 0, 1
     for location in FileIO.iterateJsonFromFile(regionsLlidsFile%region):
         if len(location['checkins'])>200:
-            print i, location['llid']; i+=1
+            print i, location['llid'], len(location['checkins']); i+=1
             total+=len(location['checkins'])
     print total
     
