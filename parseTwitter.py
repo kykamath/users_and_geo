@@ -25,7 +25,9 @@ for file in tweetFilesIterator():
             if 'geo' in data and data['geo']!=None:
     #        if 'text' in data: 
     #            yield data
-                print data['geo'], data['id'], data['created_at'], data['entities']['hashtags'], data['text']
+                checkin = {'geo': data['geo']['coordinates'], 'id': data['id'], 'created_at': data['created_at'], 'hashtags': [], 'text': data['text']}
+                for h in data['entities']['hashtags']: checkin['hashtags'].append(h['text'])
+                print checkin
 #                print data['keys']
 #                exit()
         except Exception as e:
