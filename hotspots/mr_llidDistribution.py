@@ -15,7 +15,9 @@ class MRLlidDistribution(ModifiedMRJob):
     def mapper(self, key, line):
         data = cjson.decode(line)
         yield getLatticeLid(data['geo'], accuracy=0.001), 1
-    def reducer(self, key, values): yield key, {'llid': key, 'checkins': sum([v for v in values])}
+    def reducer(self, key, values): 
+        total = sum([v for v in values])
+        if total>500: yield key, {'llid': key, 'checkins': total}
 
 if __name__ == '__main__':
     MRLlidDistribution.run()
