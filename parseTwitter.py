@@ -28,3 +28,4 @@ for file in tweetFilesIterator():
                 for h in data['entities']['hashtags']: checkin['h'].append(h['text'])
                 FileIO.writeToFileAsJson(checkin, checkinsFile)
         except Exception as e: print e
+    exit()
