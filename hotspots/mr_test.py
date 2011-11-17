@@ -10,7 +10,7 @@ import cjson
 #boundary = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 boundary = [[40.491, -74.356], [41.181, -72.612]] # NY
 
-class MRCheckinsByBoundary(ModifiedMRJob):
+class MRTest(ModifiedMRJob):
     DEFAULT_INPUT_PROTOCOL='raw_value'
     def mapper(self, key, line):
 #        data = parseData(line)
@@ -18,4 +18,4 @@ class MRCheckinsByBoundary(ModifiedMRJob):
     def reducer(self, key, _): yield 1, key
 
 if __name__ == '__main__':
-    MRCheckinsByBoundary.run()
+    MRTest.run()

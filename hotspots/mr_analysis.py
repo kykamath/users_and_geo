@@ -4,6 +4,7 @@ Created on Nov 16, 2011
 @author: kykamath
 '''
 import sys, datetime
+from hotspots.mr_test import MRTest
 sys.path.append('../')
 from collections import defaultdict
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
@@ -82,6 +83,7 @@ if __name__ == '__main__':
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 #    analysis(region)
+    runMRJob(MRTest, 'abcd', inputFile='hdfs:///user/kykamath/checkins_2.gz')
 
-    for location in locationIterator(region):
-        locationAnalysis(location)
+#    for location in locationIterator(region):
+#        locationAnalysis(location)
