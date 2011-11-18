@@ -140,13 +140,14 @@ if __name__ == '__main__':
 #    timeFrame = 2
 #    timeFrame = '2_5'
     timeFrame = '2_11'
+
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 
-    runMRJob(MRHotSpots, checkinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRHotSpots, checkinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
+    runMRJob(MRHotSpots, latticeDescriptions%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
 #    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
-#    runMRJob(MRHotSpots, latticeDescriptions%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 
 #    analyzeCheckinsDistribution(timeFrame)
 #    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)

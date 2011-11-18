@@ -101,8 +101,8 @@ class MRHotSpots(ModifiedMRJob):
     def getJobsToLatticeSmoothedDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_smoothedDay, None)]
     
     def steps(self):
-#        return self.getJobsToGetLatticeDescription() 
-        return self.getJobsToGetCheckinDistribution()
+#        return self.getJobsToGetCheckinDistribution()
+        return self.getJobsToGetLatticeDescription() 
 #        return self.getJobsToLatticeDailyCheckinDistribution()
 #        return self.getJobsToLatticeSmoothedDailyCheckinDistribution()
 
