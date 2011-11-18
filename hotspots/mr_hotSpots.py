@@ -11,6 +11,7 @@ import cjson, time, datetime
 from collections import defaultdict
 
 ACCURACY = 0.001
+NO_OF_HASHTAGS_PER_LATTICE = 10
 
 #BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 1
@@ -40,13 +41,15 @@ class MRHotSpots(ModifiedMRJob):
     def map_rawData_to_reducedlatticeObjectUnits(self, key, line):
         data = getCheckinObject(line)
         data['u'] = data['user']['id']
-        for k in ['tx', 'h', 'user']: del data[k] 
+        for k in ['tx', 'user']: del data[k] 
         yield getLatticeLid(data['l'], accuracy=0.001), data
     
     def reduce_latticeObjectUnits_to_latticeObjects(self, key, values):  
 #        checkins = sorted([v for v in values], key=lambda c: c['t'])
-        checkins = list(values)
-        yield key, {'llid': key, 'c': checkins}
+        checkins, hashtags = list(values), defaultdict(int)
+        for c in checkins[:]:
+            for h in c['h']: hashtags[h]+=1
+        yield key, {'llid': key, 'c': checkins, 'tc': len(checkins), 'h': sorted(hashtags.iteritems(), key=lambda i: i[1], reverse=True)[:NO_OF_HASHTAGS_PER_LATTICE]}
     
     def filter_latticeObjects(self, key, values):
         latticeObject = list(values)[0]
@@ -54,6 +57,12 @@ class MRHotSpots(ModifiedMRJob):
         if total>=MINIMUM_NO_OF_CHECKINS_PER_LOCATION and \
             isWithinBoundingBox(getLocationFromLid(latticeObject['llid'].replace('_', ' ')), BOUNDARY): 
             yield key, latticeObject
+    
+    def get_lattice_descriptions(self, key, latticeObject):
+        checkinsDist = dict((str(i),0.) for i in range(24))
+        for checkin in latticeObject['c']: checkinsDist[str(datetime.datetime.fromtimestamp(checkin['t']).hour)]+=1
+        latticeObject['dayDist'] = checkinsDist; del latticeObject['c']
+        yield latticeObject['llid'], latticeObject
     
     def split_checkins_in_latticeObject_by_day(self, key, latticeObject):
         checkins = latticeObject['c']
@@ -88,13 +97,15 @@ class MRHotSpots(ModifiedMRJob):
                 ]
     
     def getJobsToGetCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.get_checkinDistribution, None)]    
+    def getJobsToGetLatticeDescription(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.get_lattice_descriptions, None)]
     def getJobsToLatticeDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_day, None)]
     def getJobsToLatticeSmoothedDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_smoothedDay, None)]
     
     def steps(self):
+        return self.getJobsToGetLatticeDescription() 
 #        return self.getJobsToGetCheckinDistribution()
 #        return self.getJobsToLatticeDailyCheckinDistribution()
-        return self.getJobsToLatticeSmoothedDailyCheckinDistribution()
+#        return self.getJobsToLatticeSmoothedDailyCheckinDistribution()
 
 if __name__ == '__main__':
     MRHotSpots.run()

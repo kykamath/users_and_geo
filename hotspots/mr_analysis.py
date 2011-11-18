@@ -12,7 +12,7 @@ from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
     regionsLlidsFile, dailyDistribution, twitterCheckinsFileInHDFS,\
-    checkinsDistribution, smoothedCheckinsDistribution
+    checkinsDistribution, smoothedCheckinsDistribution, latticeDescriptions
 from library.file_io import FileIO
 import numpy as np
 import matplotlib.pyplot as plt 
@@ -134,7 +134,8 @@ if __name__ == '__main__':
 
 #    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRHotSpots, latticeDescriptions%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 
 #    analyzeCheckinsDistribution(timeFrame)
-    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
+#    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
 
