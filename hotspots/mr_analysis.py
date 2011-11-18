@@ -89,9 +89,9 @@ def plotDailyDistributionForLattices(timeFrame):
         for day, dist in checkinsByDay.iteritems():
             for h, v in dist.iteritems(): distForLattice[h]+=v
         dataX = sorted([int(i) for i in distForLattice])
-        print sum(distForLattice.values())
-        plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
-        plt.show()
+        if sum(distForLattice.values())>1000:
+            plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
+            plt.show()
 #        exit()
 
 def analyzeCheckinsDistribution(timeFrame):
@@ -110,5 +110,5 @@ if __name__ == '__main__':
 
 #    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 
-    analyzeCheckinsDistribution(timeFrame)
-#    plotDailyDistributionForLattices(timeFrame)
+#    analyzeCheckinsDistribution(timeFrame)
+    plotDailyDistributionForLattices(timeFrame)
