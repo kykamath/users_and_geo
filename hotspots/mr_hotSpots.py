@@ -12,6 +12,7 @@ from collections import defaultdict
 
 ACCURACY = 0.001
 NO_OF_HASHTAGS_PER_LATTICE = 10
+MIN_HASHTAG_OCCURANCES_PER_LATTICE = 10
 
 #BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 2
@@ -63,6 +64,8 @@ class MRHotSpots(ModifiedMRJob):
         checkins, hashtags = list(values), defaultdict(int)
         for c in checkins[:]:
             for h in c['h']: hashtags[h.lower()]+=1
+        for k in hashtags.keys()[:]:
+            if hashtags[k]<MIN_HASHTAG_OCCURANCES_PER_LATTICE: del hashtags[k] 
         yield key, {'llid': key, 'c': checkins, 'tc': len(checkins), 'h': sorted(hashtags.iteritems(), key=lambda i: i[1], reverse=True)}
     
     def filter_latticeObjects(self, key, values):
@@ -132,7 +135,8 @@ class MRHotSpots(ModifiedMRJob):
         hashtags = {}
         currentLatticeInstance = None
         for latticeInstance in values:
-            for k, v in latticeInstance['h'].iteritems(): hashtags[k] = tf_idf(v[0], v[1]) 
+#            for k, v in latticeInstance['h'].iteritems(): hashtags[k] = tf_idf(v[0], v[1]) 
+            for k, v in latticeInstance['h'].iteritems(): hashtags[k] = v[1] 
             currentLatticeInstance = latticeInstance
         currentLatticeInstance['h'] = sorted(hashtags.iteritems(), key=lambda i: i[1], reverse=True)[:NO_OF_HASHTAGS_PER_LATTICE]
         if currentLatticeInstance['totChk'] >= MINIMUM_NO_OF_CHECKINS_PER_LOCATION: yield currentLatticeInstance['llid'], currentLatticeInstance
