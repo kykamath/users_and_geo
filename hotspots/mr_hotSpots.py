@@ -19,7 +19,7 @@ NO_OF_HASHTAGS_PER_LATTICE = 10
 #BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
 
-BOUNDARY = [[30.546887,-96.50322], [30.696973,-96.214828]]
+BOUNDARY = [[30.546887,-96.50322], [30.696973,-96.214828]] #Brazos, TX
 MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 25
 
 def getCheckinObject(line):
@@ -114,7 +114,8 @@ class MRHotSpots(ModifiedMRJob):
         for hashtag, occurences in latticeObject['h']: yield hashtag, {'llid': latticeObject['llid'], 'totChk': latticeObject['tc'], 'hc': occurences, 'noOfLattices': latticeObject['noOfLattices']}
     
     def get_hashtags_idf_and_pass_it_to_llids(self, key, values):
-        def calculateIdf(df, lattice): return math.log((lattice['noOfLattices']-df+0.5)/(df+0.5))
+#        def calculateIdf(df, lattice): return math.log((lattice['noOfLattices']-df+0.5)/(df+0.5))
+        def calculateIdf(df, lattice): return math.log(lattice['noOfLattices']/float(df))
         lattices = list(values)
         idf = None
         df = len(lattices)
@@ -124,13 +125,14 @@ class MRHotSpots(ModifiedMRJob):
             yield lattice['llid'], lattice
     
     def combine_all_hastags_idf_for_lattice_and_calculate_bm25_scores(self, key, values):
-        def calculateBM25(f_h_l, idf, k1=1.5, b=0.75): 
-            tf = (f_h_l*(k1+1))/(f_h_l+k1*(1-2*b))
-            return idf*tf
+#        def calculateBM25(f_h_l, idf, k1=1.5, b=0.75): 
+#            tf = (f_h_l*(k1+1))/(f_h_l+k1*(1-2*b))
+#            return idf*math.log(tf)
+        def tf_idf(f_h_l, idf): return idf*math.log(f_h_l)
         hashtags = {}
         currentLatticeInstance = None
         for latticeInstance in values:
-            for k, v in latticeInstance['h'].iteritems(): hashtags[k] = calculateBM25(v[0], v[1]) 
+            for k, v in latticeInstance['h'].iteritems(): hashtags[k] = tf_idf(v[0], v[1]) 
             currentLatticeInstance = latticeInstance
         currentLatticeInstance['h'] = sorted(hashtags.iteritems(), key=lambda i: i[1], reverse=True)[:NO_OF_HASHTAGS_PER_LATTICE]
         if currentLatticeInstance['totChk'] >= MINIMUM_NO_OF_CHECKINS_PER_LOCATION: yield currentLatticeInstance['llid'], currentLatticeInstance

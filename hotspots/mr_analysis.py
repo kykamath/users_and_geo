@@ -5,6 +5,7 @@ Created on Nov 16, 2011
 '''
 import sys, datetime
 from library.plotting import smooth
+from library.classes import runCommand
 sys.path.append('../')
 from collections import defaultdict
 from hotspots.mr_hotSpots import MRHotSpots
@@ -29,6 +30,7 @@ def getClosestMonday(d): return getDay(d-datetime.timedelta(days=d.weekday()))
 
 def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
+    runCommand('rm -rf %s'%outputFileName)
     for l in mrJob.runJob(inputFileList=[inputFile], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
 #def locationIterator(region, minCheckins=1000):
@@ -130,9 +132,10 @@ def analyzeLatticeDescriptions(timeFrame):
 #        plt.show()
 
 def analyzeLatticeHashtags(timeFrame):
+    locations = []
     for l in FileIO.iterateJsonFromFile(latticeWithHashtags%timeFrame):
-        if l['totChk']>1000:
-            print l['llid'], ', '.join([unicode(h[0]).encode('utf-8') for h in l['h']])
+#        if l['totChk']>:
+        print l['totChk'], l['llid'], ', '.join([unicode(h[0]).encode('utf-8') for h in l['h']])
 
 def analyzeCheckinsDistribution(timeFrame):
     total = 0
