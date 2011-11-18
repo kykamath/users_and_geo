@@ -114,6 +114,7 @@ def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
             plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
 #            plt.show()
             plt.savefig('images/%s.png'%l['llid'])
+            plt.clf()
 #        exit()
 
 def analyzeCheckinsDistribution(timeFrame):
