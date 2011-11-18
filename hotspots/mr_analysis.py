@@ -112,7 +112,7 @@ def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
             for h, v in dist.iteritems(): distForLattice[h].append(v)
         dataX = sorted([int(i) for i in distForLattice])
 #        if sum(distForLattice.values())>1000:
-        plt.plot(dataX, [np.mean(distForLattice[str(k)]) for k in dataX])
+        plt.plot(dataX, smooth([np.mean(distForLattice[str(k)]) for k in dataX], window_len=3, 'flat'))
 #            plt.show()
         plt.savefig('images/%s.png'%l['llid'])
         plt.clf()
