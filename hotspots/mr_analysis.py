@@ -121,13 +121,18 @@ def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
 
 def analyzeLatticeDescriptions(timeFrame):
     for l in FileIO.iterateJsonFromFile(latticeDescriptions%timeFrame):
-        print l['h']
+        print l['llid'], l['h']
 #        FileIO.writeToFile(', '.join([h[0].lower() for h in l['h']]), '%s/%s/hashtags'%(twitterImagesFolder, timeFrame))
 #        plt.plot(range(24), [l['dayDist'][str(x)]/l['tc'] for x in range(24)])
 #        plt.title(', '.join([h[0].lower() for h in l['h'][:3]]))
 #        plt.savefig('%s/%s/%s.png'%(twitterImagesFolder, timeFrame, l['llid']))
 #        plt.clf()
 #        plt.show()
+
+def analyzeLatticeHashtags(timeFrame):
+    for l in FileIO.iterateJsonFromFile(latticeWithHashtags%timeFrame):
+        if l['totChk']>1000:
+            print l['llid'], ', '.join([unicode(h[0]).encode('utf-8') for h in l['h']])
 
 def analyzeCheckinsDistribution(timeFrame):
     total = 0
@@ -147,10 +152,11 @@ if __name__ == '__main__':
 
 #    runMRJob(MRHotSpots, checkinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
 #    runMRJob(MRHotSpots, latticeDescriptions%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
-#    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
-#    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRHotSpots, latticeWithHashtags%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
+#    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
+    runMRJob(MRHotSpots, latticeWithHashtags%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':300})
 
 #    analyzeCheckinsDistribution(timeFrame)
 #    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
 #    analyzeLatticeDescriptions(timeFrame)
+#    analyzeLatticeHashtags(timeFrame)
