@@ -101,7 +101,8 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     
 def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
     for l in FileIO.iterateJsonFromFile(file%timeFrame):
-        distForLattice = dict([(str(i), 0.) for i in range(24)])
+#        distForLattice = dict([(str(i), 0.) for i in range(24)])
+        distForLattice = dict([(str(i), 0.) for i in range(6)])
         print l['llid']
         checkinsByDay = l['c']
         days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
