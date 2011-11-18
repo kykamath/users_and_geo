@@ -4,10 +4,10 @@ Created on Nov 16, 2011
 @author: kykamath
 '''
 import sys, datetime
-from library.plotting import smooth
-from library.classes import runCommand
 sys.path.append('../')
 from collections import defaultdict
+from library.plotting import smooth
+from library.classes import GeneralMethods
 from hotspots.mr_hotSpots import MRHotSpots
 from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
@@ -30,7 +30,7 @@ def getClosestMonday(d): return getDay(d-datetime.timedelta(days=d.weekday()))
 
 def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r hadoop'.split(), **kwargs):
     mrJob = mrJobClass(args='-r hadoop'.split())
-    runCommand('rm -rf %s'%outputFileName)
+    GeneralMethods.runCommand('rm -rf %s'%outputFileName)
     for l in mrJob.runJob(inputFileList=[inputFile], **kwargs): FileIO.writeToFileAsJson(l[1], outputFileName)
     
 #def locationIterator(region, minCheckins=1000):
