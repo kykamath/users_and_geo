@@ -71,7 +71,8 @@ class MRHotSpots(ModifiedMRJob):
         checkinsDict = defaultdict(dict)
         for checkin in checkins: 
             checkinTime = datetime.datetime.fromtimestamp(checkin['t'])
-            checkinHour, checkinDay = str(getMergedCheckinHour(checkinTime.hour)), str(time.mktime(getMergeDay(checkinTime).timetuple()))
+#            checkinHour, checkinDay = str(getMergedCheckinHour(checkinTime.hour)), str(time.mktime(getMergeDay(checkinTime).timetuple()))
+            checkinHour, checkinDay = str(checkinTime.hour), str(time.mktime(getMergeDay(checkinTime).timetuple()))
             if checkinHour not in checkinsDict[checkinDay]: checkinsDict[checkinDay][checkinHour] = 0
             checkinsDict[checkinDay][checkinHour]+=1   
         latticeObject['c'] = checkinsDict
