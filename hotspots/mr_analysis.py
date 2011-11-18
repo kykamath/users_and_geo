@@ -134,8 +134,8 @@ def analyzeLatticeDescriptions(timeFrame):
 def analyzeLatticeHashtags(timeFrame):
     locations = []
     for l in FileIO.iterateJsonFromFile(latticeWithHashtags%timeFrame):
-        if l['totChk']>200:
-            print l['totChk'], l['llid'], ', '.join([unicode(h[0]).encode('utf-8') for h in l['h']])
+#        if l['totChk']>200:
+        print l['totChk'], l['llid'], ', '.join([unicode(h[0]).encode('utf-8') for h in l['h']])
 
 def analyzeCheckinsDistribution(timeFrame):
     total = 0
