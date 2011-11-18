@@ -105,8 +105,8 @@ def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
 #        distForLattice = dict([(str(i), 0.) for i in range(6)])
         print l['llid']
         checkinsByDay = l['c']
-        days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
-        noOfDays = (days[-1]-days[0]).days
+#        days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
+#        noOfDays = (days[-1]-days[0]).days
         for day, dist in checkinsByDay.iteritems():
             for h, v in dist.iteritems(): distForLattice[h]+=v
         dataX = sorted([int(i) for i in distForLattice])
@@ -132,8 +132,8 @@ if __name__ == '__main__':
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 
 #    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
-#    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 
 #    analyzeCheckinsDistribution(timeFrame)
-    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
+#    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
 

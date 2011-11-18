@@ -20,7 +20,7 @@ MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
 
 def getCheckinObject(line):
     data = cjson.decode(line)
-    data['t'] = time.mktime(getDateTimeObjectFromTweetTimestamp(data['t']).timetuple())
+    data['t'] = time.mktime((getDateTimeObjectFromTweetTimestamp(data['t'])-datetime.timedelta(hours=5)).timetuple())
     data['l'] = data['geo']; del data['geo']
     return data
 def getDay(d): return datetime.date(d.year, d.month, d.day)
