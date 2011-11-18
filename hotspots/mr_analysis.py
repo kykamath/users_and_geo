@@ -99,10 +99,10 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
 #        else: checkinsDictToReturn[day] = combine(checkinsDictToReturn[day], dist)
 #    return checkinsDictToReturn
     
-def plotDailyDistributionForLattices(timeFrame):
-    for l in FileIO.iterateJsonFromFile(dailyDistribution%timeFrame):
+def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
+    for l in FileIO.iterateJsonFromFile(file%timeFrame):
         distForLattice = dict([(str(i), 0.) for i in range(24)])
-        
+        print l['llid']
         checkinsByDay = l['c']
         days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
         noOfDays = (days[-1]-days[0]).days
@@ -111,8 +111,9 @@ def plotDailyDistributionForLattices(timeFrame):
         dataX = sorted([int(i) for i in distForLattice])
         if sum(distForLattice.values())>1000:
             plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
-            plt.show()
-        exit()
+#            plt.show()
+            plt.savefig('images/%s.png'%l['llid'])
+#        exit()
 
 def analyzeCheckinsDistribution(timeFrame):
     total = 0
@@ -132,4 +133,5 @@ if __name__ == '__main__':
     runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 
 #    analyzeCheckinsDistribution(timeFrame)
-#    plotDailyDistributionForLattices(timeFrame)
+#    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
+
