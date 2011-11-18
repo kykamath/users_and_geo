@@ -12,7 +12,7 @@ from hotspots.mr_checkinsByBoundary import MRCheckinsByBoundary
 from hotspots.mr_buildLlidObjects import MRBuildLlidObjects
 from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsPath,\
     regionsLlidsFile, dailyDistribution, twitterCheckinsFileInHDFS,\
-    checkinsDistribution
+    checkinsDistribution, smoothedCheckinsDistribution
 from library.file_io import FileIO
 import matplotlib.pyplot as plt 
 
@@ -79,10 +79,30 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
 #    plt.plot_date(dataDist.keys(), dataDist.values())
 #    plt.savefig('dates.png')
 #    print total
+#def getMergeDay(d):
+#    def day(d): return datetime.date(d.year, d.month, d.day)
+#    weekDay = d.weekday()
+#    if weekDay in [0,1,2]: return day(d-datetime.timedelta(days=weekDay))
+#    elif weekDay in [3,4]: return day(d-datetime.timedelta(days=weekDay-3))
+#    else: return day(d-datetime.timedelta(days=weekDay-5))
+#
+#def mergeCheckinsByDay(checkinsByDay):
+#    def combine(d1, d2): 
+#        for k, v in d1.iteritems():
+#            if k not in d2: d2[k] = v
+#            else: d2[k]+=v
+#        return d2
+#    checkinsDictToReturn = {}
+#    for day, dist in checkinsByDay.iteritems():
+#        day = getMergeDay(datetime.datetime.fromtimestamp(float(day)))
+#        if day not in checkinsDictToReturn: checkinsDictToReturn[day] = dist
+#        else: checkinsDictToReturn[day] = combine(checkinsDictToReturn[day], dist)
+#    return checkinsDictToReturn
     
 def plotDailyDistributionForLattices(timeFrame):
     for l in FileIO.iterateJsonFromFile(dailyDistribution%timeFrame):
         distForLattice = dict([(str(i), 0.) for i in range(24)])
+        
         checkinsByDay = l['c']
         days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
         noOfDays = (days[-1]-days[0]).days
@@ -92,7 +112,7 @@ def plotDailyDistributionForLattices(timeFrame):
         if sum(distForLattice.values())>1000:
             plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
             plt.show()
-#        exit()
+        exit()
 
 def analyzeCheckinsDistribution(timeFrame):
     total = 0
@@ -102,13 +122,14 @@ def analyzeCheckinsDistribution(timeFrame):
     print total
     
 if __name__ == '__main__':
-    region='ny'
+#    region='ny'
 #    timeFrame = 2
     timeFrame = '2_5'
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 
 #    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 
 #    analyzeCheckinsDistribution(timeFrame)
-    plotDailyDistributionForLattices(timeFrame)
+#    plotDailyDistributionForLattices(timeFrame)

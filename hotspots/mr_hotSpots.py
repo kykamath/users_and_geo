@@ -12,11 +12,11 @@ from collections import defaultdict
 
 ACCURACY = 0.001
 
-#BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
-#MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 1
+BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
+MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 1
 
-BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
-MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
+#BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
+#MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
 
 def getCheckinObject(line):
     data = cjson.decode(line)
@@ -24,7 +24,13 @@ def getCheckinObject(line):
     data['l'] = data['geo']; del data['geo']
     return data
 def getDay(d): return datetime.date(d.year, d.month, d.day)
-     
+def getMergeDay(d):
+    weekDay = d.weekday()
+    if weekDay in [0,1,2]: return getDay(d-datetime.timedelta(days=weekDay))
+    elif weekDay in [3,4]: return getDay(d-datetime.timedelta(days=weekDay-3))
+    else: return getDay(d-datetime.timedelta(days=weekDay-5))
+def getMergedCheckinHour(h): return h/4
+
 class MRHotSpots(ModifiedMRJob):
     DEFAULT_INPUT_PROTOCOL='raw_value'
     def map_rawData_to_latticeObjectUnits(self, key, line):
@@ -59,6 +65,17 @@ class MRHotSpots(ModifiedMRJob):
             checkinsDict[checkinDay][checkinHour]+=1   
         latticeObject['c'] = checkinsDict
         yield latticeObject['llid'], latticeObject
+        
+    def split_checkins_in_latticeObject_by_smoothedDay(self, key, latticeObject):
+        checkins = latticeObject['c']
+        checkinsDict = defaultdict(dict)
+        for checkin in checkins: 
+            checkinTime = datetime.datetime.fromtimestamp(checkin['t'])
+            checkinHour, checkinDay = str(getMergedCheckinHour(checkinTime.hour)), str(time.mktime(getMergeDay(checkinTime).timetuple()))
+            if checkinHour not in checkinsDict[checkinDay]: checkinsDict[checkinDay][checkinHour] = 0
+            checkinsDict[checkinDay][checkinHour]+=1   
+        latticeObject['c'] = checkinsDict
+        yield latticeObject['llid'], latticeObject
     
     def get_checkinDistribution(self, key, latticeObject):
         yield key, {'llid': latticeObject['llid'], 'count': len(latticeObject['c'])}
@@ -71,10 +88,12 @@ class MRHotSpots(ModifiedMRJob):
     
     def getJobsToGetCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.get_checkinDistribution, None)]    
     def getJobsToLatticeDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_day, None)]
+    def getJobsToLatticeSmoothedDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_smoothedDay, None)]
     
     def steps(self):
 #        return self.getJobsToGetCheckinDistribution()
-        return self.getJobsToLatticeDailyCheckinDistribution()
+#        return self.getJobsToLatticeDailyCheckinDistribution()
+        return self.getJobsToLatticeSmoothedDailyCheckinDistribution()
 
 if __name__ == '__main__':
     MRHotSpots.run()
