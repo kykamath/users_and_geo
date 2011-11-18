@@ -87,8 +87,7 @@ class MRHotSpots(ModifiedMRJob):
         latticeObject['c'] = checkinsDict
         yield latticeObject['llid'], latticeObject
     
-    def get_checkinDistribution(self, key, latticeObject):
-        yield key, {'llid': latticeObject['llid'], 'count': len(latticeObject['c'])}
+    def get_checkinDistribution(self, key, latticeObject): yield key, {'llid': latticeObject['llid'], 'count': len(latticeObject['c'])}
         
     def getJobsToGetFilteredLatticeObjects(self):
         return [
@@ -102,8 +101,8 @@ class MRHotSpots(ModifiedMRJob):
     def getJobsToLatticeSmoothedDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_smoothedDay, None)]
     
     def steps(self):
-        return self.getJobsToGetLatticeDescription() 
-#        return self.getJobsToGetCheckinDistribution()
+#        return self.getJobsToGetLatticeDescription() 
+        return self.getJobsToGetCheckinDistribution()
 #        return self.getJobsToLatticeDailyCheckinDistribution()
 #        return self.getJobsToLatticeSmoothedDailyCheckinDistribution()
 
