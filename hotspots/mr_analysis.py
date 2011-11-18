@@ -4,6 +4,7 @@ Created on Nov 16, 2011
 @author: kykamath
 '''
 import sys, datetime
+from library.plotting import smooth
 sys.path.append('../')
 from collections import defaultdict
 from hotspots.mr_hotSpots import MRHotSpots
@@ -79,8 +80,8 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
 #    plt.savefig('dates.png')
 #    print total
     
-def plotDailyDistributionForLattices():
-    for l in FileIO.iterateJsonFromFile(dailyDistribution):
+def plotDailyDistributionForLattices(timeFrame):
+    for l in FileIO.iterateJsonFromFile(dailyDistribution%timeFrame):
         distForLattice = dict([(str(i), 0.) for i in range(24)])
         checkinsByDay = l['c']
         days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
@@ -88,25 +89,26 @@ def plotDailyDistributionForLattices():
         for day, dist in checkinsByDay.iteritems():
             for h, v in dist.iteritems(): distForLattice[h]+=v
         dataX = sorted([int(i) for i in distForLattice])
+        print sum(distForLattice.values())
         plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
         plt.show()
 #        exit()
 
-def analyzeCheckinsDistribution():
+def analyzeCheckinsDistribution(timeFrame):
     total = 0
-    for data in FileIO.iterateJsonFromFile(checkinsDistribution):
+    for data in FileIO.iterateJsonFromFile(checkinsDistribution%timeFrame):
         total+=data['count']
         print data
     print total
     
 if __name__ == '__main__':
     region='ny'
-    month = 2
-    month = '2_5'
+#    timeFrame = 2
+    timeFrame = '2_5'
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 
-    runMRJob(MRHotSpots, dailyDistribution, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 
-#    analyzeCheckinsDistribution()
-#    plotDailyDistributionForLattices()
+    analyzeCheckinsDistribution(timeFrame)
+#    plotDailyDistributionForLattices(timeFrame)
