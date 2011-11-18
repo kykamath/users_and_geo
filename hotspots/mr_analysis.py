@@ -14,6 +14,7 @@ from settings import checkinsHdfsPath, regionsCheckinsFile, regionsCheckinsHdfsP
     regionsLlidsFile, dailyDistribution, twitterCheckinsFileInHDFS,\
     checkinsDistribution, smoothedCheckinsDistribution
 from library.file_io import FileIO
+import numpy as np
 import matplotlib.pyplot as plt 
 
 def getDay(d): return datetime.date(d.year, d.month, d.day)
@@ -101,20 +102,20 @@ def runMRJob(mrJobClass, outputFileName, inputFile=checkinsHdfsPath, args='-r ha
     
 def plotDailyDistributionForLattices(timeFrame, file=dailyDistribution):
     for l in FileIO.iterateJsonFromFile(file%timeFrame):
-        distForLattice = dict([(str(i), 0.) for i in range(24)])
+        distForLattice = dict([(str(i), []) for i in range(24)])
 #        distForLattice = dict([(str(i), 0.) for i in range(6)])
         print l['llid']
         checkinsByDay = l['c']
 #        days = sorted([datetime.datetime.fromtimestamp(float(d)) for d in checkinsByDay])
 #        noOfDays = (days[-1]-days[0]).days
         for day, dist in checkinsByDay.iteritems():
-            for h, v in dist.iteritems(): distForLattice[h]+=v
+            for h, v in dist.iteritems(): distForLattice[h].append(v)
         dataX = sorted([int(i) for i in distForLattice])
-        if sum(distForLattice.values())>1000:
-            plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
+#        if sum(distForLattice.values())>1000:
+        plt.plot(dataX, [np.mean(distForLattice[str(k)]) for k in dataX])
 #            plt.show()
-            plt.savefig('images/%s.png'%l['llid'])
-            plt.clf()
+        plt.savefig('images/%s.png'%l['llid'])
+        plt.clf()
 #        exit()
 
 def analyzeCheckinsDistribution(timeFrame):
@@ -132,8 +133,8 @@ if __name__ == '__main__':
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 
 #    runMRJob(MRHotSpots, dailyDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
-    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
+#    runMRJob(MRHotSpots, smoothedCheckinsDistribution%timeFrame, inputFile=twitterCheckinsFileInHDFS%timeFrame, jobconf={'mapred.reduce.tasks':50})
 
 #    analyzeCheckinsDistribution(timeFrame)
-#    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
+    plotDailyDistributionForLattices(timeFrame, file=smoothedCheckinsDistribution)
 
