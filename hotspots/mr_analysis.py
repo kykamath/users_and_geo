@@ -91,6 +91,13 @@ def plotDailyDistributionForLattices():
         plt.plot(dataX, [distForLattice[str(k)]/noOfDays for k in dataX])
         plt.show()
 #        exit()
+
+def analyzeCheckinsDistribution():
+    total = 0
+    for data in FileIO.iterateJsonFromFile(checkinsDistribution):
+        total+=data['count']
+        print data
+    print total
     
 if __name__ == '__main__':
     region='ny'
@@ -99,7 +106,7 @@ if __name__ == '__main__':
 #    runMRJob(MRCheckinsByBoundary, regionsCheckinsFile%region, jobconf={'mapred.reduce.tasks':50})
 #    runMRJob(MRBuildLlidObjects, regionsLlidsFile%region, inputFile=regionsCheckinsHdfsPath%region, jobconf={'mapred.reduce.tasks':50})
 
-    runMRJob(MRHotSpots, checkinsDistribution, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
+    runMRJob(MRHotSpots, dailyDistribution, inputFile=twitterCheckinsFileInHDFS%month, jobconf={'mapred.reduce.tasks':50})
 
-
+#    analyzeCheckinsDistribution()
 #    plotDailyDistributionForLattices()

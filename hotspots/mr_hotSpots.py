@@ -10,10 +10,12 @@ from library.geo import parseData, getLidFromLocation, isWithinBoundingBox, getL
 import cjson, time, datetime
 from collections import defaultdict
 
-#boundary = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
+ACCURACY = 0.001
+
+#BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 1
 
-boundary = [[40.491, -74.356], [41.181, -72.612]] # NY
+BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
 MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
 
 def getCheckinObject(line):
@@ -27,7 +29,7 @@ class MRHotSpots(ModifiedMRJob):
     DEFAULT_INPUT_PROTOCOL='raw_value'
     def map_rawData_to_latticeObjectUnits(self, key, line):
         data = getCheckinObject(line)
-        yield getLatticeLid(data['l'], accuracy=0.001), data
+        yield getLatticeLid(data['l'], accuracy=ACCURACY), data
         
     def map_rawData_to_reducedlatticeObjectUnits(self, key, line):
         data = getCheckinObject(line)
@@ -44,7 +46,7 @@ class MRHotSpots(ModifiedMRJob):
         latticeObject = list(values)[0]
         total = len(latticeObject['c'])
         if total>=MINIMUM_NO_OF_CHECKINS_PER_LOCATION and \
-            isWithinBoundingBox(getLocationFromLid(latticeObject['llid'].replace('_', ' ')), boundary): 
+            isWithinBoundingBox(getLocationFromLid(latticeObject['llid'].replace('_', ' ')), BOUNDARY): 
             yield key, latticeObject
     
     def split_checkins_in_latticeObject_by_day(self, key, latticeObject):
@@ -71,8 +73,8 @@ class MRHotSpots(ModifiedMRJob):
     def getJobsToLatticeDailyCheckinDistribution(self): return self.getJobsToGetFilteredLatticeObjects() + [(self.split_checkins_in_latticeObject_by_day, None)]
     
     def steps(self):
-        return self.getJobsToGetCheckinDistribution()
-#        return self.getJobsToLatticeDailyCheckinDistribution()
+#        return self.getJobsToGetCheckinDistribution()
+        return self.getJobsToLatticeDailyCheckinDistribution()
 
 if __name__ == '__main__':
     MRHotSpots.run()
