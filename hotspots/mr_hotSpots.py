@@ -19,6 +19,7 @@ MIN_HASHTAG_OCCURANCES_PER_LATTICE = 10
 
 BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
 MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
+MINIMUM_CHECKINS_BY_A_USER = 25
 
 #BOUNDARY = [[30.546887,-96.50322], [30.696973,-96.214828]] #Brazos, TX
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 25
@@ -110,7 +111,7 @@ class MRHotSpots(ModifiedMRJob):
         yield latticeObject['llid'], latticeObject
     
     def get_checkinDistribution(self, key, latticeObject): yield key, {'llid': latticeObject['llid'], 'count': len(latticeObject['c'])}
-    
+
     ''' Start: Methods to determine hastag scores per lattice using Okapi BM25 (http://en.wikipedia.org/wiki/Okapi_BM25)
     '''
     def map_hashtags_to_lids(self, key, latticeObject):
@@ -142,7 +143,19 @@ class MRHotSpots(ModifiedMRJob):
         if currentLatticeInstance['totChk'] >= MINIMUM_NO_OF_CHECKINS_PER_LOCATION: yield currentLatticeInstance['llid'], currentLatticeInstance
     ''' End: Methods to determine hastag scores per lattice using Okapi BM25 (http://en.wikipedia.org/wiki/Okapi_BM25)
     '''
-            
+    
+    
+    ''' Start: Methods to determine checkins per user
+    '''
+    def get_user_from_checkins(self, key, line):
+        data = getCheckinObject(line)
+        if isWithinBoundingBox(data['l'], BOUNDARY): yield data['user']['id'], 1
+    def get_userDistribution(self, key, values):
+        numberOfCheckins = sum(list(values))
+        if numberOfCheckins >= MINIMUM_CHECKINS_BY_A_USER: yield key, {'u': key, 't': numberOfCheckins}
+    ''' End: Methods to determine checkins per user
+    '''
+    
     def jobsToGetFilteredLatticeObjects(self):
         return [
                 self.mr(self.map_rawData_to_reducedlatticeObjectUnits, self.reduce_latticeObjectUnits_to_latticeObjects),
@@ -166,13 +179,15 @@ class MRHotSpots(ModifiedMRJob):
                                                          (self.map_hashtags_to_lids, self.get_hashtags_idf_and_pass_it_to_llids),
                                                          (self.emptyMapper, self.combine_all_hastags_idf_for_lattice_and_calculate_bm25_scores)
                                                          ]
+    def jobsToGetUserDistribution(self): return [(self.get_user_from_checkins, self.get_userDistribution)]
     
     def steps(self):
 #        return self.jobsToGetCheckinDistribution()
-        return self.jobsToGetLatticeSpecificHashtags()
+#        return self.jobsToGetLatticeSpecificHashtags()
 #        return self.jobsToGetLatticeDescription() 
 #        return self.jobsToLatticeDailyCheckinDistribution()
 #        return self.jobsToLatticeSmoothedDailyCheckinDistribution()
+        return self.jobsToGetUserDistribution()
 
 if __name__ == '__main__':
     MRHotSpots.run()
