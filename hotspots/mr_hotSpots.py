@@ -13,13 +13,13 @@ from collections import defaultdict
 ACCURACY = 0.001
 NO_OF_HASHTAGS_PER_LATTICE = 10
 MIN_HASHTAG_OCCURANCES_PER_LATTICE = 10
+MINIMUM_CHECKINS_BY_A_USER = 10
 
 #BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 2
 
-BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
-MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
-MINIMUM_CHECKINS_BY_A_USER = 10
+#BOUNDARY = [[40.491, -74.356], [41.181, -72.612]] # NY
+#MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 500
 
 #BOUNDARY = [[30.546887,-96.50322], [30.696973,-96.214828]] #Brazos, TX
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 25
@@ -149,10 +149,13 @@ class MRHotSpots(ModifiedMRJob):
     '''
     def get_user_from_checkins(self, key, line):
         data = getCheckinObject(line)
-        if isWithinBoundingBox(data['l'], BOUNDARY): yield data['user']['id'], 1
+#        if isWithinBoundingBox(data['l'], BOUNDARY): 
+        data['llid'] = getLatticeLid(data['l'], accuracy=ACCURACY)
+        yield data['user']['id'], data
     def get_userDistribution(self, key, values):
-        numberOfCheckins = sum(list(values))
-        if numberOfCheckins >= MINIMUM_CHECKINS_BY_A_USER: yield key, {'u': key, 't': numberOfCheckins}
+        checkins = list(values)
+        numberOfCheckins = len(checkins)
+        if numberOfCheckins >= MINIMUM_CHECKINS_BY_A_USER: yield key, {'u': key, 't': numberOfCheckins, 'c': checkins}
     ''' End: Methods to determine checkins per user
     '''
     
