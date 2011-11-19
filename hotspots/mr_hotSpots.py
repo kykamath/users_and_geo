@@ -13,7 +13,12 @@ from collections import defaultdict
 ACCURACY = 0.001
 NO_OF_HASHTAGS_PER_LATTICE = 10
 MIN_HASHTAG_OCCURANCES_PER_LATTICE = 10
-MINIMUM_CHECKINS_BY_A_USER = 10
+
+#MINIMUM_CHECKINS_BY_A_USER = 1
+#MINIMUM_CHECKINS_PER_LATTICE = 1
+
+MINIMUM_CHECKINS_BY_A_USER = 1
+MINIMUM_CHECKINS_PER_LATTICE = 10
 
 #BOUNDARY = [[24.527135,-127.792969], [49.61071,-59.765625]] # US
 #MINIMUM_NO_OF_CHECKINS_PER_LOCATION = 2
@@ -144,19 +149,31 @@ class MRHotSpots(ModifiedMRJob):
     ''' End: Methods to determine hastag scores per lattice using Okapi BM25 (http://en.wikipedia.org/wiki/Okapi_BM25)
     '''
     
-    
-    ''' Start: Methods to determine checkins per user
+    ''' Start: Get valid lattice objects
     '''
     def get_user_from_checkins(self, key, line):
-        data = getCheckinObject(line)
+        data, hashtags = getCheckinObject(line), defaultdict(int)
 #        if isWithinBoundingBox(data['l'], BOUNDARY): 
+        data['u'] = data['user']['id']
+        for k in ['tx', 'user']: del data[k] 
         data['llid'] = getLatticeLid(data['l'], accuracy=ACCURACY)
-        yield data['user']['id'], data
+        for h in data['h']: hashtags[h.lower()]+=1
+        data['h'] = hashtags
+        yield data['u'], data
     def get_userDistribution(self, key, values):
         checkins = list(values)
         numberOfCheckins = len(checkins)
         if numberOfCheckins >= MINIMUM_CHECKINS_BY_A_USER: yield key, {'u': key, 't': numberOfCheckins, 'c': checkins}
-    ''' End: Methods to determine checkins per user
+    def get_lid_and_corresponding_checkins(self, key, userObject):
+        for checkin in userObject['c']: 
+            llid = checkin['llid']; del checkin['llid']
+            yield llid, checkin
+    def combine_checkins_for_lattice(self, key, values):
+        checkins = list(values)
+        numberOfCheckins = len(checkins)
+#        if numberOfCheckins >= MINIMUM_CHECKINS_PER_LATTICE: yield key, {'llid': key, 't': numberOfCheckins ,'c': checkins}
+        if numberOfCheckins >= MINIMUM_CHECKINS_PER_LATTICE: yield key, {'llid': key, 't': numberOfCheckins}
+    ''' End: Get valid lattice objects
     '''
     
     def jobsToGetFilteredLatticeObjects(self):
@@ -182,7 +199,8 @@ class MRHotSpots(ModifiedMRJob):
                                                          (self.map_hashtags_to_lids, self.get_hashtags_idf_and_pass_it_to_llids),
                                                          (self.emptyMapper, self.combine_all_hastags_idf_for_lattice_and_calculate_bm25_scores)
                                                          ]
-    def jobsToGetUserDistribution(self): return [(self.get_user_from_checkins, self.get_userDistribution)]
+    def jobsToGetValidUsers(self): return [(self.get_user_from_checkins, self.get_userDistribution)]
+    def jobsToGetLatticesFromValidUsers(self): return self.jobsToGetValidUsers()+ [(self.get_lid_and_corresponding_checkins, self.combine_checkins_for_lattice)]
     
     def steps(self):
 #        return self.jobsToGetCheckinDistribution()
@@ -190,7 +208,7 @@ class MRHotSpots(ModifiedMRJob):
 #        return self.jobsToGetLatticeDescription() 
 #        return self.jobsToLatticeDailyCheckinDistribution()
 #        return self.jobsToLatticeSmoothedDailyCheckinDistribution()
-        return self.jobsToGetUserDistribution()
+        return self.jobsToGetLatticesFromValidUsers()
 
 if __name__ == '__main__':
     MRHotSpots.run()

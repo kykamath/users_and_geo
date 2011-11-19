@@ -91,6 +91,7 @@ latticeWithHashtags = twitterAnalysisFolder+'%s/latticeWithHashtags'
 dailyDistribution = twitterAnalysisFolder+'%s/dailyDistribution'
 checkinsDistribution = twitterAnalysisFolder+'%s/checkinsDistribution'
 usersDistribution = twitterAnalysisFolder+'%s/usersDistribution'
+lattices = twitterAnalysisFolder+'%s/lattices'
 smoothedCheckinsDistribution = twitterAnalysisFolder+'%s/smoothedCheckinsDistribution'
 
 #Sequences
